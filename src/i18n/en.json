@@ -20,7 +20,13 @@
     "theme": "Theme",
     "themeSystem": "System",
     "themeLight": "Light",
-    "themeDark": "Dark"
+    "themeDark": "Dark",
+    "skinTone": "Character skin tone",
+    "skinToneN": "Skin tone {{n}}",
+    "learned": "Learned from your changes",
+    "learnedHint": "ClothUp remembers {{count}} item choices to tailor suggestions.",
+    "resetLearned": "Reset",
+    "about": "ClothUp v{{version}} · weather by"
   },
   "onboarding": {
     "welcome": "Welcome to ClothUp",
@@ -178,7 +184,10 @@
     "none": "We couldn't put together an outfit for this. Try another occasion.",
     "characterLabel": "Illustration of the suggested outfit",
     "tapHint": "Tap an item to see details",
-    "carryHint": "Take it along for later"
+    "carryHint": "Take it along for later",
+    "optionOf": "Option {{n}} of {{total}}",
+    "previous": "Previous option",
+    "next": "Next option"
   },
   "reason": {
     "carryLayer": "It cools down later (feels like {{min}}°), so bring a layer.",
@@ -257,5 +266,11 @@
       "pair": "{{A}} and {{b}} are an easy pair that always works.",
       "light": "Light colors reflect the sun and keep you cooler."
     }
+  },
+  "swap": {
+    "title": "Change {{item}}",
+    "change": "Change this item",
+    "changeItem": "Change {{item}}",
+    "none": "No other items fit this weather and occasion."
   }
 }
