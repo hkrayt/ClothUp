@@ -5,6 +5,9 @@ import './styles/tokens.css'
 import './i18n'
 import { App } from './app/App'
 import { ErrorBoundary } from './app/ErrorBoundary'
+import { initBackButton } from './lib/native'
+
+initBackButton()
 
 const root = createRoot(document.getElementById('root')!)
 
