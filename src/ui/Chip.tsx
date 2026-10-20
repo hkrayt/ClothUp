@@ -11,7 +11,7 @@ export function Chip({ selected, icon, className, children, ...rest }: ChipProps
   return (
     <button
       type="button"
-      aria-pressed={selected}
+      aria-pressed={rest.role === 'radio' ? undefined : selected}
       className={cx(
         'inline-flex min-h-12 items-center gap-2 rounded-full border px-4 text-base font-medium transition-colors',
         selected
