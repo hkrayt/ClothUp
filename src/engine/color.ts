@@ -166,6 +166,10 @@ export class ColorEngine {
     const bottom = pieces.find((p) => p.slot === 'bottom')
     if (top?.color && bottom?.color && strategy !== 'monochrome' && deltaE(this.hex(top.color), this.hex(bottom.color)) < 0.06)
       penalty += 2
+    // A hijab in exactly the coat's color reads as one block; a step lighter or darker looks better.
+    const hijab = pieces.find((p) => p.slot === 'head' && p.item.tags.includes('hijab'))
+    const outer = pieces.find((p) => p.slot === 'outer' && !p.carry)
+    if (hijab?.color && hijab.color === outer?.color) penalty += 1.5
     const brights = new Set(main.filter((p) => this.byId.get(p.color!)?.chroma === 'bright').map((p) => p.color))
     const allowedBright = mood === 'bright' ? 2 : 1
     if (brights.size > allowedBright) penalty += 3 * (brights.size - allowedBright)

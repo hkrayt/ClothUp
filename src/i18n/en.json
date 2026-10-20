@@ -175,7 +175,10 @@
     "carry": "Take along",
     "options": "Outfit options",
     "option": "Option {{n}}",
-    "none": "We couldn't put together an outfit for this. Try another occasion."
+    "none": "We couldn't put together an outfit for this. Try another occasion.",
+    "characterLabel": "Illustration of the suggested outfit",
+    "tapHint": "Tap an item to see details",
+    "carryHint": "Take it along for later"
   },
   "reason": {
     "carryLayer": "It cools down later (feels like {{min}}°), so bring a layer.",
