@@ -18,7 +18,8 @@ export class WeatherUnavailableError extends Error {
   }
 }
 
-const storeKey = (key: string) => `clothup.forecast.${key}`
+// v2: forecasts include wind direction, cloud, dew point, radiation, freezing level and snow depth.
+const storeKey = (key: string) => `clothup.forecast.v2.${key}`
 
 async function readCache(key: string): Promise<Forecast | undefined> {
   try {
