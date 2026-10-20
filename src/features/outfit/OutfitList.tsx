@@ -1,9 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import { Backpack, CheckCircle2 } from 'lucide-react'
+import { Backpack, CheckCircle2, Repeat } from 'lucide-react'
 import type { Lang } from '@/engine/types'
 import type { Outfit, OutfitPiece, Slot } from '@/engine/outfit-types'
 import { COLORS, DATA } from '@/engine/catalog'
-import { Card } from '@/ui'
+import { Card, IconButton } from '@/ui'
 import { colorName, PaletteCard } from './PaletteCard'
 
 /** Head-to-toe reading order for the item list. */
@@ -17,11 +17,12 @@ export function fabricName(id: string, lang: Lang): string {
   return DATA.fabrics.find((f) => f.id === id)?.name[lang] ?? ''
 }
 
-function PieceRow({ piece, lang }: { piece: OutfitPiece; lang: Lang }) {
+function PieceRow({ piece, lang, onChange }: { piece: OutfitPiece; lang: Lang; onChange?: (p: OutfitPiece) => void }) {
   const { t } = useTranslation()
   const slotLabel = piece.item.fills?.includes('bottom') ? t('slot.onepiece') : t(`slot.${piece.slot}`)
   return (
-    <li className="flex flex-col gap-0.5 py-3">
+    <li className="flex items-center gap-3 py-3">
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
       <div className="flex items-center gap-2">
         <span className="text-xs font-semibold uppercase tracking-wide text-muted">{slotLabel}</span>
         {piece.carry && (
@@ -49,11 +50,17 @@ function PieceRow({ piece, lang }: { piece: OutfitPiece; lang: Lang }) {
           <span className="font-medium text-text">{fabricName(piece.fabric, lang)}</span> · {t(`fabric.why.${piece.fabric}`)}
         </span>
       )}
+      </div>
+      {onChange && piece.slot !== 'eyewear' && (
+        <IconButton label={t('swap.changeItem', { item: piece.item.name[lang] })} onClick={() => onChange(piece)} className="h-10 w-10 shrink-0 text-muted">
+          <Repeat size={18} />
+        </IconButton>
+      )}
     </li>
   )
 }
 
-export function OutfitList({ outfit }: { outfit: Outfit }) {
+export function OutfitList({ outfit, onChange }: { outfit: Outfit; onChange?: (p: OutfitPiece) => void }) {
   const { t, i18n } = useTranslation()
   const lang = i18n.language as Lang
   const pieces = sortPieces(outfit.pieces)
@@ -67,7 +74,7 @@ export function OutfitList({ outfit }: { outfit: Outfit }) {
         <h2 className="text-lg font-semibold">{t('outfit.items')}</h2>
         <ul className="divide-y divide-border">
           {wear.map((p) => (
-            <PieceRow key={`${p.slot}-${p.item.id}`} piece={p} lang={lang} />
+            <PieceRow key={`${p.slot}-${p.item.id}`} piece={p} lang={lang} onChange={onChange} />
           ))}
         </ul>
         {extras.length > 0 && (

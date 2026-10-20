@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 import { DATA } from './catalog'
-import { generateOutfits, temperatureFit } from './outfit'
+import { applySwap, generateOutfits, swapOptions, temperatureFit } from './outfit'
 import { SCENARIOS } from './scenarios'
 import type { Outfit } from './outfit-types'
 import type { OccasionId, Profile } from './types'
@@ -182,6 +182,36 @@ describe('specific suggestions', () => {
     expect(outfits).toHaveLength(3)
     const sigs = outfits.map((o) => ['top', 'bottom', 'outer', 'shoes'].map((s) => slotItem(o, s)?.id).join('|'))
     expect(new Set(sigs).size).toBe(3)
+  })
+
+  it('offers swap options and applies a swap while keeping the rest of the outfit', () => {
+    const ctx = SCENARIOS.ammanSpring
+    const [o] = generateOutfits(ctx, male, occ('casual'), DATA)
+    const options = swapOptions(ctx, male, occ('casual'), DATA, o, 'shoes')
+    expect(options.length).toBeGreaterThan(0)
+    expect(options.map((i) => i.id)).not.toContain(slotItem(o, 'shoes')!.id)
+    const swapped = applySwap(ctx, male, occ('casual'), DATA, o, 'shoes', options[0].id)!
+    expect(slotItem(swapped, 'shoes')!.id).toBe(options[0].id)
+    expect(slotItem(swapped, 'top')!.id).toBe(slotItem(o, 'top')!.id)
+    expect(slotItem(swapped, 'bottom')!.id).toBe(slotItem(o, 'bottom')!.id)
+    expect(swapped.palette!.id).toBe(o.palette!.id)
+  })
+
+  it('swapping a top for a dress drops the separate bottom', () => {
+    const female: Profile = { gender: 'female', style: 'standard', skinTone: 2 }
+    const ctx = SCENARIOS.mildCloudy
+    const [o] = generateOutfits(ctx, female, occ('casual'), DATA, { locks: { top: 'f-tee' } })
+    const swapped = applySwap(ctx, female, occ('casual'), DATA, o, 'top', 'f-midi-dress')!
+    expect(slotItem(swapped, 'top')!.id).toBe('f-midi-dress')
+    expect(slotItem(swapped, 'bottom')).toBeUndefined()
+  })
+
+  it('learned preferences nudge the ranking', () => {
+    const ctx = SCENARIOS.ammanSpring
+    const [plain] = generateOutfits(ctx, male, occ('casual'), DATA)
+    const top = slotItem(plain, 'top')!.id
+    const [disliked] = generateOutfits(ctx, male, occ('casual'), DATA, { prefs: { [top]: -6 } })
+    expect(slotItem(disliked, 'top')!.id).not.toBe(top)
   })
 
   it('locks force an item in a slot', () => {
