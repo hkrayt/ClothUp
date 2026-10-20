@@ -8,7 +8,8 @@
     "back": "Back",
     "settings": "Settings",
     "continue": "Continue",
-    "retry": "Try again"
+    "retry": "Try again",
+    "change": "Change"
   },
   "settings": {
     "title": "Settings",
@@ -22,8 +23,77 @@
     "welcome": "Welcome to ClothUp",
     "body": "Pick a place in Jordan, tell us where you're going, and get a full outfit that fits the weather.",
     "start": "What should I wear?",
-    "comingSoon": "Coming in the next update",
-    "occasions": "Occasions",
-    "palette": "Palette"
+    "comingSoon": "Outfit suggestions are coming in the next update",
+    "where": "Where are you going?"
+  },
+  "time": {
+    "today": "Today",
+    "tomorrow": "Tomorrow"
+  },
+  "place": {
+    "title": "Choose a place",
+    "search": "Search places in Jordan",
+    "current": "Use my current location",
+    "locating": "Finding your location…",
+    "noResults": "No places found",
+    "geoError": {
+      "denied": "Location permission was denied. Pick a place from the list instead.",
+      "unavailable": "Couldn't get your location. Pick a place from the list instead."
+    }
+  },
+  "zone": {
+    "highland": "Highlands",
+    "northern-highland": "Northern highlands",
+    "highland-desert": "Desert highlands",
+    "steppe": "Dry plains",
+    "desert": "Desert",
+    "rift-valley": "Below sea level",
+    "red-sea": "Red Sea coast"
+  },
+  "weather": {
+    "feelsLike": "Feels like {{t}}",
+    "range": "{{min}} to {{max}} while you're there",
+    "rain": "Rain",
+    "wind": "Wind",
+    "kmh": "km/h",
+    "uv": "UV",
+    "humidity": "Humidity",
+    "offline": "Offline",
+    "updatedNow": "Updated just now",
+    "updatedAgo": "Updated {{count}} min ago",
+    "refresh": "Refresh weather",
+    "error": "Couldn't load the weather.",
+    "errorOffline": "You're offline and there's no saved forecast for this place yet.",
+    "outOfRange": "That time is outside the 7-day forecast.",
+    "condition": {
+      "clear": "Clear",
+      "partly": "Partly cloudy",
+      "cloudy": "Cloudy",
+      "fog": "Foggy",
+      "drizzle": "Drizzle",
+      "rain": "Rain",
+      "snow": "Snow",
+      "thunder": "Thunderstorms"
+    },
+    "uvLevel": {
+      "low": "Low",
+      "moderate": "Moderate",
+      "high": "High",
+      "veryHigh": "Very high",
+      "extreme": "Extreme"
+    },
+    "notes": {
+      "sandstorm": "Sandstorm risk: protect your eyes, nose and mouth.",
+      "dusty": "Dusty air expected.",
+      "snow": "Snow is possible. Expect icy roads in the highlands.",
+      "rain": "{{p}}% chance of rain.",
+      "gusts": "Strong gusts up to {{gust}} km/h.",
+      "coolsAfterDark": "Colder after dark: feels like {{min}}°.",
+      "swing": "Big temperature swing: {{min}}° to {{max}}°.",
+      "humid": "Hot and humid: it will feel sticky.",
+      "uv": "Very strong sun. Cover up and use sunscreen.",
+      "extremeHeat": "Extreme heat. Stay in the shade and drink water.",
+      "freezing": "Below freezing: feels like {{min}}°."
+    }
   }
 }
