@@ -28,7 +28,10 @@ it.skipIf(cases.length === 0)('prints outfits', () => {
     const outfits = generateOutfits(SCENARIOS[sc], PROFILES[prof], DATA.occasions.find((o) => o.id === occ)!, DATA)
     console.log(`\n== ${sc} / ${prof} / ${occ} (${outfits.length})`)
     for (const o of outfits)
-      console.log(` [${o.score.toFixed(1)}] ` + o.pieces.map((p) => `${p.slot}:${p.item.id}${p.carry ? '(carry)' : ''}/${p.fabric}`).join('  '))
+      console.log(
+        ` [${o.score.toFixed(1)}] ${o.palette?.id}\n   ` +
+          o.pieces.map((p) => `${p.slot}:${p.item.id}${p.carry ? '(carry)' : ''}/${p.fabric}/${p.color ?? '-'}`).join('  '),
+      )
     console.log('  reasons:', outfits[0]?.reasons.map((r) => r.key).join(', '))
   }
 })

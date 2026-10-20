@@ -96,6 +96,8 @@ export interface Outfit {
   pieces: OutfitPiece[]
   score: number
   reasons: Reason[]
+  /** Set by the color engine. */
+  palette?: import('./color').PaletteResult
 }
 
 /** Everything a rule condition can look at. */

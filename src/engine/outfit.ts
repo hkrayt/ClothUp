@@ -2,6 +2,7 @@ import type { ClothingItem, Outfit, OutfitPiece, Reason, Slot } from './outfit-t
 import type { Occasion, Profile, WeatherContext } from './types'
 import type { EngineData } from './catalog'
 import { collectEffects, type Effects, type Facts } from './rules'
+import { ColorEngine } from './color'
 
 export interface GenerateOptions {
   /** Item id â†’ score bonus learned from the user's swaps. */
@@ -403,5 +404,12 @@ export function generateOutfits(
 
   picked.sort((a, b) => b.score - a.score)
   const reasons = buildReasons(run, plan)
-  return picked.map((o, i) => ({ ...o, id: `outfit-${i + 1}`, reasons }))
+  // Give each option its own harmonious palette.
+  const colors = new ColorEngine(data.colors)
+  const used: string[] = []
+  return picked.map((o, i) => {
+    const colored = colors.colorize({ ...o, id: `outfit-${i + 1}`, reasons }, ctx, occasion, used)
+    if (colored.palette) used.push(colored.palette.id)
+    return colored
+  })
 }
