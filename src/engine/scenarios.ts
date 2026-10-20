@@ -28,6 +28,19 @@ export function scenario(over: Partial<WeatherContext> & { feelsMin: number; fee
     condition: 'clear',
     isNight: false,
     coolsAfterDark: false,
+    shadeMin: over.feelsMin,
+    sunGap: 0,
+    sunFeels: feelsAvg,
+    shadeFeels: feelsAvg,
+    fog: false,
+    windDir: null,
+    dryWind: false,
+    dewPointMax: null,
+    snowOnGround: false,
+    freezingNear: false,
+    series: [],
+    lessCertain: false,
+    source: 'forecast',
     ...over,
   }
 }
@@ -42,4 +55,8 @@ export const SCENARIOS = {
   wadiRumNight: scenario({ feelsMin: 6, feelsMax: 28, feelsAvg: 17, coolsAfterDark: true, uvMax: 9, zone: 'desert' }),
   sandstorm: scenario({ feelsMin: 26, feelsMax: 32, dust: 'severe', gust: 60, uvMax: 6, zone: 'desert' }),
   mildCloudy: scenario({ feelsMin: 18, feelsMax: 23, uvMax: 3, condition: 'cloudy' }),
+  wadiRumWinterSun: scenario({ feelsMin: 19, feelsMax: 23, shadeMin: 13, sunGap: 8, sunFeels: 22, shadeFeels: 14, uvMax: 5, zone: 'desert' }),
+  irbidFog: scenario({ feelsMin: 6, feelsMax: 10, fog: true, condition: 'fog', humidity: 95, uvMax: 1, zone: 'northern-highland' }),
+  karakSnowGround: scenario({ feelsMin: -2, feelsMax: 4, snowOnGround: true, uvMax: 3, zone: 'highland' }),
+  sharqiya: scenario({ feelsMin: 30, feelsMax: 36, dryWind: true, humidity: 12, wind: 30, gust: 45, windDir: 110, uvMax: 8, zone: 'steppe' }),
 }

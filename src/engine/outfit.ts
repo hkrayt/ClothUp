@@ -155,7 +155,9 @@ interface Plan {
 
 function layerPlan(run: Run): Plan {
   const { ctx, fx } = run
-  const needOuter = fx.need.has('outer') || ctx.feelsMin < 17
+  // Shade counts too: a sunny 22 ° that is 14 ° out of the sun still needs a layer.
+  const coldest = Math.min(ctx.feelsMin, ctx.shadeMin + 2)
+  const needOuter = fx.need.has('outer') || coldest < 17
   // Only cold for part of the stay (evening, early morning): take the layer along.
   const carryOuter = needOuter && !fx.need.has('outer') && ctx.feelsAvg >= 19
   const needMid = ctx.feelsMin < 9 || ctx.feelsAvg < 12
@@ -172,7 +174,7 @@ function layerPlan(run: Run): Plan {
       top: layered ? clamp(avg + 8, 14, 24) : avg,
       bottom: avg,
       mid: room((ctx.feelsMin + ctx.feelsAvg) / 2),
-      outer: ctx.feelsMin,
+      outer: coldest,
       shoes: (ctx.feelsMin + ctx.feelsAvg) / 2,
       socks: (ctx.feelsMin + ctx.feelsAvg) / 2,
       head: avg,

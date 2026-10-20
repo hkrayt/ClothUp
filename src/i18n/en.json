@@ -161,8 +161,31 @@
       "humid": "Hot and humid: it will feel sticky.",
       "uv": "Very strong sun. Cover up and use sunscreen.",
       "extremeHeat": "Extreme heat. Stay in the shade and drink water.",
-      "freezing": "Below freezing: feels like {{min}}°."
-    }
+      "freezing": "Below freezing: feels like {{min}}°.",
+      "snowGround": "Snow on the ground: wear boots with grip.",
+      "snowRisk": "Cold enough for snow on high ground; highland roads may close.",
+      "fog": "Fog likely: low visibility on the roads.",
+      "dryWind": "Dry desert wind (sharqiya): drink water and protect your lips and skin.",
+      "sunShade": "Warm in the sun ({{sun}}°), cool in the shade ({{shade}}°)."
+    },
+    "sun": "In the sun",
+    "shade": "In the shade",
+    "windFrom": "Wind from the {{dir}}",
+    "dir": {
+      "N": "north",
+      "NE": "north-east",
+      "E": "east",
+      "SE": "south-east",
+      "S": "south",
+      "SW": "south-west",
+      "W": "west",
+      "NW": "north-west"
+    },
+    "lessCertain": "Less certain: more than a week ahead",
+    "typical": "Typical weather for {{month}} (no forecast available)",
+    "chartLabel": "Feels-like temperature and chance of rain hour by hour",
+    "feels": "Feels like",
+    "rainChance": "Rain chance"
   },
   "slot": {
     "head": "Head",
@@ -217,7 +240,11 @@
     "university": "Comfortable for a long day on campus.",
     "gym": "Sportswear that moves with you and dries fast.",
     "hiking": "Trail-ready: grippy shoes, sun protection and water.",
-    "travel": "Comfortable for travelling: easy shoes and layers."
+    "travel": "Comfortable for travelling: easy shoes and layers.",
+    "snowGround": "Snow on the ground: boots with good grip.",
+    "fog": "Fog: a water-resistant layer keeps the damp out.",
+    "dryWind": "Dry, hot desert wind: cover up and carry water.",
+    "sunShade": "Warm in the sun but cool in the shade: bring a light layer."
   },
   "fabric": {
     "why": {

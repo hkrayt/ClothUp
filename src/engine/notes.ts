@@ -26,15 +26,22 @@ export function weatherNotes(ctx: WeatherContext): WeatherNote[] {
   if (ctx.dust === 'severe') notes.push({ key: 'sandstorm', tone: 'warn' })
   else if (ctx.dust === 'moderate') notes.push({ key: 'dusty', tone: 'warn' })
 
+  if (ctx.snowOnGround) notes.push({ key: 'snowGround', tone: 'warn' })
   if (ctx.snowCm > 0) notes.push({ key: 'snow', tone: 'warn' })
   else if (ctx.rainProb >= 50) notes.push({ key: 'rain', params: { p: ctx.rainProb }, tone: 'warn' })
+  if (ctx.freezingNear && ctx.snowCm === 0 && ctx.rainProb >= 40) notes.push({ key: 'snowRisk', tone: 'warn' })
 
+  if (ctx.fog) notes.push({ key: 'fog', tone: 'warn' })
+  if (ctx.dryWind) notes.push({ key: 'dryWind', tone: 'warn' })
   if (ctx.gust >= 50) notes.push({ key: 'gusts', params: { gust: ctx.gust }, tone: 'warn' })
 
   if (ctx.coolsAfterDark) notes.push({ key: 'coolsAfterDark', params: { min }, tone: 'info' })
   else if (ctx.swing >= 10) notes.push({ key: 'swing', params: { min, max }, tone: 'info' })
+  if (ctx.sunGap >= 5 && ctx.shadeFeels < 20)
+    notes.push({ key: 'sunShade', params: { sun: Math.round(ctx.sunFeels), shade: Math.round(ctx.shadeFeels) }, tone: 'info' })
 
-  if (ctx.feelsMax >= 28 && ctx.humidity >= 55) notes.push({ key: 'humid', tone: 'info' })
+  const muggy = ctx.dewPointMax !== null ? ctx.dewPointMax >= 18 : ctx.humidity >= 55
+  if (ctx.feelsMax >= 28 && muggy) notes.push({ key: 'humid', tone: 'info' })
   if (ctx.uvMax >= 8) notes.push({ key: 'uv', tone: 'warn' })
   if (ctx.feelsMax >= 38) notes.push({ key: 'extremeHeat', tone: 'warn' })
   if (ctx.feelsMin <= 0 && ctx.snowCm === 0) notes.push({ key: 'freezing', tone: 'warn' })

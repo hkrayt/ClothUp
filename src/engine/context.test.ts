@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bandOf, buildContext, conditionOf, dustLevelOf, sliceStay } from './context'
+import { bandOf, buildContext, conditionOf, dustLevelOf, sliceStay, sunBoost } from './context'
 import { addHours, ammanNow, hoursBetween } from './time'
 import { makeForecast } from './testing'
 
@@ -65,6 +65,42 @@ describe('buildContext', () => {
     expect(ctx.swing).toBe(21)
     expect(ctx.coldBand).toBe('cold')
     expect(ctx.coolsAfterDark).toBe(true)
+  })
+
+  it('separates sun and shade using solar radiation', () => {
+    expect(sunBoost(null, 10)).toBe(0)
+    expect(sunBoost(800, 5)).toBeGreaterThan(4)
+    expect(sunBoost(800, 40)).toBeLessThan(sunBoost(800, 5))
+    const f = makeForecast('2026-01-15T00:00', 24, (_, h) => ({ feels: 20, radiation: h >= 9 && h <= 15 ? 750 : 0, wind: 6 }))
+    const ctx = buildContext(f, 'desert', '2026-01-15T11:00', 3)!
+    expect(ctx.sunGap).toBeGreaterThan(5)
+    expect(ctx.shadeFeels).toBeLessThan(ctx.sunFeels)
+    expect(ctx.shadeMin).toBeLessThan(ctx.feelsMin)
+  })
+
+  it('detects fog, sharqiya, snow on the ground and a low freezing level', () => {
+    const f = makeForecast('2026-02-01T00:00', 24, (i) => ({
+      visibility: i === 7 ? 400 : 20000,
+      windDir: 110,
+      wind: 28,
+      humidity: 15,
+      temp: 30,
+      snowDepth: 0.05,
+      freezingLevel: 900,
+    }))
+    const ctx = buildContext({ ...f, elevation: 750 }, 'highland', '2026-02-01T06:00', 4)!
+    expect(ctx.fog).toBe(true)
+    expect(ctx.dryWind).toBe(true)
+    expect(ctx.windDir).toBe(110)
+    expect(ctx.snowOnGround).toBe(true)
+    expect(ctx.freezingNear).toBe(true)
+    expect(ctx.series).toHaveLength(4)
+  })
+
+  it('marks forecasts more than a week ahead as less certain', () => {
+    const f = makeForecast('2026-03-01T00:00', 16 * 24)
+    expect(buildContext(f, 'highland', '2026-03-03T10:00', 3)!.lessCertain).toBe(false)
+    expect(buildContext(f, 'highland', '2026-03-10T10:00', 3)!.lessCertain).toBe(true)
   })
 
   it('summarizes rain, wind, UV and the worst condition', () => {
