@@ -45,7 +45,8 @@
     { "id": "gold", "hex": "#C8A44C", "name": { "en": "Gold", "ar": "ذهبي" }, "chroma": "bright" },
 
     { "id": "tortoise", "hex": "#6C4524", "name": { "en": "Tortoiseshell", "ar": "صدفي" }, "chroma": "muted", "fixed": true },
-    { "id": "shemagh-red", "hex": "#B3262E", "name": { "en": "Red & white check", "ar": "أحمر وأبيض مقصّب" }, "chroma": "muted", "fixed": true, "pattern": "check" }
+    { "id": "shemagh-red", "hex": "#B3262E", "name": { "en": "Red & white check", "ar": "أحمر وأبيض مقصّب" }, "chroma": "muted", "fixed": true, "pattern": "check" },
+    { "id": "shemagh-black", "hex": "#2A2A2C", "name": { "en": "Black & white check", "ar": "أسود وأبيض مقصّب" }, "chroma": "muted", "fixed": true, "pattern": "check-black" }
   ],
   "groups": {
     "neutral": ["white", "off-white", "cream", "beige", "grey-light", "grey", "charcoal", "black", "navy"],

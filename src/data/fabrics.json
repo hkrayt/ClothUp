@@ -19,5 +19,6 @@
   { "id": "suede", "name": { "en": "Suede", "ar": "شمواه" }, "warmth": 2, "breathable": false },
   { "id": "mesh", "name": { "en": "Breathable mesh", "ar": "شبك مسامي" }, "warmth": 0, "breathable": true },
   { "id": "canvas", "name": { "en": "Canvas", "ar": "كانفاس" }, "warmth": 1, "breathable": true },
-  { "id": "sheepskin", "name": { "en": "Sheepskin lining", "ar": "بطانة فرو غنم" }, "warmth": 5, "breathable": false }
+  { "id": "sheepskin", "name": { "en": "Sheepskin lining", "ar": "بطانة فرو غنم" }, "warmth": 5, "breathable": false },
+  { "id": "corduroy", "name": { "en": "Corduroy", "ar": "كوردروي" }, "warmth": 3, "breathable": true }
 ]
