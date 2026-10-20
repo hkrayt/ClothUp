@@ -1,0 +1,23 @@
+[
+  { "id": "linen", "name": { "en": "Linen", "ar": "كتان" }, "warmth": 0, "breathable": true },
+  { "id": "cotton", "name": { "en": "Cotton", "ar": "قطن" }, "warmth": 1, "breathable": true },
+  { "id": "chiffon", "name": { "en": "Chiffon", "ar": "شيفون" }, "warmth": 0, "breathable": true },
+  { "id": "modal", "name": { "en": "Modal", "ar": "مودال" }, "warmth": 1, "breathable": true },
+  { "id": "jersey", "name": { "en": "Jersey", "ar": "جيرسي" }, "warmth": 2, "breathable": true },
+  { "id": "viscose", "name": { "en": "Viscose", "ar": "فسكوز" }, "warmth": 1, "breathable": true },
+  { "id": "silk", "name": { "en": "Silk", "ar": "حرير" }, "warmth": 1, "breathable": true },
+  { "id": "satin", "name": { "en": "Satin", "ar": "ساتان" }, "warmth": 1, "breathable": false },
+  { "id": "tech", "name": { "en": "Quick-dry tech fabric", "ar": "قماش رياضي سريع الجفاف" }, "warmth": 1, "breathable": true },
+  { "id": "denim", "name": { "en": "Denim", "ar": "جينز" }, "warmth": 2, "breathable": false },
+  { "id": "twill", "name": { "en": "Cotton twill", "ar": "قطن تويل" }, "warmth": 2, "breathable": true },
+  { "id": "knit", "name": { "en": "Knit", "ar": "تريكو" }, "warmth": 3, "breathable": true },
+  { "id": "fleece", "name": { "en": "Fleece", "ar": "فليس" }, "warmth": 4, "breathable": true },
+  { "id": "wool", "name": { "en": "Wool", "ar": "صوف" }, "warmth": 4, "breathable": true },
+  { "id": "down", "name": { "en": "Down / padded", "ar": "حشوة ريش" }, "warmth": 5, "breathable": false },
+  { "id": "waterproof", "name": { "en": "Waterproof shell", "ar": "قماش مقاوم للماء" }, "warmth": 1, "breathable": false, "waterproof": true },
+  { "id": "leather", "name": { "en": "Leather", "ar": "جلد" }, "warmth": 2, "breathable": false },
+  { "id": "suede", "name": { "en": "Suede", "ar": "شمواه" }, "warmth": 2, "breathable": false },
+  { "id": "mesh", "name": { "en": "Breathable mesh", "ar": "شبك مسامي" }, "warmth": 0, "breathable": true },
+  { "id": "canvas", "name": { "en": "Canvas", "ar": "كانفاس" }, "warmth": 1, "breathable": true },
+  { "id": "sheepskin", "name": { "en": "Sheepskin lining", "ar": "بطانة فرو غنم" }, "warmth": 5, "breathable": false }
+]
