@@ -57,6 +57,8 @@ export interface Occasion {
   formality: [number, number]
   /** Color moods that suit the occasion, best first. */
   moods: Mood[]
+  /** 0 = outdoors, 1 = fully indoors. Blends clothing targets toward room temperature. */
+  indoor?: number
 }
 
 export type When = { kind: 'now' } | { kind: 'at'; time: string }

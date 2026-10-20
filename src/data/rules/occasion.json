@@ -1,0 +1,25 @@
+[
+  { "id": "modest-coverage", "priority": 100, "when": { "style": { "eq": "modest" } }, "then": { "need": ["head"], "require": { "head": ["hijab"] }, "exclude": ["shorts", "sleeveless", "short-sleeve"], "prefer": { "loose": 2, "long-top": 1 } }, "reason": "modest" },
+  { "id": "traditional-head", "priority": 100, "when": { "style": { "eq": "traditional" }, "occasion": { "ne": "gym" } }, "then": { "need": ["head"], "require": { "head": ["shemagh"] }, "prefer": { "thobe": 4 } }, "reason": "traditional" },
+
+  { "id": "religious-coverage", "priority": 100, "when": { "occasion": { "eq": "religious" } }, "then": { "exclude": ["shorts", "sleeveless"], "prefer": { "loose": 2, "flowy": -1 } }, "reason": "religious" },
+  { "id": "religious-women", "priority": 100, "when": { "occasion": { "eq": "religious" }, "gender": { "eq": "female" } }, "then": { "need": ["head"], "require": { "head": ["head-cover"] }, "exclude": ["short-sleeve"] } },
+
+  { "id": "work-polish", "priority": 90, "when": { "occasion": { "eq": "work" } }, "then": { "exclude": ["shorts", "sleeveless", "sporty"], "prefer": { "collared": 2, "tailored": 2, "leather": 1, "denim": -2 }, "add": ["#bag"] }, "reason": "work" },
+  { "id": "work-no-sandals", "priority": 90, "when": { "occasion": { "eq": "work" }, "style": { "ne": "traditional" } }, "then": { "exclude": ["sandals", "open-toe"] } },
+
+  { "id": "formal-dress-code", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding"] } }, "then": { "exclude": ["shorts", "sporty", "denim", "sneakers", "beanie", "cap", "hood"], "prefer": { "formal": 3, "tailored": 2 }, "add": ["#bag"] }, "reason": "formal" },
+  { "id": "formal-jacket", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding"] }, "gender": { "eq": "male" }, "style": { "eq": "standard" } }, "then": { "need": ["outer"], "require": { "outer": ["suit", "tailored"] } }, "reason": "formalJacket" },
+  { "id": "formal-bisht", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding"] }, "style": { "eq": "traditional" } }, "then": { "need": ["outer"], "require": { "outer": ["formal"] } }, "reason": "bisht" },
+  { "id": "formal-no-sandals", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding"] }, "style": { "ne": "traditional" } }, "then": { "exclude": ["sandals"] } },
+
+  { "id": "university-comfort", "priority": 80, "when": { "occasion": { "eq": "university" } }, "then": { "exclude": ["shorts", "sleeveless", "heels"], "prefer": { "sneakers": 1, "layer": 1 }, "add": ["backpack"] }, "reason": "university" },
+
+  { "id": "gym-kit", "priority": 100, "when": { "occasion": { "eq": "gym" } }, "then": { "require": { "top": ["sporty"], "bottom": ["sporty"], "shoes": ["sporty"] }, "prefer": { "breathable": 2 }, "add": ["gym-bag", "water-bottle"] }, "reason": "gym" },
+
+  { "id": "hiking-kit", "priority": 100, "when": { "occasion": { "eq": "hiking" } }, "then": { "require": { "shoes": ["boots", "sporty"] }, "exclude": ["heels", "slip-on", "dress", "skirt", "formal", "tailored", "flowy", "abaya"], "prefer": { "sporty": 2, "sun-protect": 2, "grip": 3, "waterproof": 1 }, "add": ["backpack", "water-bottle"] }, "reason": "hiking" },
+
+  { "id": "travel-comfort", "priority": 70, "when": { "occasion": { "eq": "travel" } }, "then": { "exclude": ["heels"], "prefer": { "sneakers": 2, "slip-on": 1, "layer": 1, "loose": 1 }, "add": ["#bag"] }, "reason": "travel" },
+
+  { "id": "casual-bag", "priority": 20, "when": { "occasion": { "in": ["casual", "religious"] } }, "then": { "add": ["#bag"] } }
+]

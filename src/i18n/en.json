@@ -31,10 +31,19 @@
     "done": "Let's go"
   },
   "profile": {
-    "gender": { "male": "Male", "female": "Female" },
+    "gender": {
+      "male": "Male",
+      "female": "Female"
+    },
     "style": {
-      "male": { "standard": "Standard", "traditional": "Traditional" },
-      "female": { "standard": "Standard", "modest": "Modest" }
+      "male": {
+        "standard": "Standard",
+        "traditional": "Traditional"
+      },
+      "female": {
+        "standard": "Standard",
+        "modest": "Modest"
+      }
     },
     "styleHint": {
       "male": {
@@ -76,9 +85,6 @@
     "religious": "Religious visit",
     "wedding": "Wedding / Party",
     "travel": "Travel"
-  },
-  "result": {
-    "outfitSoon": "Your outfit suggestion will appear here in the next update."
   },
   "time": {
     "today": "Today",
@@ -148,6 +154,80 @@
       "uv": "Very strong sun. Cover up and use sunscreen.",
       "extremeHeat": "Extreme heat. Stay in the shade and drink water.",
       "freezing": "Below freezing: feels like {{min}}°."
+    }
+  },
+  "slot": {
+    "head": "Head",
+    "eyewear": "Eyes",
+    "outer": "Outer layer",
+    "mid": "Warm layer",
+    "top": "Top",
+    "bottom": "Bottom",
+    "socks": "Socks",
+    "shoes": "Shoes",
+    "accessory": "Extras",
+    "onepiece": "Outfit"
+  },
+  "outfit": {
+    "items": "Your outfit",
+    "bring": "Take with you",
+    "why": "Why this outfit",
+    "carry": "Take along",
+    "options": "Outfit options",
+    "option": "Option {{n}}",
+    "none": "We couldn't put together an outfit for this. Try another occasion."
+  },
+  "reason": {
+    "carryLayer": "It cools down later (feels like {{min}}°), so bring a layer.",
+    "layers": "Wear layers: it feels like {{min}}° to {{max}}° while you're out.",
+    "mild": "Comfortable weather ({{min}}°–{{max}}°): light, easy layers.",
+    "rain": "{{p}}% chance of rain: waterproof outer layer and closed shoes.",
+    "rainWindy": "Rain with strong wind: a hood works better than an umbrella.",
+    "snow": "Snow or freezing cold (feels like {{min}}°): warm coat, boots, gloves.",
+    "cold": "Cold (feels like {{min}}°): wool and warm layers, cover your neck and hands.",
+    "hot": "Hot (up to {{max}}°): light, breathable fabrics and light colors.",
+    "humid": "Humid heat: loose linen and cotton let your skin breathe.",
+    "extremeHeat": "Extreme heat ({{max}}°): cover up from the sun and carry water.",
+    "uv": "Strong sun (UV {{uv}}): sunglasses and sunscreen.",
+    "uvHat": "Shade your face and neck with a hat.",
+    "dust": "Dusty air: protect your eyes and wear closed shoes.",
+    "sandstorm": "Sandstorm risk: cover your face, eyes, arms and legs.",
+    "windy": "Gusty wind (up to {{gust}} km/h): windproof layers, avoid floaty pieces.",
+    "modest": "Modest: loose fit, long sleeves, full-length hems and a hijab that suits the temperature.",
+    "traditional": "Traditional Jordanian style with shemagh and iqal.",
+    "religious": "Respectful coverage for a religious visit.",
+    "work": "Polished and professional for work.",
+    "formal": "Dressed up for the occasion.",
+    "formalJacket": "A tailored jacket completes a formal look.",
+    "bisht": "A bisht over the thobe for a formal occasion.",
+    "university": "Comfortable for a long day on campus.",
+    "gym": "Sportswear that moves with you and dries fast.",
+    "hiking": "Trail-ready: grippy shoes, sun protection and water.",
+    "travel": "Comfortable for travelling: easy shoes and layers."
+  },
+  "fabric": {
+    "why": {
+      "linen": "the coolest fabric for hot days",
+      "cotton": "soft and breathable",
+      "chiffon": "light and airy in the heat",
+      "modal": "soft, breathable and doesn't cling",
+      "jersey": "stretchy and stays in place",
+      "viscose": "drapes well and stays cool",
+      "silk": "smooth and elegant",
+      "satin": "a dressy sheen for events",
+      "tech": "wicks sweat and dries fast",
+      "denim": "tough and goes with everything",
+      "twill": "sturdy and smart",
+      "knit": "cosy and warm",
+      "fleece": "light warmth that breathes",
+      "wool": "warm, even when it's damp",
+      "down": "traps heat in freezing weather",
+      "waterproof": "keeps the rain out",
+      "leather": "durable and blocks the wind",
+      "suede": "soft and smart (avoid in rain)",
+      "mesh": "airflow for active days",
+      "canvas": "light and sturdy",
+      "sheepskin": "seriously warm for winter nights"
     }
   }
 }

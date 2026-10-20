@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CloudOff } from 'lucide-react'
 import type { Place, WeatherContext } from '@/engine/types'
@@ -17,6 +18,8 @@ interface WeatherPanelProps {
 export function WeatherPanel({ place, start, hours, children }: WeatherPanelProps) {
   const { t } = useTranslation()
   const { state, refresh } = useForecast(place)
+  const forecast = state.status === 'ready' ? state.forecast : null
+  const ctx = useMemo(() => (forecast ? buildContext(forecast, place.zone, start, hours) : null), [forecast, place.zone, start, hours])
 
   if (state.status === 'loading' || state.status === 'idle') return <WeatherCardSkeleton />
 
@@ -32,7 +35,6 @@ export function WeatherPanel({ place, start, hours, children }: WeatherPanelProp
     )
   }
 
-  const ctx = buildContext(state.forecast, place.zone, start, hours)
   if (!ctx) {
     return (
       <Card className="py-8 text-center">
