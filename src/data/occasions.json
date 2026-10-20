@@ -1,0 +1,11 @@
+[
+  { "id": "work", "icon": "briefcase", "formality": [3, 4], "moods": ["classic", "muted"] },
+  { "id": "casual", "icon": "coffee", "formality": [1, 2], "moods": ["fresh", "bright", "muted"] },
+  { "id": "formal", "icon": "gem", "formality": [4, 5], "moods": ["classic", "muted"] },
+  { "id": "university", "icon": "graduation", "formality": [2, 3], "moods": ["fresh", "muted", "bright"] },
+  { "id": "gym", "icon": "dumbbell", "formality": [0, 1], "moods": ["bright", "fresh", "muted"] },
+  { "id": "hiking", "icon": "mountain", "formality": [0, 1], "moods": ["earthy", "muted"] },
+  { "id": "religious", "icon": "landmark", "formality": [3, 4], "moods": ["muted", "classic"] },
+  { "id": "wedding", "icon": "party", "formality": [4, 5], "moods": ["classic", "bright"] },
+  { "id": "travel", "icon": "plane", "formality": [1, 2], "moods": ["muted", "earthy", "fresh"] }
+]
