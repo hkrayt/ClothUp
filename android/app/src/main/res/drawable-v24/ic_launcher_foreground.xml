@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ClothUp adaptive icon foreground: hanger + sun from public/icon.svg, scaled into the 66dp safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="1.25"
+        android:scaleY="1.25"
+        android:translateX="14"
+        android:translateY="16">
+        <path
+            android:fillColor="#E3B37B"
+            android:pathData="M40.5,17a6.5,6.5 0,1 1,13 0a6.5,6.5 0,1 1,-13 0z" />
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#FFFFFF"
+            android:strokeWidth="3.6"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:pathData="M27,18.5a5,5 0,1 1,5 5v3.5L13.5,40.5c-1.6,1.2 -0.8,3.5 1.2,3.5h34.6c2,0 2.8,-2.3 1.2,-3.5L32,27" />
+    </group>
+</vector>

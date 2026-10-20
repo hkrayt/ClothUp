@@ -1,0 +1,156 @@
+@import 'tailwindcss';
+
+/* Dark mode follows the data-theme attribute set on <html> (see app/theme.ts). */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ---------- Design tokens ---------- */
+:root {
+  color-scheme: light;
+  --bg: #fafaf7;
+  --surface: #ffffff;
+  --surface-2: #f2f2ee;
+  --border: #e7e6e1;
+  --text: #16181b;
+  --text-muted: #5e636b;
+  --primary: #0e7c7b; /* Dead Sea teal */
+  --primary-strong: #0a6463;
+  --primary-soft: #e3f2f1;
+  --on-primary: #ffffff;
+  --accent: #e3b37b; /* Petra sand */
+  --accent-soft: #fbf1e4;
+  --rain: #3b82f6;
+  --sun: #f59e0b;
+  --wind: #64748b;
+  --snow: #7dd3fc;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --shadow: 0 1px 2px rgb(22 24 27 / 0.04), 0 8px 24px rgb(22 24 27 / 0.06);
+  --stage: #f3f1ea; /* character backdrop */
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #111316;
+  --surface: #1a1d21;
+  --surface-2: #22262b;
+  --border: #2c3137;
+  --text: #f2f3f5;
+  --text-muted: #a2a8b0;
+  --primary: #3db8b5;
+  --primary-strong: #5ccfcb;
+  --primary-soft: #12302f;
+  --on-primary: #04201f;
+  --accent: #e8bf8e;
+  --accent-soft: #2e261c;
+  --rain: #60a5fa;
+  --sun: #fbbf24;
+  --wind: #94a3b8;
+  --snow: #bae6fd;
+  --danger: #f87171;
+  --success: #4ade80;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px rgb(0 0 0 / 0.25);
+  --stage: #1f2328;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--text-muted);
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-soft: var(--primary-soft);
+  --color-on-primary: var(--on-primary);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-rain: var(--rain);
+  --color-sun: var(--sun);
+  --color-wind: var(--wind);
+  --color-snow: var(--snow);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-stage: var(--stage);
+  --shadow-card: var(--shadow);
+}
+
+@theme {
+  --font-sans: 'Inter Variable', 'IBM Plex Sans Arabic', system-ui, sans-serif;
+  --font-arabic: 'IBM Plex Sans Arabic', 'Inter Variable', system-ui, sans-serif;
+
+  /* Type scale: 14 / 17 / 20 / 24 / 32 */
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.35rem;
+  --text-base: 1.0625rem;
+  --text-base--line-height: 1.6rem;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.8rem;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 2rem;
+  --text-2xl: 2rem;
+  --text-2xl--line-height: 2.5rem;
+
+  --radius-card: 1.25rem;
+  --radius-control: 0.875rem;
+}
+
+/* ---------- Base ---------- */
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+html[lang='ar'] body {
+  font-family: var(--font-arabic);
+  line-height: 1.75rem;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Safe areas on Android edge-to-edge */
+.safe-top {
+  padding-top: max(env(safe-area-inset-top), 0px);
+}
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+}
+
+/* Horizontal snap carousel without scrollbar */
+.snap-row {
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.snap-row::-webkit-scrollbar {
+  display: none;
+}
+.snap-row > * {
+  scroll-snap-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

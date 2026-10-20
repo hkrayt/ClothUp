@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#FAFAF7" />
+    <meta name="description" content="ClothUp — what to wear today in Jordan, based on the weather." />
+    <title>ClothUp</title>
+    <script>
+      // Apply saved theme and language before first paint to avoid a flash.
+      ;(function () {
+        var s = {}
+        try {
+          s = (JSON.parse(localStorage.getItem('clothup.settings') || '{}').state) || {}
+        } catch (e) {}
+        var theme = s.theme && s.theme !== 'system' ? s.theme
+          : window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+        var lang = s.language || ((navigator.language || '').toLowerCase().indexOf('ar') === 0 ? 'ar' : 'en')
+        var el = document.documentElement
+        el.dataset.theme = theme
+        el.lang = lang
+        el.dir = lang === 'ar' ? 'rtl' : 'ltr'
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
