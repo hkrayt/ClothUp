@@ -26,6 +26,11 @@ export function WhenSheet({ open, value, onClose, onChange }: WhenSheetProps) {
   const [day, setDay] = useState(initialDay)
   const [hour, setHour] = useState<number | null>(value.kind === 'at' ? hourOf(value.time) : null)
 
+  // Dates past the 16-day forecast use typical weather for that month (up to a year ahead).
+  const laterMin = dateOf(addHours(`${today}T12:00`, FORECAST_DAYS * 24))
+  const laterMax = dateOf(addHours(`${today}T12:00`, 365 * 24))
+  const isLater = day >= laterMin
+
   const hoursForDay = day === today ? HOURS.filter((h) => h > hourOf(now)) : HOURS
   const dayLabel = (d: string) => {
     const rel = relativeDay(`${d}T12:00`)
@@ -68,7 +73,23 @@ export function WhenSheet({ open, value, onClose, onChange }: WhenSheetProps) {
               </Chip>
             ))}
           </div>
-          {hour !== null && days.indexOf(day) >= RELIABLE_DAYS && <p className="text-sm text-muted">{t('plan.farAhead')}</p>}
+          <label className="flex min-h-12 items-center gap-3 rounded-control border border-dashed border-border px-3 text-sm">
+            <span className="text-muted">{t('plan.laterDate')}</span>
+            <input
+              type="date"
+              min={laterMin}
+              max={laterMax}
+              value={isLater ? day : ''}
+              onChange={(e) => {
+                if (!e.target.value) return
+                setDay(e.target.value)
+                if (hour === null) setHour(10)
+              }}
+              className="ms-auto bg-transparent font-medium text-text outline-none"
+            />
+          </label>
+          {hour !== null && isLater && <p className="text-sm text-muted">{t('plan.typicalNote')}</p>}
+          {hour !== null && !isLater && days.indexOf(day) >= RELIABLE_DAYS && <p className="text-sm text-muted">{t('plan.farAhead')}</p>}
         </section>
 
         <section className="flex flex-col gap-2">

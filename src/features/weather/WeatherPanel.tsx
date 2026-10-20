@@ -5,6 +5,7 @@ import type { Place, WeatherContext } from '@/engine/types'
 import { buildContext } from '@/engine/context'
 import { Button, Card } from '@/ui'
 import { useForecast } from './useForecast'
+import { typicalForecast } from './climate'
 import { WeatherCard, WeatherCardSkeleton } from './WeatherCard'
 
 interface WeatherPanelProps {
@@ -19,7 +20,14 @@ export function WeatherPanel({ place, start, hours, children }: WeatherPanelProp
   const { t } = useTranslation()
   const { state, refresh } = useForecast(place)
   const forecast = state.status === 'ready' ? state.forecast : null
-  const ctx = useMemo(() => (forecast ? buildContext(forecast, place.zone, start, hours) : null), [forecast, place.zone, start, hours])
+  const ctx = useMemo(() => {
+    if (!forecast) return null
+    // Beyond the 16-day forecast, use typical weather for that month instead.
+    const real = buildContext(forecast, place.zone, start, hours)
+    if (real) return real
+    const typical = typicalForecast(place, start, hours)
+    return typical ? buildContext(typical, place.zone, start, hours) : null
+  }, [forecast, place, start, hours])
 
   if (state.status === 'loading' || state.status === 'idle') return <WeatherCardSkeleton />
 
@@ -45,7 +53,14 @@ export function WeatherPanel({ place, start, hours, children }: WeatherPanelProp
 
   return (
     <>
-      <WeatherCard place={place} ctx={ctx} fetchedAt={state.forecast.fetchedAt} offline={state.offline} onRefresh={refresh} />
+      <WeatherCard
+        place={place}
+        ctx={ctx}
+        fetchedAt={state.forecast.fetchedAt}
+        offline={state.offline && ctx.source !== 'climate'}
+        refreshing={state.refreshing}
+        onRefresh={refresh}
+      />
       {children?.(ctx)}
     </>
   )

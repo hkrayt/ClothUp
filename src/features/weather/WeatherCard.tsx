@@ -13,6 +13,8 @@ interface WeatherCardProps {
   ctx: WeatherContext
   fetchedAt: number
   offline: boolean
+  /** Showing a saved forecast while a newer one loads. */
+  refreshing?: boolean
   onRefresh?: () => void
 }
 
@@ -26,7 +28,7 @@ function Stat({ icon, label, value, sub }: { icon: ReactNode; label: string; val
   )
 }
 
-export function WeatherCard({ place, ctx, fetchedAt, offline, onRefresh }: WeatherCardProps) {
+export function WeatherCard({ place, ctx, fetchedAt, offline, refreshing, onRefresh }: WeatherCardProps) {
   const { t, i18n } = useTranslation()
   const lang = i18n.language as Lang
   const day = relativeDay(ctx.start)
@@ -133,10 +135,11 @@ export function WeatherCard({ place, ctx, fetchedAt, offline, onRefresh }: Weath
             {t('weather.offline')}
           </span>
         )}
-        <span>{ago < 1 ? t('weather.updatedNow') : t('weather.updatedAgo', { count: ago })}</span>
+        {ctx.source !== 'climate' && <span>{ago < 1 ? t('weather.updatedNow') : t('weather.updatedAgo', { count: ago })}</span>}
+        {refreshing && <span>· {t('weather.refreshing')}</span>}
         {onRefresh && (
-          <IconButton label={t('weather.refresh')} onClick={onRefresh} className="ms-auto h-9 w-9">
-            <RefreshCw size={16} />
+          <IconButton label={t('weather.refresh')} onClick={onRefresh} disabled={refreshing} className="ms-auto h-9 w-9">
+            <RefreshCw size={16} className={cx(refreshing && 'animate-spin')} />
           </IconButton>
         )}
       </div>

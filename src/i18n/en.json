@@ -80,7 +80,9 @@
     },
     "occasion": "What's the occasion?",
     "suggest": "What should I wear?",
-    "farAhead": "That's more than a week ahead, so the forecast is less certain. Check again closer to the day."
+    "farAhead": "That's more than a week ahead, so the forecast is less certain. Check again closer to the day.",
+    "laterDate": "Later date",
+    "typicalNote": "That's beyond the 16-day forecast, so we'll use typical weather for that month."
   },
   "occasion": {
     "work": "Work",
@@ -186,7 +188,8 @@
     "typical": "Typical weather for {{month}} (no forecast available)",
     "chartLabel": "Feels-like temperature and chance of rain hour by hour",
     "feels": "Feels like",
-    "rainChance": "Rain chance"
+    "rainChance": "Rain chance",
+    "refreshing": "Updating…"
   },
   "slot": {
     "head": "Head",
