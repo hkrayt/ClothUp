@@ -1,0 +1,163 @@
+import { useId, type KeyboardEvent, type ReactNode } from 'react'
+import type { Gender, Lang } from '@/engine/types'
+import type { OutfitPiece } from '@/engine/outfit-types'
+import { COLORS } from '@/engine/catalog'
+import { lightness, shade } from '@/engine/color'
+import { cx } from '@/ui'
+import { BODIES, HAIR, SKIN_TONES, VIEWBOX, type Body } from './body'
+import { band, mirrorPts } from './path'
+import { legsShape, torso } from './shapes'
+import { RENDERERS, backpackBack, carried, hairBack, hairFront, type PartCtx } from './parts'
+
+interface CharacterProps {
+  pieces: OutfitPiece[]
+  gender: Gender
+  skinTone: number
+  lang: Lang
+  /** Item id of the highlighted piece. */
+  selectedId?: string | null
+  onSelect?: (piece: OutfitPiece | null) => void
+  label: string
+  className?: string
+}
+
+function mix(hex: string, other: string, t: number): string {
+  const a = parseInt(hex.slice(1), 16)
+  const b = parseInt(other.slice(1), 16)
+  const ch = (s: number) => Math.round(((a >> s) & 255) * (1 - t) + ((b >> s) & 255) * t)
+  return `#${[16, 8, 0].map((s) => ch(s).toString(16).padStart(2, '0')).join('')}`
+}
+
+/** Outline and detail colors that stay visible on both light and very dark garments. */
+function tones(hex: string): { stroke: string; dark: string } {
+  const l = lightness(hex)
+  if (l < 0.32) return { stroke: mix(hex, '#000000', 0.35), dark: mix(hex, '#ffffff', 0.28) }
+  if (l > 0.93) return { stroke: '#BDB8AE', dark: '#D6D1C6' }
+  return { stroke: shade(hex, 0.3), dark: shade(hex, 0.18) }
+}
+
+function BodySkin({ b, skin }: { b: Body; skin: string }) {
+  const outline = shade(skin, 0.22)
+  const arm = band(b.armOuter, [...b.armInner].reverse())
+  const armR = band(mirrorPts(b.armOuter), mirrorPts([...b.armInner].reverse()))
+  const footY = b.soleY - 6
+  return (
+    <g fill={skin} stroke={outline} strokeWidth={0.8}>
+      <path d={arm} />
+      <path d={armR} />
+      <ellipse cx={b.hand.x} cy={b.hand.y} rx={b.hand.rx} ry={b.hand.ry} />
+      <ellipse cx={200 - b.hand.x} cy={b.hand.y} rx={b.hand.rx} ry={b.hand.ry} />
+      <path d={legsShape(b, b.hipY - 6)} />
+      <ellipse cx={b.cx - b.legOffset - 2} cy={footY} rx={8.5} ry={6} />
+      <ellipse cx={b.cx + b.legOffset + 2} cy={footY} rx={8.5} ry={6} />
+      <path d={torso(b, { hemY: b.hipY + 6, neck: 'crew' })} />
+      <rect x={b.cx - b.neck.half} y={b.neck.top} width={b.neck.half * 2} height={b.neck.bottom - b.neck.top} stroke="none" />
+      <ellipse cx={b.cx} cy={b.head.cy} rx={b.head.rx} ry={b.head.ry} />
+    </g>
+  )
+}
+
+/** Draw order, back to front. Accessories are split by where they sit on the body. */
+const ORDER = ['tights', 'socks', 'shoes', 'bottom', 'top', 'mid', 'outer', 'neck', 'head', 'eyewear', 'front', 'hands'] as const
+type Layer = (typeof ORDER)[number]
+
+function layerOf(p: OutfitPiece): Layer | null {
+  const part = p.item.svg.part
+  if (part === 'none') return null
+  if (p.slot === 'socks') return part === 'tights' ? 'tights' : 'socks'
+  if (p.slot === 'accessory') {
+    if (part === 'scarf') return 'neck'
+    if (part === 'backpack' || part === 'crossbody') return 'front'
+    return 'hands'
+  }
+  return p.slot as Layer
+}
+
+export function Character({ pieces, gender, skinTone, lang, selectedId, onSelect, label, className }: CharacterProps) {
+  const uid = useId().replace(/:/g, '')
+  const b = BODIES[gender]
+  const skin = SKIN_TONES[skinTone] ?? SKIN_TONES[2]
+  const head = pieces.find((p) => p.slot === 'head')
+  const coversHair = !!head && head.item.tags.some((t) => ['hijab', 'head-cover', 'shemagh'].includes(t))
+  const backpack = pieces.find((p) => p.item.svg.part === 'backpack')
+
+  const ctxFor = (p: OutfitPiece): PartCtx => {
+    const hex = p.color ? COLORS.hex(p.color) : '#9AA0A6'
+    const def = p.color ? COLORS.color(p.color) : undefined
+    const fill = def?.pattern ? `url(#${uid}-${def.pattern})` : hex
+    return { b, fill, ...tones(hex), variant: p.item.svg.variant, skin, item: p.item, patternId: uid }
+  }
+
+  const interactive = !!onSelect
+  const wrap = (p: OutfitPiece, node: ReactNode, key: string) => {
+    const active = selectedId === p.item.id
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        onSelect?.(active ? null : p)
+      }
+    }
+    return (
+      <g
+        key={key}
+        className={cx('ch-part', active && 'ch-active', interactive && 'cursor-pointer')}
+        data-slot={p.slot}
+        {...(interactive
+          ? {
+              role: 'button',
+              tabIndex: 0,
+              'aria-label': p.item.name[lang],
+              'aria-pressed': active,
+              onClick: (e: React.MouseEvent) => {
+                e.stopPropagation()
+                onSelect?.(active ? null : p)
+              },
+              onKeyDown: onKey,
+            }
+          : {})}
+      >
+        {node}
+      </g>
+    )
+  }
+
+  const byLayer = new Map<Layer, OutfitPiece[]>()
+  for (const p of pieces) {
+    const layer = layerOf(p)
+    if (!layer || (p.slot === 'outer' && p.carry)) continue
+    byLayer.set(layer, [...(byLayer.get(layer) ?? []), p])
+  }
+  const carriedOuter = pieces.find((p) => p.slot === 'outer' && p.carry)
+
+  return (
+    <svg
+      viewBox={`0 0 ${VIEWBOX.w} ${VIEWBOX.h}`}
+      role="img"
+      aria-label={label}
+      className={cx('ch-root select-none', selectedId && 'ch-dim', className)}
+      onClick={() => onSelect?.(null)}
+    >
+      <defs>
+        <pattern id={`${uid}-check`} width="7" height="7" patternUnits="userSpaceOnUse">
+          <rect width="7" height="7" fill="#F7F4EE" />
+          <path d="M0 3.5h7M3.5 0v7" stroke="#B3262E" strokeWidth="1.6" />
+          <rect x="2.6" y="2.6" width="1.8" height="1.8" fill="#7E1A20" />
+        </pattern>
+      </defs>
+      <ellipse cx={100} cy={444} rx={46} ry={6} fill="currentColor" opacity={0.08} />
+
+      {backpack && wrap(backpack, backpackBack(ctxFor(backpack)), 'backpack-back')}
+      {gender === 'female' && !coversHair && hairBack(b, HAIR)}
+      <BodySkin b={b} skin={skin} />
+
+      {ORDER.map((layer) => (
+        <g key={layer}>
+          {layer === 'head' && !coversHair && hairFront(b, HAIR)}
+          {(byLayer.get(layer) ?? []).map((p) => wrap(p, (RENDERERS[p.item.svg.part] ?? RENDERERS.none)(ctxFor(p)), `${layer}-${p.item.id}`))}
+        </g>
+      ))}
+
+      {carriedOuter && wrap(carriedOuter, carried(ctxFor(carriedOuter)), 'carried')}
+    </svg>
+  )
+}
