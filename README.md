@@ -4,19 +4,27 @@
 
 ClothUp asks where you're going, when, and for what occasion, checks the forecast for that place, and suggests a complete head-to-toe outfit drawn on an illustrated character, with a harmonious color palette and a short reason for every piece.
 
-- 15+ Jordan locations with very different climates: Amman, Aqaba, the Dead Sea, Wadi Rum, Petra, Ajloun…
-- Weather-aware: feels-like temperature, day/night swing over your stay, rain, wind, UV, dust/sandstorms, snow
+- 21 Jordan locations with very different climates: Amman, Aqaba, the Dead Sea, Wadi Rum, Petra, Ajloun, the Jordan Valley… or your current location
+- Weather over your whole stay: feels-like temperature, day/night swing, rain, wind, UV, dust/sandstorms, snow
 - Occasions: work, casual, formal, university, gym, hiking, religious visit, wedding/party, travel
-- Styles: men (standard, traditional), women (standard, modest / hijab-friendly)
-- Color palettes from color theory, shown as named swatches
+- Styles: men (standard, traditional with thobe, shemagh and bisht), women (standard, modest / hijab-friendly)
+- Up to three outfit options; change any single item and the rest stays put; it learns what you like
+- Fabric suggestions with a one-line reason, and color palettes from color theory shown as named swatches
+- Tap any item on the character to see its color, fabric and why it was chosen
 - Arabic and English with full RTL, light and dark mode, works offline with cached forecasts
 - Android and desktop (Windows, macOS, Linux) from one codebase
 
-> Status: in development. See [docs/PLAN.md](docs/PLAN.md) and the [releases](https://github.com/hkrayt/ClothUp/releases).
+See [docs/PLAN.md](docs/PLAN.md) for the design and [docs/DATA_GUIDE.md](docs/DATA_GUIDE.md) to add clothes, places and rules.
 
 ## Screenshots
 
-Screenshots are added in `docs/screenshots/` as features land.
+| Plan your day | Weather and outfit | Palette |
+|---|---|---|
+| <img src="docs/screenshots/home.jpg" width="240" alt="Home screen with place, time, duration and occasion"> | <img src="docs/screenshots/result.jpg" width="240" alt="Weather card and outfit on the character"> | <img src="docs/screenshots/palette.jpg" width="240" alt="Outfit with color palette swatches"> |
+
+The same weather, four styles (Aqaba summer, casual):
+
+<img src="docs/screenshots/styles-summer.jpg" width="640" alt="Men's standard and traditional, women's standard and modest outfits for a hot day">
 
 ## Download
 
