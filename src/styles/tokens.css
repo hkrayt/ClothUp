@@ -146,6 +146,24 @@ button {
   scroll-snap-align: center;
 }
 
+/* Character: tap an item to highlight it */
+.ch-part {
+  transition: opacity 0.2s ease, filter 0.2s ease;
+  outline: none;
+}
+.ch-dim .ch-part:not(.ch-active) {
+  opacity: 0.3;
+}
+.ch-active,
+.ch-part:focus-visible {
+  filter: drop-shadow(0 0 1.2px var(--primary)) drop-shadow(0 0 4px var(--primary));
+}
+@media (hover: hover) {
+  .ch-root:not(.ch-dim) .ch-part[role='button']:hover {
+    filter: drop-shadow(0 0 1px var(--primary)) drop-shadow(0 0 3px var(--primary));
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
