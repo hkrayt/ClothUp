@@ -11,6 +11,8 @@ export interface GenerateOptions {
   locks?: Partial<Record<Slot, string>>
   /** Number of distinct outfits to return (default 3). */
   count?: number
+  /** Color with this palette (used to keep colors stable when swapping an item). */
+  paletteId?: string
 }
 
 interface Scored {
@@ -348,6 +350,62 @@ export function facts(ctx: WeatherContext, profile: Profile, occasion: Occasion)
   return { ...ctx, gender: profile.gender, style: profile.style, occasion: occasion.id }
 }
 
+function makeRun(ctx: WeatherContext, profile: Profile, occasion: Occasion, data: EngineData, opts: GenerateOptions): Run {
+  return {
+    ctx,
+    profile,
+    occasion,
+    data,
+    fx: collectEffects(data.rules, facts(ctx, profile, occasion)),
+    opts,
+    armsLong: profile.style === 'modest' || (occasion.id === 'religious' && profile.gender === 'female'),
+    legsLong: profile.style === 'modest' || occasion.id === 'religious',
+  }
+}
+
+/** Other items that would work in a slot for this weather and occasion, best first. */
+export function swapOptions(
+  ctx: WeatherContext,
+  profile: Profile,
+  occasion: Occasion,
+  data: EngineData,
+  outfit: Outfit,
+  slot: Slot,
+  limit = 8,
+): ClothingItem[] {
+  const run = makeRun(ctx, profile, occasion, data, {})
+  const plan = layerPlan(run)
+  const target = plan.targets[slot]
+  const current = outfit.pieces.find((p) => p.slot === slot)?.item.id
+  return rank(run, pool(run, slot, target), target)
+    .filter((s) => s.item.id !== current)
+    .slice(0, limit)
+    .map((s) => s.item)
+}
+
+/** Rebuilds an outfit with one item replaced, keeping the other main pieces and the palette. */
+export function applySwap(
+  ctx: WeatherContext,
+  profile: Profile,
+  occasion: Occasion,
+  data: EngineData,
+  outfit: Outfit,
+  slot: Slot,
+  itemId: string,
+  prefs?: Record<string, number>,
+): Outfit | null {
+  const locks: Partial<Record<Slot, string>> = {}
+  for (const p of outfit.pieces) if (['top', 'bottom', 'outer', 'mid', 'shoes', 'socks', 'head'].includes(p.slot)) locks[p.slot] = p.item.id
+  // New shoes may want different socks (or none with sandals), so let the engine re-pick them.
+  if (slot === 'shoes') delete locks.socks
+  locks[slot] = itemId
+  const newItem = data.items.find((i) => i.id === itemId)
+  if (slot === 'bottom' && outfit.pieces.find((p) => p.slot === 'top')?.item.fills?.includes('bottom')) delete locks.top
+  if (newItem?.fills?.includes('bottom')) delete locks.bottom
+  const [result] = generateOutfits(ctx, profile, occasion, data, { locks, prefs, count: 1, paletteId: outfit.palette?.id })
+  return result ? { ...result, id: outfit.id } : null
+}
+
 /** Generates up to `count` distinct complete outfits, best first. */
 export function generateOutfits(
   ctx: WeatherContext,
@@ -356,17 +414,7 @@ export function generateOutfits(
   data: EngineData,
   opts: GenerateOptions = {},
 ): Outfit[] {
-  const fx = collectEffects(data.rules, facts(ctx, profile, occasion))
-  const run: Run = {
-    ctx,
-    profile,
-    occasion,
-    data,
-    fx,
-    opts,
-    armsLong: profile.style === 'modest' || (occasion.id === 'religious' && profile.gender === 'female'),
-    legsLong: profile.style === 'modest' || occasion.id === 'religious',
-  }
+  const run = makeRun(ctx, profile, occasion, data, opts)
   const plan = layerPlan(run)
 
   const tops = rank(run, pool(run, 'top', plan.targets.top), plan.targets.top).slice(0, 7)
@@ -408,7 +456,7 @@ export function generateOutfits(
   const colors = new ColorEngine(data.colors)
   const used: string[] = []
   return picked.map((o, i) => {
-    const colored = colors.colorize({ ...o, id: `outfit-${i + 1}`, reasons }, ctx, occasion, used)
+    const colored = colors.colorize({ ...o, id: `outfit-${i + 1}`, reasons }, ctx, occasion, used, opts.paletteId)
     if (colored.palette) used.push(colored.palette.id)
     return colored
   })

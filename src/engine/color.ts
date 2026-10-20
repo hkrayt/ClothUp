@@ -177,11 +177,12 @@ export class ColorEngine {
   }
 
   /** Colors an outfit with the best palette; `avoid` lists palettes already used by other options. */
-  colorize(outfit: Outfit, ctx: WeatherContext, occasion: Occasion, avoid: string[] = []): Outfit {
+  colorize(outfit: Outfit, ctx: WeatherContext, occasion: Occasion, avoid: string[] = [], only?: string): Outfit {
     let best: { score: number; pieces: OutfitPiece[]; palette: Palette } | null = null
     const sunnyHeat = ctx.feelsMax >= 28 && ctx.uvMax >= 5
+    const candidates = this.data.palettes.filter((p) => !only || p.id === only)
 
-    for (const palette of this.data.palettes) {
+    for (const palette of candidates.length ? candidates : this.data.palettes) {
       const moodIndex = palette.moods.findIndex((m) => occasion.moods.includes(m))
       const moodRank = moodIndex === -1 ? -1 : occasion.moods.indexOf(palette.moods[moodIndex])
       let score = moodIndex === -1 ? -4 : 3 - moodRank
