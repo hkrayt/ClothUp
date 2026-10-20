@@ -9,22 +9,76 @@
     "settings": "Settings",
     "continue": "Continue",
     "retry": "Try again",
-    "change": "Change"
+    "change": "Change",
+    "done": "Done"
   },
   "settings": {
     "title": "Settings",
+    "gender": "Dressing for",
+    "style": "Style",
     "language": "Language",
     "theme": "Theme",
     "themeSystem": "System",
     "themeLight": "Light",
     "themeDark": "Dark"
   },
-  "preview": {
+  "onboarding": {
     "welcome": "Welcome to ClothUp",
-    "body": "Pick a place in Jordan, tell us where you're going, and get a full outfit that fits the weather.",
-    "start": "What should I wear?",
-    "comingSoon": "Outfit suggestions are coming in the next update",
-    "where": "Where are you going?"
+    "genderTitle": "Who are we dressing?",
+    "genderHint": "This picks the right clothes and character. You can change it any time in Settings.",
+    "styleTitle": "Pick your style",
+    "styleHint": "We'll suggest outfits in this style.",
+    "done": "Let's go"
+  },
+  "profile": {
+    "gender": { "male": "Male", "female": "Female" },
+    "style": {
+      "male": { "standard": "Standard", "traditional": "Traditional" },
+      "female": { "standard": "Standard", "modest": "Modest" }
+    },
+    "styleHint": {
+      "male": {
+        "standard": "Shirts, trousers, jackets, sneakers",
+        "traditional": "Thobe, shemagh and iqal, bisht for big occasions"
+      },
+      "female": {
+        "standard": "Tops, dresses, jeans, skirts",
+        "modest": "Hijab, long loose sleeves, long skirts and wide trousers"
+      }
+    }
+  },
+  "plan": {
+    "title": "What are your plans?",
+    "where": "Where are you going?",
+    "when": "When?",
+    "whenTitle": "When are you going?",
+    "now": "Now",
+    "day": "Day",
+    "hour": "Time",
+    "duration": "How long will you stay?",
+    "durations": {
+      "2": "2 hours",
+      "3": "3 hours",
+      "6": "Half day",
+      "10": "Full day",
+      "night": "Into the night"
+    },
+    "occasion": "What's the occasion?",
+    "suggest": "What should I wear?"
+  },
+  "occasion": {
+    "work": "Work",
+    "casual": "Casual",
+    "formal": "Formal event",
+    "university": "University",
+    "gym": "Sport / Gym",
+    "hiking": "Outdoor / Hiking",
+    "religious": "Religious visit",
+    "wedding": "Wedding / Party",
+    "travel": "Travel"
+  },
+  "result": {
+    "outfitSoon": "Your outfit suggestion will appear here in the next update."
   },
   "time": {
     "today": "Today",
