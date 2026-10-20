@@ -90,6 +90,12 @@ export function lightness(hex: string): number {
   return hexToOklab(hex)[0]
 }
 
+/** OKLCH chroma: ~0 for greys, higher for saturated colors. */
+export function chroma(hex: string): number {
+  const [, a, b] = hexToOklab(hex)
+  return Math.hypot(a, b)
+}
+
 /** Darker shade for folds and outlines in the illustration. */
 export function shade(hex: string, amount = 0.14): string {
   const n = parseInt(hex.slice(1), 16)
@@ -205,6 +211,26 @@ export class ColorEngine {
     return { ...outfit, pieces: best.pieces, palette: this.describe(best.pieces, best.palette, sunnyHeat) }
   }
 
+  /**
+   * Describes the colors actually used (the nearest-color fallback can drift from the palette):
+   * one color → monochrome; only neutrals → "neutrals"; neutrals + one color → neutral-accent with the color named last.
+   */
+  explain(named: string[], planned: Strategy): { strategy: Strategy; noteKey: string; colors: string[] } {
+    const isChromatic = (id: string) => chroma(this.hex(id)) > 0.035
+    const neutrals = named.filter((c) => !isChromatic(c))
+    const chromatic = named.filter(isChromatic)
+    if (named.length <= 1) return { strategy: 'monochrome', noteKey: 'monochrome', colors: named }
+    if (chromatic.length === 0)
+      return { strategy: 'neutral-accent', noteKey: neutrals.length >= 3 ? 'neutrals' : 'pair', colors: neutrals.slice(0, 3) }
+    if (chromatic.length === 1)
+      return neutrals.length >= 2
+        ? { strategy: 'neutral-accent', noteKey: 'neutral-accent', colors: [...neutrals.slice(0, 2), chromatic[0]] }
+        : { strategy: 'neutral-accent', noteKey: 'pair', colors: [neutrals[0] ?? chromatic[0], chromatic[0]] }
+    const strategy: Strategy = planned === 'monochrome' ? 'analogous' : planned
+    if (strategy === 'complementary') return { strategy, noteKey: 'complementary', colors: chromatic.slice(0, 2) }
+    return { strategy, noteKey: named.length === 2 ? 'pair' : strategy === 'analogous' ? 'analogous' : 'neutral-accent', colors: [...neutrals, ...chromatic].slice(0, 3) }
+  }
+
   private describe(pieces: OutfitPiece[], palette: Palette, sunnyHeat: boolean): PaletteResult {
     const bySwatch = new Map<string, Swatch>()
     for (const p of pieces) {
@@ -216,11 +242,8 @@ export class ColorEngine {
     const order: Role[] = ['base', 'secondary', 'accent', 'outer', 'ground']
     const swatches = [...bySwatch.values()].sort((a, b) => order.indexOf(a.role) - order.indexOf(b.role)).slice(0, 6)
 
-    const named = swatches.filter((s) => !this.byId.get(s.color)?.fixed).map((s) => s.color)
-    // Describe what was actually used: a single color reads as monochrome whatever the palette was.
-    const strategy: Strategy = named.length <= 1 ? 'monochrome' : palette.strategy
-    const noteKey = named.length === 2 && strategy !== 'complementary' && strategy !== 'monochrome' ? 'pair' : strategy
-    const notes: PaletteResult['notes'] = [{ key: noteKey, colors: named.slice(0, 3) }]
+    const { strategy, noteKey, colors } = this.explain(swatches.filter((s) => !this.byId.get(s.color)?.fixed).map((s) => s.color), palette.strategy)
+    const notes: PaletteResult['notes'] = [{ key: noteKey, colors }]
     const hijab = pieces.find((p) => p.slot === 'head' && p.item.tags.includes('hijab'))
     if (hijab?.color) notes.push({ key: 'hijab', colors: [hijab.color] })
     const mainLight = pieces.filter((p) => HEAT_EXPOSED.includes(p.slot) && p.color && lightness(this.hex(p.color)) >= 0.7)
