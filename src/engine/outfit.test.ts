@@ -83,7 +83,8 @@ describe('generateOutfits — every scenario × occasion × profile', () => {
 
             for (const i of all(o)) {
               expect(i.gender).toContain(profile.gender)
-              expect(i.occasions).toContain(occasion)
+              const ok = [occasion, ...(occ(occasion).includes ?? [])]
+              expect(i.occasions.some((x) => ok.includes(x)), i.id).toBe(true)
             }
 
             if (profile.style === 'modest') {
