@@ -55,7 +55,7 @@ jobs:
           distribution: temurin
           java-version: 21
           cache: gradle
-      - uses: android-actions/setup-android@v3
+      # The Ubuntu runner image ships the Android SDK (ANDROID_HOME); Gradle fetches any missing platform.
       - run: npm ci
       - run: npm run build
       - run: npx cap sync android
@@ -64,7 +64,8 @@ jobs:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
           if [ -n "$KEYSTORE_BASE64" ]; then
-            echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+            # Strip any CR/LF/spaces that slipped into the secret before decoding.
+            printf '%s' "$KEYSTORE_BASE64" | tr -d '\r\n ' | base64 -d > "$RUNNER_TEMP/release.jks"
             echo "CLOTHUP_KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
           else
             echo "::warning::ANDROID_KEYSTORE_BASE64 is not set; building a debug-signed APK instead."
@@ -137,4 +138,11 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - run: gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false --latest
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      # Only the highest version is marked "Latest", even if releases finish out of order.
+      - run: |
+          highest=$(git tag --list 'v*' --sort=-v:refname | head -n 1)
+          latest=false; [ "$highest" = "$GITHUB_REF_NAME" ] && latest=true
+          gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false --latest=$latest
