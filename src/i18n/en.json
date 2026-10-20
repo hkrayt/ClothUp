@@ -79,7 +79,8 @@
       "night": "Into the night"
     },
     "occasion": "What's the occasion?",
-    "suggest": "What should I wear?"
+    "suggest": "What should I wear?",
+    "farAhead": "That's more than a week ahead, so the forecast is less certain. Check again closer to the day."
   },
   "occasion": {
     "work": "Work",

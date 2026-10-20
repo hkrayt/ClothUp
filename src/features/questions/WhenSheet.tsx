@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Lang, When } from '@/engine/types'
 import { addHours, ammanNow, atHour, dateOf, hourOf } from '@/engine/time'
-import { FORECAST_DAYS } from '@/features/weather/api'
+import { FORECAST_DAYS, RELIABLE_DAYS } from '@/features/weather/api'
 import { formatHour, formatWeekday, relativeDay } from '@/lib/format'
 import { Button, Chip, Sheet, cx } from '@/ui'
 
@@ -54,7 +54,7 @@ export function WhenSheet({ open, value, onClose, onChange }: WhenSheetProps) {
         <section className="flex flex-col gap-2">
           <h3 className="text-sm font-semibold text-muted">{t('plan.day')}</h3>
           <div className="snap-row -mx-5 flex gap-2 overflow-x-auto px-5">
-            {days.map((d) => (
+            {days.map((d, i) => (
               <Chip
                 key={d}
                 selected={hour !== null && d === day}
@@ -62,12 +62,13 @@ export function WhenSheet({ open, value, onClose, onChange }: WhenSheetProps) {
                   setDay(d)
                   if (hour === null || (d === today && hour <= hourOf(now))) setHour(d === today ? Math.min(23, hourOf(now) + 1) : 9)
                 }}
-                className="shrink-0"
+                className={cx('shrink-0', i >= RELIABLE_DAYS && 'border-dashed')}
               >
                 {dayLabel(d)}
               </Chip>
             ))}
           </div>
+          {hour !== null && days.indexOf(day) >= RELIABLE_DAYS && <p className="text-sm text-muted">{t('plan.farAhead')}</p>}
         </section>
 
         <section className="flex flex-col gap-2">

@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AlertTriangle, Droplets, Info, Umbrella, Wind, SunMedium, WifiOff, RefreshCw } from 'lucide-react'
+import { AlertTriangle, Droplets, Info, Navigation2, RefreshCw, Sun, SunMedium, TreePine, Umbrella, WifiOff, Wind } from 'lucide-react'
 import type { Lang, Place, WeatherContext } from '@/engine/types'
 import { uvLevel, weatherNotes } from '@/engine/notes'
 import { Card, IconButton, cx } from '@/ui'
-import { formatHour, formatTemp, formatWeekday, minutesAgo, relativeDay } from '@/lib/format'
+import { compass, formatHour, formatMonth, formatTemp, formatWeekday, minutesAgo, relativeDay } from '@/lib/format'
+import { HourlyChart } from './HourlyChart'
 import { WeatherIcon } from './WeatherIcon'
 
 interface WeatherCardProps {
@@ -36,6 +37,12 @@ export function WeatherCard({ place, ctx, fetchedAt, offline, onRefresh }: Weath
 
   return (
     <Card className="flex flex-col gap-4" aria-live="polite">
+      {(ctx.source === 'climate' || ctx.lessCertain) && (
+        <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-accent-soft px-3 py-1 text-xs font-medium">
+          <Info size={14} aria-hidden />
+          {ctx.source === 'climate' ? t('weather.typical', { month: formatMonth(ctx.start, lang) }) : t('weather.lessCertain')}
+        </span>
+      )}
       <div className="flex items-center gap-4">
         <WeatherIcon condition={ctx.condition} night={ctx.isNight} size={56} />
         <div className="flex min-w-0 flex-1 flex-col">
@@ -71,6 +78,32 @@ export function WeatherCard({ place, ctx, fetchedAt, offline, onRefresh }: Weath
         />
         <Stat icon={<Droplets size={18} color="var(--rain)" aria-hidden />} label={t('weather.humidity')} value={`${ctx.humidity}%`} />
       </div>
+
+      {(ctx.sunGap >= 3 || (ctx.windDir !== null && ctx.wind >= 15)) && (
+        <div className="flex flex-wrap gap-2 text-sm">
+          {ctx.sunGap >= 3 && (
+            <>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1">
+                <Sun size={14} color="var(--sun)" aria-hidden />
+                {t('weather.sun')} {formatTemp(ctx.sunFeels)}
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1">
+                <TreePine size={14} color="var(--wind)" aria-hidden />
+                {t('weather.shade')} {formatTemp(ctx.shadeFeels)}
+              </span>
+            </>
+          )}
+          {ctx.windDir !== null && ctx.wind >= 15 && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1">
+              {/* The arrow points where the wind blows to. */}
+              <Navigation2 size={14} color="var(--wind)" style={{ transform: `rotate(${ctx.windDir + 180}deg)` }} aria-hidden />
+              {t('weather.windFrom', { dir: t(`weather.dir.${compass(ctx.windDir)}`) })}
+            </span>
+          )}
+        </div>
+      )}
+
+      <HourlyChart series={ctx.series} />
 
       {notes.length > 0 && (
         <ul className="flex flex-col gap-2">
