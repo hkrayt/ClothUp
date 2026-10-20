@@ -1,0 +1,29 @@
+{
+  "app": {
+    "name": "ClothUp",
+    "tagline": "What to wear today, based on the weather."
+  },
+  "common": {
+    "close": "Close",
+    "back": "Back",
+    "settings": "Settings",
+    "continue": "Continue",
+    "retry": "Try again"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "themeSystem": "System",
+    "themeLight": "Light",
+    "themeDark": "Dark"
+  },
+  "preview": {
+    "welcome": "Welcome to ClothUp",
+    "body": "Pick a place in Jordan, tell us where you're going, and get a full outfit that fits the weather.",
+    "start": "What should I wear?",
+    "comingSoon": "Coming in the next update",
+    "occasions": "Occasions",
+    "palette": "Palette"
+  }
+}
