@@ -137,4 +137,11 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - run: gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false --latest
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      # Only the highest version is marked "Latest", even if releases finish out of order.
+      - run: |
+          highest=$(git tag --list 'v*' --sort=-v:refname | head -n 1)
+          latest=false; [ "$highest" = "$GITHUB_REF_NAME" ] && latest=true
+          gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false --latest=$latest
