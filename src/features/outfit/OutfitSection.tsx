@@ -89,53 +89,56 @@ export function OutfitSection({ ctx, profile, occasion }: OutfitSectionProps) {
   const Next = rtl ? ChevronLeft : ChevronRight
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="relative">
-        <div ref={rail} onScroll={onScroll} className="snap-row flex overflow-x-auto" aria-roledescription="carousel">
-          {outfits.map((o, i) => (
-            <div key={o.id} className="w-full shrink-0" aria-roledescription="slide" aria-label={t('outfit.optionOf', { n: i + 1, total: outfits.length })}>
-              <OutfitStage
-                outfit={o}
-                profile={profile}
-                selected={i === index ? selected : null}
-                onSelect={(p) => {
-                  if (i !== index) return
-                  setSelected(p)
-                }}
-                action={changeButton}
-              />
-            </div>
-          ))}
+    // Phones: one column. Wide windows (desktop): character on the left stays in view, details scroll on the right.
+    <div className="flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6">
+      <div className="flex flex-col gap-4 lg:sticky lg:top-20">
+        <div className="relative">
+          <div ref={rail} onScroll={onScroll} className="snap-row flex overflow-x-auto" aria-roledescription="carousel">
+            {outfits.map((o, i) => (
+              <div key={o.id} className="w-full shrink-0" aria-roledescription="slide" aria-label={t('outfit.optionOf', { n: i + 1, total: outfits.length })}>
+                <OutfitStage
+                  outfit={o}
+                  profile={profile}
+                  selected={i === index ? selected : null}
+                  onSelect={(p) => {
+                    if (i !== index) return
+                    setSelected(p)
+                  }}
+                  action={changeButton}
+                />
+              </div>
+            ))}
+          </div>
+          {outfits.length > 1 && (
+            <>
+              <IconButton label={t('outfit.previous')} onClick={() => goTo(Math.max(0, index - 1))} disabled={index === 0} className="absolute start-1 top-1/3 bg-surface/80 shadow-sm disabled:opacity-0">
+                <Prev size={22} />
+              </IconButton>
+              <IconButton label={t('outfit.next')} onClick={() => goTo(Math.min(outfits.length - 1, index + 1))} disabled={index === outfits.length - 1} className="absolute end-1 top-1/3 bg-surface/80 shadow-sm disabled:opacity-0">
+                <Next size={22} />
+              </IconButton>
+            </>
+          )}
         </div>
+
         {outfits.length > 1 && (
-          <>
-            <IconButton label={t('outfit.previous')} onClick={() => goTo(Math.max(0, index - 1))} disabled={index === 0} className="absolute start-1 top-1/3 bg-surface/80 shadow-sm disabled:opacity-0">
-              <Prev size={22} />
-            </IconButton>
-            <IconButton label={t('outfit.next')} onClick={() => goTo(Math.min(outfits.length - 1, index + 1))} disabled={index === outfits.length - 1} className="absolute end-1 top-1/3 bg-surface/80 shadow-sm disabled:opacity-0">
-              <Next size={22} />
-            </IconButton>
-          </>
+          <div className="flex items-center justify-center gap-2" role="tablist" aria-label={t('outfit.options')}>
+            {outfits.map((o, i) => (
+              <button
+                key={o.id}
+                type="button"
+                role="tab"
+                aria-selected={i === index}
+                aria-label={t('outfit.option', { n: i + 1 })}
+                onClick={() => goTo(i)}
+                className="flex h-8 items-center px-1"
+              >
+                <span className={cx('block h-2.5 rounded-full transition-all', i === index ? 'w-7 bg-primary' : 'w-2.5 bg-border')} />
+              </button>
+            ))}
+          </div>
         )}
       </div>
-
-      {outfits.length > 1 && (
-        <div className="flex items-center justify-center gap-2" role="tablist" aria-label={t('outfit.options')}>
-          {outfits.map((o, i) => (
-            <button
-              key={o.id}
-              type="button"
-              role="tab"
-              aria-selected={i === index}
-              aria-label={t('outfit.option', { n: i + 1 })}
-              onClick={() => goTo(i)}
-              className="flex h-8 items-center px-1"
-            >
-              <span className={cx('block h-2.5 rounded-full transition-all', i === index ? 'w-7 bg-primary' : 'w-2.5 bg-border')} />
-            </button>
-          ))}
-        </div>
-      )}
 
       <OutfitList outfit={current} onChange={(p) => (canSwap(p) ? setSwapping(p) : undefined)} />
       <SwapSheet piece={swapping} options={options} onPick={pick} onClose={() => setSwapping(null)} />

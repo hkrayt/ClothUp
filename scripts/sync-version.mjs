@@ -14,4 +14,9 @@ const cargoPath = 'src-tauri/Cargo.toml'
 const cargo = readFileSync(cargoPath, 'utf8').replace(/^version = ".*"$/m, `version = "${version}"`)
 writeFileSync(cargoPath, cargo)
 
+// Keep the lockfile's own entry in step so builds don't leave it modified.
+const lockPath = 'src-tauri/Cargo.lock'
+const lock = readFileSync(lockPath, 'utf8').replace(/(name = "clothup"\r?\nversion = )".*"/, `$1"${version}"`)
+writeFileSync(lockPath, lock)
+
 console.log(`Synced version ${version}`)

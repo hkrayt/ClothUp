@@ -20,7 +20,7 @@ export function ResultScreen() {
   const hours = durationHours(plan.duration, start)
 
   return (
-    <main className="mx-auto flex max-w-xl flex-col gap-4 px-4 pb-10 pt-2">
+    <main className="mx-auto flex max-w-xl flex-col gap-4 px-4 pb-10 pt-2 lg:max-w-5xl">
       <div className="flex flex-wrap items-center gap-2 px-1 text-sm text-muted">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 font-medium text-text">
           <OccasionIcon id={plan.occasion} size={16} />

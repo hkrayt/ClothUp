@@ -64,14 +64,29 @@ Garments are TSX parts painted with `--c` / `--c-shade` CSS variables. Each laye
 
 ## Milestones
 
-1. Project setup, repo, CI, design system — v0.1.0
-2. Locations, weather fetching, weather card — v0.2.0
-3. Question flow — v0.3.0
-4. Outfit rules engine + clothing data — v0.4.0
-5. Color combination engine — v0.5.0
-6. SVG character with dynamic layers — v0.6.0
-7. Alternatives, item swapping, saved preferences, Arabic/RTL, dark mode — v0.7.0
-8. Polish, testing, builds — v1.0.0
+All eight are done; each has a tagged [release](https://github.com/hkrayt/ClothUp/releases) with notes in `docs/releases/`.
+
+| # | Milestone | Release |
+|---|---|---|
+| 1 | Project setup, repo, CI, design system | v0.1.0 |
+| 2 | Locations, weather fetching, weather card | v0.2.0 |
+| 3 | Question flow | v0.3.0 |
+| 4 | Outfit rules engine + clothing data | v0.4.0 |
+| 5 | Color combination engine | v0.5.0 |
+| 6 | SVG character with dynamic layers | v0.6.0 |
+| 7 | Alternatives, item swapping, saved preferences, Arabic/RTL, dark mode | v0.7.0 |
+| 8 | Polish (desktop layout, onboarding previews, Android back button and system bars, crash screen), testing, builds | v1.0.0 |
+
+## Testing
+
+`npm test` runs about 410 tests: data validation for places, clothes, rules and colors; translation parity between English and Arabic; the weather summary; every scenario × occasion × style combination for outfit invariants (modesty, dress codes, rain and snow protection, gym kit); color harmony; and a render of every generated outfit on the character.
+
+## Possible next steps
+
+- Code-sign the Windows and macOS installers
+- Publish on Google Play (the AAB is already built and signed)
+- Native review of Arabic copy and of modest and traditional styling
+- More items (e.g. kids, seasonal pieces) and places
 
 ## Risks
 

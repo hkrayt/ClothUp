@@ -4,6 +4,10 @@ import './styles/fonts.css'
 import './styles/tokens.css'
 import './i18n'
 import { App } from './app/App'
+import { ErrorBoundary } from './app/ErrorBoundary'
+import { initBackButton } from './lib/native'
+
+initBackButton()
 
 const root = createRoot(document.getElementById('root')!)
 
@@ -13,7 +17,9 @@ if (import.meta.env.DEV && location.search.includes('gallery')) {
 } else {
   root.render(
     <StrictMode>
-      <App />
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </StrictMode>,
   )
 }

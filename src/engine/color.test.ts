@@ -49,6 +49,16 @@ describe('color math', () => {
   })
 })
 
+describe('palette notes describe the colors actually used', () => {
+  it('one color is monochrome; greys are neutrals; greys + a color name the color last', () => {
+    expect(COLORS.explain(['navy'], 'analogous').noteKey).toBe('monochrome')
+    expect(COLORS.explain(['white', 'grey', 'black'], 'monochrome').noteKey).toBe('neutrals')
+    const e = COLORS.explain(['grey-light', 'denim-dark', 'grey', 'black'], 'monochrome')
+    expect(e.noteKey).toBe('neutral-accent')
+    expect(e.colors[2]).toBe('denim-dark')
+  })
+})
+
 describe('outfit palettes', () => {
   for (const [name, ctx] of Object.entries(SCENARIOS)) {
     for (const profile of PROFILES) {

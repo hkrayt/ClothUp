@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import i18n from '@/i18n'
+import { setSystemBars } from '@/lib/native'
 import { useSettings } from './settings'
 
 const THEME_COLORS = { light: '#FAFAF7', dark: '#111316' }
@@ -18,6 +19,7 @@ export function useApplyAppearance() {
       const resolved = theme === 'system' ? (systemPrefersDark() ? 'dark' : 'light') : theme
       document.documentElement.dataset.theme = resolved
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', THEME_COLORS[resolved])
+      setSystemBars(resolved)
     }
     apply()
     if (theme !== 'system') return

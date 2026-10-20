@@ -264,7 +264,8 @@
       "monochrome": "Shades of one color ({{a}}) look polished and make you look taller.",
       "hijab": "The {{a}} hijab ties the outfit's colors together.",
       "pair": "{{A}} and {{b}} are an easy pair that always works.",
-      "light": "Light colors reflect the sun and keep you cooler."
+      "light": "Light colors reflect the sun and keep you cooler.",
+      "neutrals": "{{A}}, {{b}} and {{c}} are calm neutrals that always work together."
     }
   },
   "swap": {
@@ -272,5 +273,10 @@
     "change": "Change this item",
     "changeItem": "Change {{item}}",
     "none": "No other items fit this weather and occasion."
+  },
+  "error": {
+    "title": "Something went wrong",
+    "body": "Sorry, ClothUp hit an unexpected problem. Reloading usually fixes it; your settings are saved.",
+    "reload": "Reload"
   }
 }
