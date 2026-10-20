@@ -4,8 +4,8 @@
 
 ClothUp asks where you're going, when, and for what occasion, checks the forecast for that place, and suggests a complete head-to-toe outfit drawn on an illustrated character, with a harmonious color palette and a short reason for every piece.
 
-- 21 Jordan locations with very different climates: Amman, Aqaba, the Dead Sea, Wadi Rum, Petra, Ajloun, the Jordan Valley… or your current location
-- Weather over your whole stay: feels-like temperature, day/night swing, rain, wind, UV, dust/sandstorms, snow
+- 74 places across all 12 governorates (cities, Amman neighbourhoods, tourist sites, universities, the airport) or your current location
+- Weather over your whole stay, up to 16 days ahead: feels-like in the sun and in the shade, day/night swing, rain, wind and its direction, UV, dust/sandstorms, sharqiya, fog, snow; typical weather for later dates
 - Occasions: work, casual, formal, university, gym, hiking, religious visit, wedding/party, travel
 - Styles: men (standard, traditional with thobe, shemagh and bisht), women (standard, modest / hijab-friendly)
 - Up to three outfit options; change any single item and the rest stays put; it learns what you like
