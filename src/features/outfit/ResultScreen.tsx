@@ -1,18 +1,18 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Shirt } from 'lucide-react'
 import type { Lang } from '@/engine/types'
 import { useApp } from '@/app/store'
 import { durationHours, resolveStart } from '@/engine/stay'
-import { Card } from '@/ui'
 import { WeatherPanel } from '@/features/weather/WeatherPanel'
 import { OccasionIcon } from '@/features/questions/occasions'
 import { resolvePlace, useWhenLabel } from '@/features/questions/HomeScreen'
+import { OutfitSection } from './OutfitSection'
 
 export function ResultScreen() {
   const { t, i18n } = useTranslation()
   const lang = i18n.language as Lang
   const plan = useApp((s) => s.plan)
+  const profile = useApp((s) => s.profile)!
   const place = resolvePlace(plan.place)
   const whenLabel = useWhenLabel()
   // Fix the start once per visit so the card doesn't jump if the hour rolls over.
@@ -32,12 +32,7 @@ export function ResultScreen() {
       </div>
 
       <WeatherPanel place={place} start={start} hours={hours}>
-        {() => (
-          <Card className="flex flex-col items-center gap-3 py-10 text-center">
-            <Shirt size={40} className="text-primary" aria-hidden />
-            <p className="text-muted">{t('result.outfitSoon')}</p>
-          </Card>
-        )}
+        {(ctx) => <OutfitSection ctx={ctx} profile={profile} occasion={plan.occasion} />}
       </WeatherPanel>
     </main>
   )
