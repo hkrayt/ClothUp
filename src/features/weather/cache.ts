@@ -1,4 +1,4 @@
-import { get, set } from 'idb-keyval'
+import { del, get, keys, set } from 'idb-keyval'
 import type { Forecast, Place } from '@/engine/types'
 import { ammanNow, dateOf } from '@/engine/time'
 import { FORECAST_DAYS, fetchForecast, forecastKey } from './api'
@@ -21,6 +21,24 @@ export class WeatherUnavailableError extends Error {
 
 // v2: forecasts include wind direction, cloud, dew point, radiation, freezing level and snow depth.
 const storeKey = (key: string) => `clothup.forecast.v2.${key}`
+
+/** Removes forecasts saved in an older format (and anything that no longer covers today). */
+export async function cleanupOldForecasts(): Promise<void> {
+  try {
+    const today = `${dateOf(ammanNow())}T00:00`
+    for (const k of await keys()) {
+      if (typeof k !== 'string' || !k.startsWith('clothup.forecast.')) continue
+      if (!k.startsWith('clothup.forecast.v2.')) {
+        await del(k)
+        continue
+      }
+      const f = await get<Forecast>(k)
+      if (!f || !f.hours.some((h) => h.time >= today)) await del(k)
+    }
+  } catch {
+    /* storage unavailable: nothing to clean */
+  }
+}
 
 /** A saved forecast is still useful while it covers the current hour. */
 function coversNow(f: Forecast): boolean {
