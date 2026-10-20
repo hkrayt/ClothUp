@@ -1,0 +1,23 @@
+[
+  { "id": "amman", "name": { "en": "Amman", "ar": "عمّان" }, "lat": 31.9552, "lon": 35.9450, "elevation": 757, "zone": "highland", "aliases": ["Amman", "عمان", "Abdali", "Sweifieh", "الصويفية", "العبدلي"] },
+  { "id": "zarqa", "name": { "en": "Zarqa", "ar": "الزرقاء" }, "lat": 32.0728, "lon": 36.0880, "elevation": 625, "zone": "steppe", "aliases": ["Zarka", "الزرقا"] },
+  { "id": "irbid", "name": { "en": "Irbid", "ar": "إربد" }, "lat": 32.5556, "lon": 35.8500, "elevation": 570, "zone": "northern-highland", "aliases": ["Irbed", "اربد", "Yarmouk University", "جامعة اليرموك"] },
+  { "id": "aqaba", "name": { "en": "Aqaba", "ar": "العقبة" }, "lat": 29.5267, "lon": 35.0078, "elevation": 46, "zone": "red-sea", "aliases": ["Akaba", "Red Sea", "البحر الأحمر"] },
+  { "id": "dead-sea", "name": { "en": "Dead Sea", "ar": "البحر الميت" }, "lat": 31.7171, "lon": 35.5881, "elevation": -400, "zone": "rift-valley", "aliases": ["Sweimeh", "سويمة", "Dead Sea hotels"] },
+  { "id": "petra", "name": { "en": "Petra / Wadi Musa", "ar": "البتراء / وادي موسى" }, "lat": 30.3210, "lon": 35.4790, "elevation": 1127, "zone": "highland-desert", "aliases": ["Petra", "Wadi Musa", "البترا", "وادي موسى"] },
+  { "id": "wadi-rum", "name": { "en": "Wadi Rum", "ar": "وادي رم" }, "lat": 29.5767, "lon": 35.4210, "elevation": 950, "zone": "desert", "aliases": ["Rum", "Wadi Ram", "رم"] },
+  { "id": "ajloun", "name": { "en": "Ajloun", "ar": "عجلون" }, "lat": 32.3333, "lon": 35.7528, "elevation": 769, "zone": "northern-highland", "aliases": ["Ajlun", "Ajloun Castle", "قلعة عجلون"] },
+  { "id": "jerash", "name": { "en": "Jerash", "ar": "جرش" }, "lat": 32.2808, "lon": 35.8993, "elevation": 620, "zone": "northern-highland", "aliases": ["Gerasa"] },
+  { "id": "madaba", "name": { "en": "Madaba", "ar": "مادبا" }, "lat": 31.7160, "lon": 35.7939, "elevation": 790, "zone": "highland", "aliases": ["Mount Nebo", "جبل نيبو"] },
+  { "id": "karak", "name": { "en": "Karak", "ar": "الكرك" }, "lat": 31.1637, "lon": 35.7620, "elevation": 930, "zone": "highland", "aliases": ["Kerak", "Mutah", "مؤتة", "Karak Castle"] },
+  { "id": "mafraq", "name": { "en": "Mafraq", "ar": "المفرق" }, "lat": 32.3429, "lon": 36.2080, "elevation": 705, "zone": "steppe", "aliases": ["Al Mafraq"] },
+  { "id": "maan", "name": { "en": "Ma'an", "ar": "معان" }, "lat": 30.1962, "lon": 35.7341, "elevation": 1111, "zone": "highland-desert", "aliases": ["Maan", "Ma`an"] },
+  { "id": "tafilah", "name": { "en": "Tafilah", "ar": "الطفيلة" }, "lat": 30.8375, "lon": 35.6044, "elevation": 1050, "zone": "highland", "aliases": ["Tafila", "Tafileh", "الطفيله"] },
+  { "id": "salt", "name": { "en": "Salt", "ar": "السلط" }, "lat": 32.0392, "lon": 35.7272, "elevation": 816, "zone": "highland", "aliases": ["As-Salt", "Al Salt"] },
+  { "id": "umm-qais", "name": { "en": "Umm Qais", "ar": "أم قيس" }, "lat": 32.6535, "lon": 35.6846, "elevation": 348, "zone": "northern-highland", "aliases": ["Umm Qays", "Gadara"] },
+  { "id": "jordan-valley", "name": { "en": "Jordan Valley", "ar": "الأغوار" }, "lat": 32.1970, "lon": 35.6170, "elevation": -224, "zone": "rift-valley", "aliases": ["Deir Alla", "دير علا", "Ghor", "الغور"] },
+  { "id": "azraq", "name": { "en": "Azraq", "ar": "الأزرق" }, "lat": 31.8327, "lon": 36.8149, "elevation": 516, "zone": "desert", "aliases": ["Al Azraq", "Azraq Wetland"] },
+  { "id": "dana", "name": { "en": "Dana", "ar": "ضانا" }, "lat": 30.6750, "lon": 35.6102, "elevation": 1237, "zone": "highland", "aliases": ["Dana Reserve", "محمية ضانا"] },
+  { "id": "shobak", "name": { "en": "Shobak", "ar": "الشوبك" }, "lat": 30.5190, "lon": 35.5380, "elevation": 1330, "zone": "highland", "aliases": ["Shoubak", "Montreal Castle"] },
+  { "id": "ruwaished", "name": { "en": "Ruwaished", "ar": "الرويشد" }, "lat": 32.5041, "lon": 38.2011, "elevation": 689, "zone": "desert", "aliases": ["Ruweished"] }
+]
