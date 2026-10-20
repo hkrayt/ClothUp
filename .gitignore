@@ -1,0 +1,44 @@
+# dependencies
+node_modules/
+
+# builds
+dist/
+dist-ssr/
+coverage/
+*.local
+
+# tauri
+src-tauri/target/
+src-tauri/gen/schemas/
+
+# android
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/app/src/main/assets/public/
+android/capacitor-cordova-android-plugins/
+android/.idea/
+*.apk
+*.aab
+
+# secrets — never commit
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+keystore.properties
+
+# editor / os
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+
+# tests
+test-results/
+playwright-report/
