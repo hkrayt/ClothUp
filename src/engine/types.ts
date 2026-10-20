@@ -12,9 +12,28 @@ export type ClimateZone =
   | 'rift-valley'
   | 'red-sea'
 
+export type PlaceType = 'city' | 'town' | 'neighbourhood' | 'tourist' | 'campus' | 'transport'
+
+export type Governorate =
+  | 'amman'
+  | 'zarqa'
+  | 'irbid'
+  | 'balqa'
+  | 'madaba'
+  | 'jerash'
+  | 'ajloun'
+  | 'mafraq'
+  | 'karak'
+  | 'tafilah'
+  | 'maan'
+  | 'aqaba'
+
 export interface Place {
   id: string
   name: Localized
+  /** Missing only for the device's current location. */
+  type?: PlaceType
+  governorate?: Governorate
   lat: number
   lon: number
   /**

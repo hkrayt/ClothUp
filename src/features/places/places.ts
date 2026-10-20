@@ -1,5 +1,5 @@
 import placesData from '@/data/places.json'
-import type { Lang, Place } from '@/engine/types'
+import type { Governorate, Lang, Place, PlaceType } from '@/engine/types'
 import { normalizeSearch } from '@/lib/normalize'
 
 export const PLACES = placesData as Place[]
@@ -10,12 +10,37 @@ export function getPlace(id: string): Place | undefined {
   return byId.get(id)
 }
 
+/** Governorates roughly north → south, with Amman (most users) first. */
+export const GOVERNORATES: Governorate[] = ['amman', 'zarqa', 'balqa', 'madaba', 'irbid', 'jerash', 'ajloun', 'mafraq', 'karak', 'tafilah', 'maan', 'aqaba']
+
+/** The city each governorate is named after (listed first in its group). */
+const CENTRE: Partial<Record<Governorate, string>> = { balqa: 'salt' }
+
+const TYPE_ORDER: PlaceType[] = ['city', 'neighbourhood', 'town', 'tourist', 'campus', 'transport']
+
+export function groupByGovernorate(places: Place[], lang: Lang): Array<{ governorate: Governorate; places: Place[] }> {
+  return GOVERNORATES.map((g) => {
+    const centre = CENTRE[g] ?? g
+    const list = places
+      .filter((p) => p.governorate === g)
+      .sort(
+        (a, b) =>
+          Number(b.id === centre) - Number(a.id === centre) ||
+          TYPE_ORDER.indexOf(a.type ?? 'town') - TYPE_ORDER.indexOf(b.type ?? 'town') ||
+          a.name[lang].localeCompare(b.name[lang], lang),
+      )
+    return { governorate: g, places: list }
+  }).filter((g) => g.places.length > 0)
+}
+
 const index = PLACES.map((p) => ({
   place: p,
   terms: [p.name.en, p.name.ar, ...p.aliases].map(normalizeSearch),
 }))
 
-/** Places matching the query, best matches first (prefix > word prefix > substring). */
+const typeRank = (p: Place) => TYPE_ORDER.indexOf(p.type ?? 'town')
+
+/** Places matching the query, best matches first (exact > prefix > word prefix > substring; cities before smaller places). */
 export function searchPlaces(query: string, lang: Lang): Place[] {
   const q = normalizeSearch(query)
   const sorted = [...PLACES].sort((a, b) => a.name[lang].localeCompare(b.name[lang], lang))
@@ -25,7 +50,8 @@ export function searchPlaces(query: string, lang: Lang): Place[] {
     .map(({ place, terms }) => {
       let score = 0
       for (const t of terms) {
-        if (t.startsWith(q)) score = Math.max(score, 3)
+        if (t === q || t.split(' / ').includes(q)) score = Math.max(score, 4)
+        else if (t.startsWith(q)) score = Math.max(score, 3)
         else if (t.split(' ').some((w) => w.startsWith(q))) score = Math.max(score, 2)
         else if (t.includes(q)) score = Math.max(score, 1)
       }
@@ -34,7 +60,7 @@ export function searchPlaces(query: string, lang: Lang): Place[] {
     .filter((s) => s.score > 0)
 
   return scored
-    .sort((a, b) => b.score - a.score || a.place.name[lang].localeCompare(b.place.name[lang], lang))
+    .sort((a, b) => b.score - a.score || typeRank(a.place) - typeRank(b.place) || a.place.name[lang].localeCompare(b.place.name[lang], lang))
     .map((s) => s.place)
 }
 

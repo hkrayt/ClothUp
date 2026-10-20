@@ -15,6 +15,7 @@ export function normalizeSearch(input: string): string {
     .replace(/ى/g, 'ي')
     .replace(/ؤ/g, 'و')
     .replace(/ئ/g, 'ي')
+    .replace(/ء/g, '')
     .replace(/^ال/, '')
     .replace(/\sال/g, ' ')
     .replace(/['`’‘\-_/.]/g, ' ')
