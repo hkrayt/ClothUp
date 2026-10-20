@@ -1,0 +1,59 @@
+{
+  "colors": [
+    { "id": "white", "hex": "#FFFFFF", "name": { "en": "White", "ar": "أبيض" }, "chroma": "muted" },
+    { "id": "off-white", "hex": "#F4F0E6", "name": { "en": "Off-white", "ar": "أوف وايت" }, "chroma": "muted" },
+    { "id": "cream", "hex": "#EDE3CC", "name": { "en": "Cream", "ar": "كريمي" }, "chroma": "muted" },
+    { "id": "beige", "hex": "#D8C4A3", "name": { "en": "Beige", "ar": "بيج" }, "chroma": "muted" },
+    { "id": "sand", "hex": "#CBB48C", "name": { "en": "Sand", "ar": "رملي" }, "chroma": "muted" },
+    { "id": "grey-light", "hex": "#D3D3CF", "name": { "en": "Light grey", "ar": "رمادي فاتح" }, "chroma": "muted" },
+    { "id": "grey", "hex": "#8F908D", "name": { "en": "Grey", "ar": "رمادي" }, "chroma": "muted" },
+    { "id": "charcoal", "hex": "#40444A", "name": { "en": "Charcoal", "ar": "فحمي" }, "chroma": "muted" },
+    { "id": "black", "hex": "#1F1F21", "name": { "en": "Black", "ar": "أسود" }, "chroma": "muted" },
+    { "id": "navy", "hex": "#1F2B47", "name": { "en": "Navy", "ar": "كحلي" }, "chroma": "muted" },
+
+    { "id": "camel", "hex": "#B88A56", "name": { "en": "Camel", "ar": "جملي" }, "chroma": "muted" },
+    { "id": "tan", "hex": "#C7A078", "name": { "en": "Tan", "ar": "بني فاتح" }, "chroma": "muted" },
+    { "id": "khaki", "hex": "#B3A47C", "name": { "en": "Khaki", "ar": "كاكي" }, "chroma": "muted" },
+    { "id": "olive", "hex": "#6A6B3B", "name": { "en": "Olive", "ar": "زيتي" }, "chroma": "muted" },
+    { "id": "brown", "hex": "#7B5333", "name": { "en": "Brown", "ar": "بني" }, "chroma": "muted" },
+    { "id": "chocolate", "hex": "#4A3122", "name": { "en": "Chocolate", "ar": "بني غامق" }, "chroma": "muted" },
+    { "id": "rust", "hex": "#A9532F", "name": { "en": "Rust", "ar": "صدئي" }, "chroma": "muted" },
+    { "id": "terracotta", "hex": "#C56C4C", "name": { "en": "Terracotta", "ar": "تيراكوتا" }, "chroma": "muted" },
+    { "id": "mustard", "hex": "#D2A23C", "name": { "en": "Mustard", "ar": "خردلي" }, "chroma": "bright" },
+
+    { "id": "denim-light", "hex": "#9FB5CF", "name": { "en": "Light denim", "ar": "جينز فاتح" }, "chroma": "muted" },
+    { "id": "denim-mid", "hex": "#5E7EA4", "name": { "en": "Mid denim", "ar": "جينز متوسط" }, "chroma": "muted" },
+    { "id": "denim-dark", "hex": "#2F405E", "name": { "en": "Dark denim", "ar": "جينز غامق" }, "chroma": "muted" },
+
+    { "id": "sky", "hex": "#AECBE8", "name": { "en": "Sky blue", "ar": "سماوي" }, "chroma": "muted" },
+    { "id": "dusty-blue", "hex": "#8CA5BF", "name": { "en": "Dusty blue", "ar": "أزرق مغبر" }, "chroma": "muted" },
+    { "id": "mint", "hex": "#C0E2D0", "name": { "en": "Mint", "ar": "نعناعي" }, "chroma": "muted" },
+    { "id": "sage", "hex": "#A2B08A", "name": { "en": "Sage", "ar": "مريمي" }, "chroma": "muted" },
+    { "id": "teal", "hex": "#2E7D7A", "name": { "en": "Teal", "ar": "تركوازي غامق" }, "chroma": "bright" },
+    { "id": "emerald", "hex": "#2F6B50", "name": { "en": "Emerald", "ar": "زمردي" }, "chroma": "bright" },
+    { "id": "cobalt", "hex": "#2F56A6", "name": { "en": "Cobalt", "ar": "أزرق كوبالت" }, "chroma": "bright" },
+    { "id": "burgundy", "hex": "#6F2030", "name": { "en": "Burgundy", "ar": "عنابي" }, "chroma": "muted" },
+    { "id": "plum", "hex": "#5C2F4E", "name": { "en": "Plum", "ar": "برقوقي" }, "chroma": "muted" },
+    { "id": "red", "hex": "#C0392B", "name": { "en": "Red", "ar": "أحمر" }, "chroma": "bright" },
+    { "id": "coral", "hex": "#EC806E", "name": { "en": "Coral", "ar": "مرجاني" }, "chroma": "bright" },
+    { "id": "blush", "hex": "#E8C3BA", "name": { "en": "Blush", "ar": "وردي فاتح" }, "chroma": "muted" },
+    { "id": "mauve", "hex": "#A8808F", "name": { "en": "Mauve", "ar": "موف" }, "chroma": "muted" },
+    { "id": "lavender", "hex": "#C9BADB", "name": { "en": "Lavender", "ar": "لافندر" }, "chroma": "muted" },
+    { "id": "peach", "hex": "#F1C6A2", "name": { "en": "Peach", "ar": "خوخي" }, "chroma": "muted" },
+    { "id": "champagne", "hex": "#E6D4B1", "name": { "en": "Champagne", "ar": "شامبين" }, "chroma": "muted" },
+    { "id": "nude", "hex": "#D6B29A", "name": { "en": "Nude", "ar": "نود" }, "chroma": "muted" },
+    { "id": "gold", "hex": "#C8A44C", "name": { "en": "Gold", "ar": "ذهبي" }, "chroma": "bright" },
+
+    { "id": "tortoise", "hex": "#6C4524", "name": { "en": "Tortoiseshell", "ar": "صدفي" }, "chroma": "muted", "fixed": true },
+    { "id": "shemagh-red", "hex": "#B3262E", "name": { "en": "Red & white check", "ar": "أحمر وأبيض مقصّب" }, "chroma": "muted", "fixed": true, "pattern": "check" }
+  ],
+  "groups": {
+    "neutral": ["white", "off-white", "cream", "beige", "grey-light", "grey", "charcoal", "black", "navy"],
+    "earth": ["camel", "tan", "khaki", "olive", "brown", "chocolate", "rust", "terracotta", "sand"],
+    "denim": ["denim-light", "denim-mid", "denim-dark"],
+    "pastel": ["sky", "mint", "blush", "lavender", "peach", "sage"],
+    "jewel": ["emerald", "burgundy", "plum", "cobalt", "teal"],
+    "bright": ["red", "coral", "cobalt", "mustard"],
+    "leather": ["brown", "tan", "chocolate", "black", "burgundy"]
+  }
+}
