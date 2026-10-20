@@ -31,6 +31,17 @@ export function relativeDay(local: string): 'today' | 'tomorrow' | null {
   return null
 }
 
+export function formatMonth(local: string, lang: Lang): string {
+  return new Intl.DateTimeFormat(LOCALE[lang], { month: 'long', timeZone: 'UTC' }).format(asUTCDate(local))
+}
+
+const COMPASS = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'] as const
+
+/** 8-point compass name for a wind direction in degrees. */
+export function compass(deg: number): (typeof COMPASS)[number] {
+  return COMPASS[Math.round((((deg % 360) + 360) % 360) / 45) % 8]
+}
+
 export function minutesAgo(ts: number, now = Date.now()): number {
   return Math.max(0, Math.round((now - ts) / 60_000))
 }

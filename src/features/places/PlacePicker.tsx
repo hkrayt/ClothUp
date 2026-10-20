@@ -1,10 +1,50 @@
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { LocateFixed, MapPin, Search, Loader2 } from 'lucide-react'
+import { Building2, GraduationCap, Landmark, LocateFixed, MapPin, Plane, Search, Loader2, type LucideIcon } from 'lucide-react'
+import type { PlaceType } from '@/engine/types'
 import type { Lang, Place } from '@/engine/types'
 import { Sheet, cx } from '@/ui'
 import { getCurrentCoords, type GeoError } from '@/lib/geo'
-import { currentLocationPlace, searchPlaces } from './places'
+import { PLACES, currentLocationPlace, getPlace, groupByGovernorate, searchPlaces } from './places'
+
+const TYPE_ICON: Record<PlaceType, LucideIcon> = {
+  city: MapPin,
+  town: MapPin,
+  neighbourhood: Building2,
+  tourist: Landmark,
+  campus: GraduationCap,
+  transport: Plane,
+}
+
+function PlaceList({ places, selectedId, onPick, label }: { places: Place[]; selectedId?: string; onPick: (p: Place) => void; label: string }) {
+  const { t, i18n } = useTranslation()
+  const lang = i18n.language as Lang
+  return (
+    <ul className="flex flex-col" role="listbox" aria-label={label}>
+      {places.map((p) => {
+        const Icon = TYPE_ICON[p.type ?? 'town']
+        const details = [p.governorate && t(`governorate.${p.governorate}`), t(`zone.${p.zone}`), p.elevation !== undefined && t('place.elevation', { m: p.elevation })]
+        return (
+          <li key={p.id}>
+            <button
+              type="button"
+              role="option"
+              aria-selected={p.id === selectedId}
+              onClick={() => onPick(p)}
+              className={cx('flex min-h-14 w-full items-center gap-3 rounded-control px-3 text-start hover:bg-surface-2', p.id === selectedId && 'bg-primary-soft')}
+            >
+              <Icon size={20} className="shrink-0 text-muted" aria-hidden />
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate font-medium">{p.name[lang]}</span>
+                <span className="truncate text-sm text-muted">{details.filter(Boolean).join(' · ')}</span>
+              </span>
+            </button>
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
 
 interface PlacePickerProps {
   open: boolean
@@ -22,12 +62,14 @@ export function PlacePicker({ open, onClose, onPick, selectedId, frequent = [] }
   const [locating, setLocating] = useState(false)
   const [geoError, setGeoError] = useState<GeoError | null>(null)
 
-  const results = useMemo(() => {
-    const list = searchPlaces(query, lang)
-    if (query.trim() || frequent.length === 0) return list
-    const top = frequent.map((id) => list.find((p) => p.id === id)).filter((p): p is Place => !!p)
-    return [...top, ...list.filter((p) => !frequent.includes(p.id))]
-  }, [query, lang, frequent])
+  const results = useMemo(() => searchPlaces(query, lang), [query, lang])
+  const sections = useMemo(() => {
+    const recent = frequent.map((id) => getPlace(id)).filter((p): p is Place => !!p)
+    return [
+      ...(recent.length ? [{ key: 'recent', title: t('place.recent'), places: recent }] : []),
+      ...groupByGovernorate(PLACES, lang).map((g) => ({ key: g.governorate, title: t(`governorate.${g.governorate}`), places: g.places })),
+    ]
+  }, [frequent, lang, t])
 
   const pick = (p: Place) => {
     onPick(p)
@@ -75,29 +117,17 @@ export function PlacePicker({ open, onClose, onPick, selectedId, frequent = [] }
         </button>
         {geoError && <p className="px-3 text-sm text-danger">{t(`place.geoError.${geoError}`)}</p>}
 
-        <ul className="flex flex-col" role="listbox" aria-label={t('place.title')}>
-          {results.map((p) => (
-            <li key={p.id}>
-              <button
-                type="button"
-                role="option"
-                aria-selected={p.id === selectedId}
-                onClick={() => pick(p)}
-                className={cx(
-                  'flex min-h-14 w-full items-center gap-3 rounded-control px-3 text-start hover:bg-surface-2',
-                  p.id === selectedId && 'bg-primary-soft',
-                )}
-              >
-                <MapPin size={20} className="shrink-0 text-muted" aria-hidden />
-                <span className="flex min-w-0 flex-1 flex-col">
-                  <span className="truncate font-medium">{p.name[lang]}</span>
-                  <span className="truncate text-sm text-muted">{t(`zone.${p.zone}`)}</span>
-                </span>
-              </button>
-            </li>
-          ))}
-          {results.length === 0 && <li className="px-3 py-6 text-center text-muted">{t('place.noResults')}</li>}
-        </ul>
+        {query.trim() ? (
+          <PlaceList places={results} selectedId={selectedId} onPick={pick} label={t('place.title')} />
+        ) : (
+          sections.map((s) => (
+            <section key={s.key} className="flex flex-col gap-1">
+              <h3 className="px-3 pt-2 text-xs font-semibold uppercase tracking-wide text-muted">{s.title}</h3>
+              <PlaceList places={s.places} selectedId={selectedId} onPick={pick} label={s.title} />
+            </section>
+          ))
+        )}
+        {query.trim() && results.length === 0 && <p className="px-3 py-6 text-center text-muted">{t('place.noResults')}</p>}
       </div>
     </Sheet>
   )

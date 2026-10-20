@@ -6,8 +6,11 @@ import './i18n'
 import { App } from './app/App'
 import { ErrorBoundary } from './app/ErrorBoundary'
 import { initBackButton } from './lib/native'
+import { cleanupOldForecasts } from './features/weather/cache'
 
 initBackButton()
+// Drop forecasts saved by older versions or for past days.
+void cleanupOldForecasts()
 
 const root = createRoot(document.getElementById('root')!)
 

@@ -10,7 +10,7 @@
   { "id": "cool-closed-shoes", "priority": 50, "when": { "feelsMin": { "lte": 14 } }, "then": { "exclude": ["sandals", "open-toe"] } },
 
   { "id": "hot", "priority": 50, "when": { "feelsMax": { "gte": 28 } }, "then": { "prefer": { "breathable": 2, "loose": 1, "warm": -6 }, "preferFabrics": { "linen": 3, "cotton": 2, "chiffon": 2, "modal": 1, "mesh": 1, "wool": -4, "down": -8, "denim": -2, "satin": -1, "fleece": -6 } }, "reason": "hot" },
-  { "id": "humid-heat", "priority": 50, "when": { "feelsMax": { "gte": 28 }, "humidity": { "gte": 55 } }, "then": { "prefer": { "loose": 2, "denim": -2 }, "preferFabrics": { "linen": 2, "denim": -2 } }, "reason": "humid" },
+  { "id": "humid-heat", "priority": 50, "when": { "feelsMax": { "gte": 28 }, "any": [{ "dewPointMax": { "gte": 18 } }, { "dewPointMax": { "eq": null }, "humidity": { "gte": 55 } }] }, "then": { "prefer": { "loose": 2, "denim": -2 }, "preferFabrics": { "linen": 2, "denim": -2 } }, "reason": "humid" },
   { "id": "extreme-heat", "priority": 80, "when": { "feelsMax": { "gte": 36 } }, "then": { "add": ["water-bottle"], "prefer": { "sun-protect": 2 } }, "reason": "extremeHeat" },
 
   { "id": "sun", "priority": 60, "when": { "uvMax": { "gte": 6 }, "occasion": { "ne": "gym" } }, "then": { "add": ["sunglasses", "sunscreen"], "prefer": { "sun-protect": 1 } }, "reason": "uv" },
@@ -19,5 +19,10 @@
   { "id": "dust", "priority": 80, "when": { "dust": { "in": ["moderate", "severe"] } }, "then": { "add": ["sunglasses", "#dust-protect"], "require": { "shoes": ["closed", "boots"] }, "prefer": { "long-sleeve": 1, "flowy": -1 } }, "reason": "dust" },
   { "id": "sandstorm", "priority": 85, "when": { "dust": { "eq": "severe" } }, "then": { "need": ["outer"], "prefer": { "windproof": 3, "long-sleeve": 2, "hood": 1, "short-sleeve": -3, "shorts": -4, "sandals": -4 } }, "reason": "sandstorm" },
 
-  { "id": "windy", "priority": 60, "when": { "gust": { "gte": 45 } }, "then": { "prefer": { "windproof": 3, "flowy": -2, "hat": -3 } }, "reason": "windy" }
+  { "id": "windy", "priority": 60, "when": { "gust": { "gte": 45 } }, "then": { "prefer": { "windproof": 3, "flowy": -2, "hat": -3 } }, "reason": "windy" },
+
+  { "id": "snow-on-ground", "priority": 85, "when": { "snowOnGround": { "eq": true } }, "then": { "require": { "shoes": ["boots"] }, "prefer": { "boots": 4, "grip": 2, "water-resistant": 1 } }, "reason": "snowGround" },
+  { "id": "fog", "priority": 60, "when": { "fog": { "eq": true } }, "then": { "prefer": { "water-resistant": 1, "warm": 1 } }, "reason": "fog" },
+  { "id": "dry-wind", "priority": 70, "when": { "dryWind": { "eq": true } }, "then": { "add": ["water-bottle", "sunglasses"], "prefer": { "long-sleeve": 1, "breathable": 1 } }, "reason": "dryWind" },
+  { "id": "sun-and-shade", "priority": 55, "when": { "sunGap": { "gte": 5 }, "shadeMin": { "lte": 16 } }, "then": { "need": ["outer"] }, "reason": "sunShade" }
 ]

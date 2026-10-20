@@ -214,6 +214,19 @@ describe('specific suggestions', () => {
     expect(slotItem(disliked, 'top')!.id).not.toBe(top)
   })
 
+  it('a sunny but cool-in-the-shade day gets a light layer; snow on the ground gets boots', () => {
+    const [sun] = generateOutfits(SCENARIOS.wadiRumWinterSun, male, occ('travel'), DATA)
+    expect(slotItem(sun, 'outer')).toBeDefined()
+    expect(sun.reasons.map((r) => r.key)).toContain('sunShade')
+    const [snow] = generateOutfits(SCENARIOS.karakSnowGround, male, occ('casual'), DATA)
+    expect(slotItem(snow, 'shoes')!.tags).toContain('boots')
+  })
+
+  it('sharqiya adds water and sunglasses', () => {
+    const [o] = generateOutfits(SCENARIOS.sharqiya, male, occ('casual'), DATA)
+    expect(all(o).map((i) => i.id)).toEqual(expect.arrayContaining(['water-bottle', 'sunglasses']))
+  })
+
   it('locks force an item in a slot', () => {
     const [o] = generateOutfits(SCENARIOS.ammanSpring, male, occ('casual'), DATA, { locks: { top: 'm-polo' } })
     expect(slotItem(o, 'top')!.id).toBe('m-polo')

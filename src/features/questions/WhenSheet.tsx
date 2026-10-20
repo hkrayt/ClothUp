@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Lang, When } from '@/engine/types'
 import { addHours, ammanNow, atHour, dateOf, hourOf } from '@/engine/time'
-import { FORECAST_DAYS } from '@/features/weather/api'
+import { FORECAST_DAYS, RELIABLE_DAYS } from '@/features/weather/api'
 import { formatHour, formatWeekday, relativeDay } from '@/lib/format'
 import { Button, Chip, Sheet, cx } from '@/ui'
 
@@ -25,6 +25,11 @@ export function WhenSheet({ open, value, onClose, onChange }: WhenSheetProps) {
   const initialDay = value.kind === 'at' ? dateOf(value.time) : today
   const [day, setDay] = useState(initialDay)
   const [hour, setHour] = useState<number | null>(value.kind === 'at' ? hourOf(value.time) : null)
+
+  // Dates past the 16-day forecast use typical weather for that month (up to a year ahead).
+  const laterMin = dateOf(addHours(`${today}T12:00`, FORECAST_DAYS * 24))
+  const laterMax = dateOf(addHours(`${today}T12:00`, 365 * 24))
+  const isLater = day >= laterMin
 
   const hoursForDay = day === today ? HOURS.filter((h) => h > hourOf(now)) : HOURS
   const dayLabel = (d: string) => {
@@ -54,7 +59,7 @@ export function WhenSheet({ open, value, onClose, onChange }: WhenSheetProps) {
         <section className="flex flex-col gap-2">
           <h3 className="text-sm font-semibold text-muted">{t('plan.day')}</h3>
           <div className="snap-row -mx-5 flex gap-2 overflow-x-auto px-5">
-            {days.map((d) => (
+            {days.map((d, i) => (
               <Chip
                 key={d}
                 selected={hour !== null && d === day}
@@ -62,12 +67,29 @@ export function WhenSheet({ open, value, onClose, onChange }: WhenSheetProps) {
                   setDay(d)
                   if (hour === null || (d === today && hour <= hourOf(now))) setHour(d === today ? Math.min(23, hourOf(now) + 1) : 9)
                 }}
-                className="shrink-0"
+                className={cx('shrink-0', i >= RELIABLE_DAYS && 'border-dashed')}
               >
                 {dayLabel(d)}
               </Chip>
             ))}
           </div>
+          <label className="flex min-h-12 items-center gap-3 rounded-control border border-dashed border-border px-3 text-sm">
+            <span className="text-muted">{t('plan.laterDate')}</span>
+            <input
+              type="date"
+              min={laterMin}
+              max={laterMax}
+              value={isLater ? day : ''}
+              onChange={(e) => {
+                if (!e.target.value) return
+                setDay(e.target.value)
+                if (hour === null) setHour(10)
+              }}
+              className="ms-auto bg-transparent font-medium text-text outline-none"
+            />
+          </label>
+          {hour !== null && isLater && <p className="text-sm text-muted">{t('plan.typicalNote')}</p>}
+          {hour !== null && !isLater && days.indexOf(day) >= RELIABLE_DAYS && <p className="text-sm text-muted">{t('plan.farAhead')}</p>}
         </section>
 
         <section className="flex flex-col gap-2">

@@ -4,7 +4,8 @@ All outfit logic is driven by plain JSON in `src/data/`. You can add clothes, pl
 
 ```
 src/data/
-  places.json              Jordan locations
+  places.json              Jordan locations (74)
+  climate.json             monthly climate averages per place (generated)
   occasions.json           occasion formality, color moods, indoor share
   fabrics.json             fabrics and their warmth
   clothing/male.json       men: standard + traditional
@@ -20,10 +21,28 @@ src/data/
 ```json
 { "id": "dead-sea", "name": { "en": "Dead Sea", "ar": "البحر الميت" },
   "lat": 31.7171, "lon": 35.5881, "elevation": -400, "zone": "rift-valley",
+  "type": "tourist", "governorate": "balqa",
   "aliases": ["Sweimeh", "سويمة"] }
 ```
 
-`elevation` (metres) is sent to the weather API: it matters a lot in Jordan. `zone` is one of `highland`, `northern-highland`, `highland-desert`, `steppe`, `desert`, `rift-valley`, `red-sea`. Aliases make search find the place by other names.
+- `elevation` (metres) is sent to the weather API: it matters a lot in Jordan (Amman alone spans ~770–1040 m). Take it from Open-Meteo's terrain model: `https://api.open-meteo.com/v1/elevation?latitude=..&longitude=..`.
+- `zone`: `highland`, `northern-highland`, `highland-desert`, `steppe`, `desert`, `rift-valley`, `red-sea`.
+- `type`: `city`, `town`, `neighbourhood`, `tourist`, `campus`, `transport` (sets the icon and the order inside a governorate).
+- `governorate`: one of the 12 (`amman`, `zarqa`, `irbid`, `balqa`, `madaba`, `jerash`, `ajloun`, `mafraq`, `karak`, `tafilah`, `maan`, `aqaba`); the picker groups by it.
+- `aliases`: other spellings and nearby landmarks in either language, so search finds the place.
+
+After adding places, rebuild their climate averages (next section).
+
+## Climate averages
+
+`src/data/climate.json` holds monthly averages for every place, used when there's no forecast (offline with nothing saved, or a date beyond the 16-day forecast). Each month is `[tMax, tMin, feelsMax, feelsMin, rainDayShare, precipMm, windMaxKmh, humidity%]`, averaged from Open-Meteo's historical archive (ERA5, elevation-corrected).
+
+```bash
+node scripts/build-climate.mjs              # fetch missing places
+node scripts/build-climate.mjs wadi-rum     # refresh specific places
+```
+
+The script pauses between requests to stay within the free API limits (~10 s per place).
 
 ## Clothing items
 
@@ -73,6 +92,7 @@ If the user's style has nothing wearable for a slot in the current weather (e.g.
 **`when`** — every field must match (AND); `any` matches if one branch does. Tests: `eq`, `ne`, `in`, `gte`, `lte`, `gt`, `lt`. Fields:
 
 - weather over the stay: `feelsMin`, `feelsMax`, `feelsAvg`, `swing`, `rainProb`, `precipMm`, `snowCm`, `wind`, `gust`, `humidity`, `uvMax`, `dust` (`none`/`moderate`/`severe`), `condition`, `isNight`, `coolsAfterDark`, `zone`, `hours`
+- added in v1.1: `shadeMin` and `sunGap` (sun vs shade), `fog`, `dryWind` (sharqiya), `dewPointMax`, `snowOnGround`, `freezingNear`, `lessCertain`, `source` (`forecast`/`climate`)
 - profile and plan: `gender`, `style`, `occasion`
 
 **`then`**

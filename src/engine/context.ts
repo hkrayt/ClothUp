@@ -79,6 +79,20 @@ export function buildContext(
   const night = stay.filter((h) => !h.isDay).map((h) => h.feels)
   const coolsAfterDark = day.length > 0 && night.length > 0 && max(day) - min(night) >= 6
 
+  // Sun vs shade: Open-Meteo's apparent temperature includes sunshine, so shade = feels − sun boost.
+  const shade = stay.map((h) => h.feels - sunBoost(h.radiation, h.wind))
+  const gaps = stay.map((h, i) => (h.isDay ? h.feels - shade[i] : 0))
+  const gapIndex = gaps.indexOf(max(gaps))
+
+  const windiest = stay.reduce((a, b) => (b.wind > a.wind ? b : a), stay[0])
+  const dews = stay.map((h) => h.dewPoint).filter((d): d is number => typeof d === 'number')
+  const dryWind = stay.some(
+    (h) => typeof h.windDir === 'number' && h.windDir >= 60 && h.windDir <= 160 && h.wind >= 20 && h.humidity <= 25 && h.temp >= 24,
+  )
+  const fog = stay.some((h) => (h.visibility !== null && h.visibility < 1000) || h.code === 45 || h.code === 48)
+  const freezing = stay.map((h) => h.freezingLevel).filter((f): f is number => typeof f === 'number')
+  const freezingNear = freezing.length > 0 && min(freezing) - forecast.elevation < 300
+
   return {
     start: stay[0].time,
     end: stay[stay.length - 1].time,
@@ -105,5 +119,28 @@ export function buildContext(
     condition,
     isNight: !stay[0].isDay,
     coolsAfterDark,
+    shadeMin: round1(min(shade)),
+    sunGap: round1(gaps[gapIndex] ?? 0),
+    sunFeels: round1(stay[gapIndex].feels),
+    shadeFeels: round1(shade[gapIndex]),
+    fog,
+    windDir: typeof windiest.windDir === 'number' ? windiest.windDir : null,
+    dryWind,
+    dewPointMax: dews.length ? round1(max(dews)) : null,
+    snowOnGround: stay.some((h) => (h.snowDepth ?? 0) >= 0.02),
+    freezingNear,
+    series: stay.map((h) => ({ time: h.time, feels: round1(h.feels), precipProb: h.precipProb, isDay: h.isDay })),
+    lessCertain: forecast.source === 'climate' || hoursBetween(forecast.hours[0].time, stay[0].time) > 7 * 24,
+    source: forecast.source ?? 'forecast',
   }
+}
+
+/**
+ * How much warmer direct sun makes you feel, °C. Roughly +6 ° in strong midday sun with little wind,
+ * less when windy, capped at 9 °. Without radiation data there is no boost.
+ */
+export function sunBoost(radiation: number | null | undefined, windKmh: number): number {
+  if (typeof radiation !== 'number' || radiation <= 0) return 0
+  const ms = windKmh / 3.6
+  return Math.min(9, (radiation * 0.0085) / (1 + 0.15 * ms))
 }

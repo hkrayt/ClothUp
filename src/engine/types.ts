@@ -12,9 +12,28 @@ export type ClimateZone =
   | 'rift-valley'
   | 'red-sea'
 
+export type PlaceType = 'city' | 'town' | 'neighbourhood' | 'tourist' | 'campus' | 'transport'
+
+export type Governorate =
+  | 'amman'
+  | 'zarqa'
+  | 'irbid'
+  | 'balqa'
+  | 'madaba'
+  | 'jerash'
+  | 'ajloun'
+  | 'mafraq'
+  | 'karak'
+  | 'tafilah'
+  | 'maan'
+  | 'aqaba'
+
 export interface Place {
   id: string
   name: Localized
+  /** Missing only for the device's current location. */
+  type?: PlaceType
+  governorate?: Governorate
   lat: number
   lon: number
   /**
@@ -82,6 +101,18 @@ export interface HourPoint {
   isDay: boolean
   visibility: number | null
   dust: number | null
+  /** Degrees the wind blows from (0 = north, 90 = east). */
+  windDir?: number | null
+  /** Cloud cover, %. */
+  cloud?: number | null
+  /** °C. */
+  dewPoint?: number | null
+  /** Solar radiation on a flat surface, W/m². */
+  radiation?: number | null
+  /** Height of the 0 °C level above sea level, m. */
+  freezingLevel?: number | null
+  /** Snow on the ground, m. */
+  snowDepth?: number | null
 }
 
 export interface Forecast {
@@ -91,6 +122,8 @@ export interface Forecast {
   elevation: number
   fetchedAt: number
   hours: HourPoint[]
+  /** 'climate' = built from monthly averages because no forecast was available. */
+  source?: 'forecast' | 'climate'
 }
 
 export type TempBand = 'freezing' | 'cold' | 'cool' | 'mild' | 'warm' | 'hot' | 'extreme'
@@ -126,4 +159,28 @@ export interface WeatherContext {
   isNight: boolean
   /** True when the stay runs into the evening/night and feels-like drops noticeably. */
   coolsAfterDark: boolean
+  /** Coldest feels-like out of the sun (equals feelsMin when there's no sunshine data). */
+  shadeMin: number
+  /** Largest sun-vs-shade difference during daylight, °C. */
+  sunGap: number
+  /** Feels-like in the sun and in the shade at that hour. */
+  sunFeels: number
+  shadeFeels: number
+  /** Visibility under 1 km at some point (or a fog weather code). */
+  fog: boolean
+  /** Direction of the strongest wind, degrees (null without data). */
+  windDir: number | null
+  /** Hot, very dry east/south-east desert wind ("sharqiya"). */
+  dryWind: boolean
+  /** Highest dew point, °C (null without data). */
+  dewPointMax: number | null
+  /** Snow already lying on the ground. */
+  snowOnGround: boolean
+  /** Freezing level close to the ground: precipitation could fall as snow. */
+  freezingNear: boolean
+  /** Hour-by-hour values for the stay (for the chart). */
+  series: Array<{ time: string; feels: number; precipProb: number; isDay: boolean }>
+  /** True when the forecast is for more than a week ahead, or is climate-based. */
+  lessCertain: boolean
+  source: 'forecast' | 'climate'
 }

@@ -17,10 +17,18 @@ const HOURLY = [
   'uv_index',
   'is_day',
   'visibility',
+  'wind_direction_10m',
+  'cloud_cover',
+  'dew_point_2m',
+  'shortwave_radiation',
+  'freezing_level_height',
+  'snow_depth',
 ] as const
 
-/** Days of forecast requested. The app only lets users pick dates within this range. */
-export const FORECAST_DAYS = 7
+/** Days of forecast requested (Open-Meteo's maximum). */
+export const FORECAST_DAYS = 16
+/** Beyond this many days ahead the forecast is shown as less certain. */
+export const RELIABLE_DAYS = 7
 
 type Hourly = Record<(typeof HOURLY)[number], Array<number | null>> & { time: string[] }
 
@@ -87,13 +95,22 @@ export async function fetchForecast(place: Place, signal?: AbortSignal): Promise
     isDay: h.is_day[i] === 1,
     visibility: h.visibility[i] ?? null,
     dust: dustByTime.get(time) ?? null,
+    windDir: h.wind_direction_10m[i] ?? null,
+    cloud: h.cloud_cover[i] ?? null,
+    dewPoint: h.dew_point_2m[i] ?? null,
+    radiation: h.shortwave_radiation[i] ?? null,
+    freezingLevel: h.freezing_level_height[i] ?? null,
+    snowDepth: h.snow_depth[i] ?? null,
   }))
+    // The last hours of the 16th day can be empty.
+    .filter((_, i) => h.temperature_2m[i] !== null)
 
   return {
     key: forecastKey(place),
     lat: weather.latitude,
     lon: weather.longitude,
     elevation: weather.elevation,
+    source: 'forecast',
     fetchedAt: Date.now(),
     hours,
   }
