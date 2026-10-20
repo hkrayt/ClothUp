@@ -88,6 +88,31 @@ If the user's style has nothing wearable for a slot in the current weather (e.g.
 
 **`priority`**: occasion/modesty 100, safety 80–90, comfort 50–60, style 20. **`reason`** is a key under `reason.*` in `src/i18n/en.json` and `ar.json` (add both).
 
+## Colors and palettes
+
+`src/data/colors/colors.json` holds the named colors and groups:
+
+```json
+{ "id": "navy", "hex": "#1F2B47", "name": { "en": "Navy", "ar": "كحلي" }, "chroma": "muted" }
+```
+
+`chroma: "bright"` marks attention-grabbing colors (outfits allow one, two for "bright" moods). `fixed: true` is for patterns like the red-and-white shemagh, which are never recolored. `groups` (`@neutral`, `@earth`, `@denim`, `@pastel`, `@jewel`, `@bright`, `@leather`) can be used in an item's `colors`.
+
+`src/data/colors/palettes.json` holds curated palettes:
+
+```json
+{ "id": "navy-white-camel", "strategy": "neutral-accent", "moods": ["classic", "muted"],
+  "base": "navy", "secondary": "white", "accent": "camel", "ground": "brown", "outer": "camel",
+  "bands": ["mild", "warm"] }
+```
+
+- **strategy**: `neutral-accent`, `analogous`, `complementary` or `monochrome` (drives the explanation shown to the user)
+- **moods**: matched against the occasion's `moods` (`classic`, `muted`, `fresh`, `bright`, `earthy`)
+- **roles**: bottoms and dresses take `base`; tops `secondary`; coats `outer`; warm layers, hijabs and scarves `accent`; shoes, bags and gloves `ground` (an evening clutch takes `accent`)
+- **bands** (optional): temperature bands the palette suits
+
+For each outfit the engine tries every palette, gives each piece its role color (or the nearest color the item comes in), and scores the result on mood, how many pieces got exact colors, dark colors in strong sun, near-miss shades (e.g. navy next to black), too many bright colors and top/bottom contrast. Each alternative outfit gets a different palette.
+
 ## How an outfit is built
 
 1. Weather is summarized over the whole stay (start → start + duration).

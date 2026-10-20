@@ -229,5 +229,30 @@
       "canvas": "light and sturdy",
       "sheepskin": "seriously warm for winter nights"
     }
+  },
+  "palette": {
+    "title": "Color palette",
+    "strategy": {
+      "neutral-accent": "Neutrals + accent",
+      "analogous": "Analogous",
+      "complementary": "Complementary",
+      "monochrome": "Monochrome"
+    },
+    "role": {
+      "base": "Base",
+      "secondary": "Second",
+      "accent": "Accent",
+      "ground": "Shoes & bag",
+      "outer": "Layer"
+    },
+    "note": {
+      "neutral-accent": "{{A}} and {{b}} make a calm base; {{c}} adds one touch of color.",
+      "analogous": "{{A}}, {{b}} and {{c}} sit close together on the color wheel, so they blend smoothly.",
+      "complementary": "{{A}} and {{b}} are opposite on the color wheel and balance each other out.",
+      "monochrome": "Shades of one color ({{a}}) look polished and make you look taller.",
+      "hijab": "The {{a}} hijab ties the outfit's colors together.",
+      "pair": "{{A}} and {{b}} are an easy pair that always works.",
+      "light": "Light colors reflect the sun and keep you cooler."
+    }
   }
 }

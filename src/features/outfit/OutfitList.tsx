@@ -2,8 +2,9 @@ import { useTranslation } from 'react-i18next'
 import { Backpack, CheckCircle2 } from 'lucide-react'
 import type { Lang } from '@/engine/types'
 import type { Outfit, OutfitPiece, Slot } from '@/engine/outfit-types'
-import { DATA } from '@/engine/catalog'
+import { COLORS, DATA } from '@/engine/catalog'
 import { Card } from '@/ui'
+import { colorName, PaletteCard } from './PaletteCard'
 
 /** Head-to-toe reading order for the item list. */
 export const SLOT_ORDER: Slot[] = ['head', 'eyewear', 'outer', 'mid', 'top', 'bottom', 'socks', 'shoes', 'accessory']
@@ -30,7 +31,19 @@ function PieceRow({ piece, lang }: { piece: OutfitPiece; lang: Lang }) {
           </span>
         )}
       </div>
-      <span className="font-semibold">{piece.item.name[lang]}</span>
+      <span className="flex items-center gap-2 font-semibold">
+        {piece.color && (
+          <span
+            className="h-4 w-4 shrink-0 rounded-full border border-black/10 dark:border-white/20"
+            style={{ background: COLORS.hex(piece.color) }}
+            aria-hidden
+          />
+        )}
+        <span>
+          {piece.item.name[lang]}
+          {piece.color && <span className="font-normal text-muted"> · {colorName(piece.color, lang)}</span>}
+        </span>
+      </span>
       {piece.fabric && (
         <span className="text-sm text-muted">
           <span className="font-medium text-text">{fabricName(piece.fabric, lang)}</span> · {t(`fabric.why.${piece.fabric}`)}
@@ -49,6 +62,7 @@ export function OutfitList({ outfit }: { outfit: Outfit }) {
 
   return (
     <div className="flex flex-col gap-4">
+      {outfit.palette && <PaletteCard palette={outfit.palette} />}
       <Card>
         <h2 className="text-lg font-semibold">{t('outfit.items')}</h2>
         <ul className="divide-y divide-border">
@@ -61,7 +75,10 @@ export function OutfitList({ outfit }: { outfit: Outfit }) {
             <h3 className="mt-3 text-sm font-semibold text-muted">{t('outfit.bring')}</h3>
             <ul className="mt-2 flex flex-wrap gap-2">
               {extras.map((p) => (
-                <li key={p.item.id} className="rounded-full bg-surface-2 px-3 py-1.5 text-sm font-medium">
+                <li key={p.item.id} className="inline-flex items-center gap-1.5 rounded-full bg-surface-2 px-3 py-1.5 text-sm font-medium">
+                  {p.color && (
+                    <span className="h-3 w-3 rounded-full border border-black/10" style={{ background: COLORS.hex(p.color) }} aria-hidden />
+                  )}
                   {p.item.name[lang]}
                 </li>
               ))}
