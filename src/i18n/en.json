@@ -105,7 +105,9 @@
     "geoError": {
       "denied": "Location permission was denied. Pick a place from the list instead.",
       "unavailable": "Couldn't get your location. Pick a place from the list instead."
-    }
+    },
+    "recent": "Recent",
+    "elevation": "{{m}} m"
   },
   "zone": {
     "highland": "Highlands",
@@ -278,5 +280,19 @@
     "title": "Something went wrong",
     "body": "Sorry, ClothUp hit an unexpected problem. Reloading usually fixes it; your settings are saved.",
     "reload": "Reload"
+  },
+  "governorate": {
+    "amman": "Amman",
+    "zarqa": "Zarqa",
+    "irbid": "Irbid",
+    "balqa": "Balqa",
+    "madaba": "Madaba",
+    "jerash": "Jerash",
+    "ajloun": "Ajloun",
+    "mafraq": "Mafraq",
+    "karak": "Karak",
+    "tafilah": "Tafilah",
+    "maan": "Ma'an",
+    "aqaba": "Aqaba"
   }
 }
