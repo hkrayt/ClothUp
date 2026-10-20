@@ -272,5 +272,10 @@
     "change": "Change this item",
     "changeItem": "Change {{item}}",
     "none": "No other items fit this weather and occasion."
+  },
+  "error": {
+    "title": "Something went wrong",
+    "body": "Sorry, ClothUp hit an unexpected problem. Reloading usually fixes it; your settings are saved.",
+    "reload": "Reload"
   }
 }
