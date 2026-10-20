@@ -6,6 +6,7 @@ import { useApp } from '@/app/store'
 import { useSettings, type Language } from '@/app/settings'
 import { Button, IconButton, cx } from '@/ui'
 import { Logo } from '@/ui/Logo'
+import { StylePreview } from './StylePreview'
 
 type Step = 'language' | 'gender' | 'style'
 
@@ -14,7 +15,7 @@ const STYLES: Record<Gender, Style[]> = {
   female: ['standard', 'modest'],
 }
 
-function Choice({ selected, onClick, title, hint, lang }: { selected: boolean; onClick: () => void; title: ReactNode; hint?: ReactNode; lang?: string }) {
+function Choice({ selected, onClick, title, hint, lang, preview }: { selected: boolean; onClick: () => void; title: ReactNode; hint?: ReactNode; lang?: string; preview?: ReactNode }) {
   return (
     <button
       type="button"
@@ -27,6 +28,11 @@ function Choice({ selected, onClick, title, hint, lang }: { selected: boolean; o
         selected ? 'border-primary bg-primary-soft' : 'border-border hover:border-primary/50',
       )}
     >
+      {preview && (
+        <span className="flex h-24 w-14 shrink-0 items-center justify-center overflow-hidden rounded-control bg-stage" aria-hidden>
+          {preview}
+        </span>
+      )}
       <span className="flex flex-1 flex-col">
         <span className="text-lg font-semibold">{title}</span>
         {hint && <span className="text-sm text-muted">{hint}</span>}
@@ -109,7 +115,7 @@ export function Onboarding() {
             </div>
             <div role="radiogroup" aria-label={t('onboarding.genderTitle')} className="flex flex-col gap-3">
               {(['male', 'female'] as Gender[]).map((g) => (
-                <Choice key={g} selected={gender === g} onClick={() => pickGender(g)} title={t(`profile.gender.${g}`)} />
+                <Choice key={g} selected={gender === g} onClick={() => pickGender(g)} title={t(`profile.gender.${g}`)} preview={<StylePreview gender={g} style="standard" />} />
               ))}
             </div>
           </>
@@ -125,6 +131,7 @@ export function Onboarding() {
               {STYLES[gender].map((s) => (
                 <Choice
                   key={s}
+                  preview={<StylePreview gender={gender} style={s} />}
                   selected={style === s}
                   onClick={() => setStyle(s)}
                   title={t(`profile.style.${gender}.${s}`)}
