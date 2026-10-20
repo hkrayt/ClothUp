@@ -12,7 +12,8 @@ describe('character parts', () => {
     for (const item of DATA.items) expect(RENDERERS[item.svg.part], `${item.id}: ${item.svg.part}`).toBeDefined()
   })
 
-  it('renders every item of every generated outfit without crashing', () => {
+  // Renders ~1000 characters, so it needs more than the default 5 s on slower machines and CI.
+  it('renders every item of every generated outfit without crashing', { timeout: 60_000 }, () => {
     const profiles: Profile[] = [
       { gender: 'male', style: 'standard', skinTone: 0 },
       { gender: 'male', style: 'traditional', skinTone: 4 },
