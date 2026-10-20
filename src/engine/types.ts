@@ -26,6 +26,43 @@ export interface Place {
   aliases: string[]
 }
 
+export type Gender = 'male' | 'female'
+/** Male: standard | traditional. Female: standard | modest. */
+export type Style = 'standard' | 'modest' | 'traditional'
+
+export interface Profile {
+  gender: Gender
+  style: Style
+  /** Index into the character's skin tone list (0–4). */
+  skinTone: number
+}
+
+export type OccasionId =
+  | 'work'
+  | 'casual'
+  | 'formal'
+  | 'university'
+  | 'gym'
+  | 'hiking'
+  | 'religious'
+  | 'wedding'
+  | 'travel'
+
+export type Mood = 'classic' | 'muted' | 'fresh' | 'bright' | 'earthy'
+
+export interface Occasion {
+  id: OccasionId
+  icon: string
+  /** Acceptable formality range, 0 (sporty) – 5 (black tie). */
+  formality: [number, number]
+  /** Color moods that suit the occasion, best first. */
+  moods: Mood[]
+}
+
+export type When = { kind: 'now' } | { kind: 'at'; time: string }
+/** Hours at the place, or 'night' = until about 1 AM. */
+export type Duration = 2 | 3 | 6 | 10 | 'night'
+
 /** One forecast hour, in Amman local time. */
 export interface HourPoint {
   /** Local time, "YYYY-MM-DDTHH:00" (Asia/Amman). */
