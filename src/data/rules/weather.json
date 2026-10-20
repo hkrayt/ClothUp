@@ -24,5 +24,8 @@
   { "id": "snow-on-ground", "priority": 85, "when": { "snowOnGround": { "eq": true } }, "then": { "require": { "shoes": ["boots"] }, "prefer": { "boots": 4, "grip": 2, "water-resistant": 1 } }, "reason": "snowGround" },
   { "id": "fog", "priority": 60, "when": { "fog": { "eq": true } }, "then": { "prefer": { "water-resistant": 1, "warm": 1 } }, "reason": "fog" },
   { "id": "dry-wind", "priority": 70, "when": { "dryWind": { "eq": true } }, "then": { "add": ["water-bottle", "sunglasses"], "prefer": { "long-sleeve": 1, "breathable": 1 } }, "reason": "dryWind" },
-  { "id": "sun-and-shade", "priority": 55, "when": { "sunGap": { "gte": 5 }, "shadeMin": { "lte": 16 } }, "then": { "need": ["outer"] }, "reason": "sunShade" }
+  { "id": "sun-and-shade", "priority": 55, "when": { "sunGap": { "gte": 5 }, "shadeMin": { "lte": 16 } }, "then": { "need": ["outer"] }, "reason": "sunShade" },
+
+  { "id": "office-ac", "priority": 55, "when": { "occasion": { "in": ["work", "university", "interview", "shopping"] }, "feelsMax": { "gte": 30 } }, "then": { "carry": ["outer"] }, "reason": "officeAC" },
+  { "id": "windy-flowing", "priority": 60, "when": { "gust": { "gte": 40 }, "style": { "eq": "modest" } }, "then": { "preferFabrics": { "chiffon": -3, "viscose": 1, "satin": 1 } } }
 ]

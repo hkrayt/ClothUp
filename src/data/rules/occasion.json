@@ -1,25 +1,41 @@
 [
   { "id": "modest-coverage", "priority": 100, "when": { "style": { "eq": "modest" } }, "then": { "need": ["head"], "require": { "head": ["hijab"] }, "exclude": ["shorts", "sleeveless", "short-sleeve"], "prefer": { "loose": 2, "long-top": 1 } }, "reason": "modest" },
-  { "id": "traditional-head", "priority": 100, "when": { "style": { "eq": "traditional" }, "occasion": { "ne": "gym" } }, "then": { "need": ["head"], "require": { "head": ["shemagh"] }, "prefer": { "thobe": 4 } }, "reason": "traditional" },
+  { "id": "traditional-head", "priority": 100, "when": { "style": { "eq": "traditional" }, "occasion": { "nin": ["gym", "beach"] } }, "then": { "need": ["head"], "require": { "head": ["shemagh"] }, "prefer": { "thobe": 4 } }, "reason": "traditional" },
 
-  { "id": "religious-coverage", "priority": 100, "when": { "occasion": { "eq": "religious" } }, "then": { "exclude": ["shorts", "sleeveless"], "prefer": { "loose": 2, "flowy": -1 } }, "reason": "religious" },
-  { "id": "religious-women", "priority": 100, "when": { "occasion": { "eq": "religious" }, "gender": { "eq": "female" } }, "then": { "need": ["head"], "require": { "head": ["head-cover"] }, "exclude": ["short-sleeve"] } },
+  { "id": "religious-coverage", "priority": 100, "when": { "occasion": { "in": ["religious", "friday", "condolence"] } }, "then": { "exclude": ["shorts", "sleeveless"], "prefer": { "loose": 2, "flowy": -1 } }, "reason": "religious" },
+  { "id": "religious-women", "priority": 100, "when": { "occasion": { "in": ["religious", "friday"] }, "gender": { "eq": "female" } }, "then": { "need": ["head"], "require": { "head": ["head-cover"] }, "exclude": ["short-sleeve"] } },
+  { "id": "friday-cap", "priority": 40, "when": { "occasion": { "eq": "friday" }, "gender": { "eq": "male" }, "style": { "eq": "standard" } }, "then": { "need": ["head"], "require": { "head": ["taqiyah"] } } },
 
-  { "id": "work-polish", "priority": 90, "when": { "occasion": { "eq": "work" } }, "then": { "exclude": ["shorts", "sleeveless", "sporty"], "prefer": { "collared": 2, "tailored": 2, "leather": 1, "denim": -2 }, "add": ["#bag"] }, "reason": "work" },
-  { "id": "work-no-sandals", "priority": 90, "when": { "occasion": { "eq": "work" }, "style": { "ne": "traditional" } }, "then": { "exclude": ["sandals", "open-toe"] } },
+  { "id": "condolence-calm", "priority": 95, "when": { "occasion": { "eq": "condolence" } }, "then": { "exclude": ["sporty", "cap", "hat", "heels", "embroidered", "formal-shine"], "prefer": { "loose": 1, "long-sleeve": 1 } }, "reason": "condolence" },
+
+  { "id": "work-polish", "priority": 90, "when": { "occasion": { "in": ["work", "interview"] } }, "then": { "exclude": ["shorts", "sleeveless", "sporty"], "prefer": { "collared": 2, "tailored": 2, "leather": 1, "denim": -2 }, "add": ["#bag"] }, "reason": "work" },
+  { "id": "work-no-sandals", "priority": 90, "when": { "occasion": { "in": ["work", "interview"] }, "style": { "ne": "traditional" } }, "then": { "exclude": ["sandals", "open-toe"] } },
+  { "id": "interview-sharp", "priority": 92, "when": { "occasion": { "eq": "interview" } }, "then": { "exclude": ["denim", "sneakers", "hood", "cap"], "prefer": { "tailored": 3, "formal": 1 } }, "reason": "interview" },
 
   { "id": "formal-dress-code", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding"] } }, "then": { "exclude": ["shorts", "sporty", "denim", "sneakers", "beanie", "cap", "hood"], "prefer": { "formal": 3, "tailored": 2 }, "add": ["#bag"] }, "reason": "formal" },
-  { "id": "formal-jacket", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding"] }, "gender": { "eq": "male" }, "style": { "eq": "standard" } }, "then": { "need": ["outer"], "require": { "outer": ["suit", "tailored"] } }, "reason": "formalJacket" },
+  { "id": "formal-jacket", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding", "interview"] }, "gender": { "eq": "male" }, "style": { "eq": "standard" } }, "then": { "need": ["outer"], "require": { "outer": ["suit", "tailored"] } }, "reason": "formalJacket" },
   { "id": "formal-bisht", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding"] }, "style": { "eq": "traditional" } }, "then": { "need": ["outer"], "require": { "outer": ["formal"] } }, "reason": "bisht" },
   { "id": "formal-no-sandals", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding"] }, "style": { "ne": "traditional" } }, "then": { "exclude": ["sandals"] } },
+
+  { "id": "eid-best", "priority": 85, "when": { "occasion": { "eq": "eid" } }, "then": { "exclude": ["sporty", "shorts", "hood"], "prefer": { "embroidered": 3, "kaftan": 2, "formal": 1, "thobe": 2 }, "add": ["#bag"] }, "reason": "eid" },
+  { "id": "iftar-gathering", "priority": 80, "when": { "occasion": { "eq": "iftar" } }, "then": { "exclude": ["sporty", "shorts", "sleeveless"], "prefer": { "loose": 1, "kaftan": 2, "embroidered": 1 } }, "reason": "iftar" },
+  { "id": "dinner-out", "priority": 75, "when": { "occasion": { "eq": "dinner" } }, "then": { "exclude": ["sporty", "hood"], "prefer": { "collared": 1, "tailored": 1 }, "add": ["#bag"] }, "reason": "dinner" },
+  { "id": "shopping-walk", "priority": 70, "when": { "occasion": { "eq": "shopping" } }, "then": { "exclude": ["heels"], "prefer": { "sneakers": 2, "slip-on": 1, "layer": 1 }, "add": ["crossbody", "#bag"] }, "reason": "shopping" },
+
+  { "id": "beach-swim", "priority": 100, "when": { "occasion": { "eq": "beach" }, "feelsMax": { "gte": 25 } }, "then": { "require": { "top": ["swim"], "bottom": ["swim"], "shoes": ["sandals", "slides"] }, "prefer": { "sun-protect": 2 }, "add": ["sunscreen", "water-bottle", "beach-bag", "sunglasses"] }, "reason": "beach" },
+  { "id": "beach-swim-hijab", "priority": 100, "when": { "occasion": { "eq": "beach" }, "feelsMax": { "gte": 25 }, "style": { "eq": "modest" } }, "then": { "require": { "head": ["swim"] } } },
+  { "id": "beach-cover-up", "priority": 95, "when": { "occasion": { "eq": "beach" }, "feelsMax": { "gte": 25 }, "gender": { "eq": "female" }, "style": { "eq": "standard" } }, "then": { "need": ["outer"], "require": { "outer": ["cover-up"] } } },
+  { "id": "beach-walk", "priority": 100, "when": { "occasion": { "eq": "beach" }, "feelsMax": { "lt": 25 } }, "then": { "exclude": ["swim", "cover-up"], "add": ["sunscreen", "sunglasses"] }, "reason": "beachCool" },
 
   { "id": "university-comfort", "priority": 80, "when": { "occasion": { "eq": "university" } }, "then": { "exclude": ["shorts", "sleeveless", "heels"], "prefer": { "sneakers": 1, "layer": 1 }, "add": ["backpack"] }, "reason": "university" },
 
   { "id": "gym-kit", "priority": 100, "when": { "occasion": { "eq": "gym" } }, "then": { "require": { "top": ["sporty"], "bottom": ["sporty"], "shoes": ["sporty"] }, "prefer": { "breathable": 2 }, "add": ["gym-bag", "water-bottle"] }, "reason": "gym" },
 
-  { "id": "hiking-kit", "priority": 100, "when": { "occasion": { "eq": "hiking" } }, "then": { "require": { "shoes": ["boots", "sporty"] }, "exclude": ["heels", "slip-on", "dress", "skirt", "formal", "tailored", "flowy", "abaya"], "prefer": { "sporty": 2, "sun-protect": 2, "grip": 3, "waterproof": 1 }, "add": ["backpack", "water-bottle"] }, "reason": "hiking" },
+  { "id": "hiking-kit", "priority": 100, "when": { "occasion": { "eq": "hiking" } }, "then": { "require": { "shoes": ["boots", "sporty"] }, "exclude": ["heels", "slip-on", "dress", "skirt", "formal", "tailored", "flowy", "abaya", "kaftan"], "prefer": { "sporty": 2, "sun-protect": 2, "grip": 3, "waterproof": 1 }, "add": ["backpack", "water-bottle"] }, "reason": "hiking" },
 
   { "id": "travel-comfort", "priority": 70, "when": { "occasion": { "eq": "travel" } }, "then": { "exclude": ["heels"], "prefer": { "sneakers": 2, "slip-on": 1, "layer": 1, "loose": 1 }, "add": ["#bag"] }, "reason": "travel" },
 
-  { "id": "casual-bag", "priority": 20, "when": { "occasion": { "in": ["casual", "religious"] } }, "then": { "add": ["#bag"] } }
+  { "id": "swim-only-at-beach", "priority": 100, "when": { "occasion": { "ne": "beach" } }, "then": { "exclude": ["swim", "cover-up"] } },
+
+  { "id": "casual-bag", "priority": 20, "when": { "occasion": { "in": ["casual", "religious", "friday", "iftar"] } }, "then": { "add": ["#bag"] } }
 ]

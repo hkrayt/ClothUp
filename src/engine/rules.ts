@@ -2,12 +2,13 @@ import type { Condition, Rule, RuleEffect, Slot } from './outfit-types'
 
 export type Facts = Record<string, unknown>
 
-type Test = { gte?: number; lte?: number; gt?: number; lt?: number; eq?: unknown; in?: unknown[]; ne?: unknown }
+type Test = { gte?: number; lte?: number; gt?: number; lt?: number; eq?: unknown; in?: unknown[]; nin?: unknown[]; ne?: unknown }
 
 function testValue(value: unknown, test: Test): boolean {
   if (test.eq !== undefined && value !== test.eq) return false
   if (test.ne !== undefined && value === test.ne) return false
   if (test.in !== undefined && !test.in.includes(value)) return false
+  if (test.nin !== undefined && test.nin.includes(value)) return false
   if (typeof value === 'number') {
     if (test.gte !== undefined && !(value >= test.gte)) return false
     if (test.lte !== undefined && !(value <= test.lte)) return false
