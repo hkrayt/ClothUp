@@ -142,11 +142,26 @@ For each outfit the engine tries every palette, gives each piece its role color 
 ## How an outfit is built
 
 1. Weather is summarized over the whole stay (start → start + duration).
-2. Matching rules are merged into needs, requirements, exclusions and preferences.
+2. Personal details shift the weather and add preferences (see below), then matching rules are merged into needs, requirements, exclusions and preferences.
 3. Layers: an outer layer is used below 17 °C feels-like (marked *take along* if only the evening is cold), and a warm mid layer below ~9 °C.
-4. Each slot's candidates are scored on temperature fit, formality, rule preferences, fabric and the user's past choices.
+4. Each slot's candidates are scored on temperature fit, formality, rule preferences, fabric and the user's past choices. With *My closet* on, only owned items are candidates unless none of them suits the weather; then other items are used and marked "not in your closet" (accessories and eyewear are always offered, reminders like sunscreen are never marked).
 5. Top + bottom (or a one-piece) pairs are combined with the best outer, mid, shoes, socks, head and extras, with a coherence penalty for clashing formality.
 6. The best three outfits that differ in at least two main pieces are returned, with the reasons.
+
+## Personal details
+
+All optional and stored on the device only (`src/engine/personal.ts`):
+
+| Detail | Effect |
+|---|---|
+| "I feel the cold / the heat" | dresses for a feels-like 2.5 °C colder / warmer than the forecast |
+| Age 51–65 / over 65 | +1 °C / +2.5 °C warmer; comfortable shoes (`slip-on`, `closed`, `grip`) up, `sporty` down; no `heels` over 65 |
+| Age under 31 | `sneakers`, `layer` (and `hood` for teens) up; teens less `tailored` / `formal` |
+| Fuller build (BMI ≥ 27) | `loose`, `flowy`, `long-top`, `breathable` up; `fitted` down |
+| Slim build (BMI < 18.5) | `layer` up |
+| Height | the `long` tag a little up for tall people, down for petite; the character is drawn taller or shorter |
+
+Rules and the explanations still use the real forecast; only the scoring and the layer choice use the shifted temperature. The character is scaled from height (vertically) and build (horizontally) within fixed limits.
 
 ## Tuning
 
