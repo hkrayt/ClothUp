@@ -163,6 +163,14 @@ All optional and stored on the device only (`src/engine/personal.ts`):
 
 Rules and the explanations still use the real forecast; only the scoring and the layer choice use the shifted temperature. The character is scaled from height (vertically) and build (horizontally) within fixed limits.
 
+## Trips
+
+`src/engine/trip.ts` plans one outfit per day for 08:00–22:00 (today: from now). The first and last day can be travel days. Days after the first keep its palette, items already packed in reusable slots (outer, mid, bottom, shoes, head, accessories) get +2 and tops already packed −1, so the bag stays small but tops change. The packing list counts tops and socks once per day worn and everything else once, one line per item and color. Beyond the 16-day forecast, days use typical weather for the month.
+
+## Morning reminder
+
+On Android, `src/features/reminder` schedules a local notification for each of the next 7 mornings with that day's outfit for the last place and occasion used, from the saved forecast (or typical weather). They are rescheduled every time the app opens, so the text follows the latest forecast. Permission is asked only when the reminder is switched on.
+
 ## Tuning
 
 ```powershell

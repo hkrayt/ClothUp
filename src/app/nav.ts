@@ -3,7 +3,7 @@ import { create } from 'zustand'
 import { useApp } from './store'
 import { useSettings } from './settings'
 
-export type Screen = 'home' | 'result'
+export type Screen = 'home' | 'result' | 'trip'
 
 interface NavState {
   screen: Screen
@@ -12,7 +12,7 @@ interface NavState {
 }
 
 /**
- * Two-screen navigation backed by browser history, so the Android back button
+ * Screen navigation backed by browser history, so the Android back button
  * and the desktop/browser back gesture return from the result to the home screen.
  */
 export const useNav = create<NavState>()((set, get) => ({

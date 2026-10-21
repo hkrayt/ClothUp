@@ -403,5 +403,42 @@
     "footer": "Suggested by ClothUp",
     "copied": "Copied to the clipboard.",
     "failed": "Couldn't share this outfit."
+  },
+  "trip": {
+    "open": "Plan a trip",
+    "openHint": "An outfit for each day and one packing list",
+    "title": "Trip planner",
+    "hint": "Pieces are reused across days where it makes sense, so you pack less.",
+    "where": "Where to?",
+    "from": "Starting",
+    "pickDate": "Pick a start date",
+    "days": "How many days?",
+    "nDays_one": "{{count}} day",
+    "nDays_other": "{{count}} days",
+    "occasion": "Mostly for",
+    "travelDays": "First and last days are travel days",
+    "travelDaysHint": "Comfortable clothes for the journey there and back.",
+    "dayN": "Day {{n}}",
+    "feels": "Feels like {{min}}°–{{max}}°",
+    "rain": "rain {{p}}%",
+    "noWeather": "No weather for this day",
+    "typical": "Typical weather",
+    "openDay": "Open day {{n}} to change items",
+    "packing": "Packing list",
+    "packedCount": "{{done}} of {{total}} packed",
+    "offline": "Couldn't load the forecast, so these days use typical weather for the month."
+  },
+  "reminder": {
+    "title2": "Morning reminder",
+    "setting": "Remind me what to wear",
+    "settingHint": "A notification each morning with the day's outfit for your last place and occasion.",
+    "time": "Time",
+    "denied": "Notifications are off for ClothUp. Turn them on in Android settings to get reminders.",
+    "title": "{{place}} today: {{min}}°–{{max}}°",
+    "rain": "Rain likely ({{p}}%).",
+    "wear": "Wear: {{items}}.",
+    "take": "Take: {{items}}.",
+    "genericTitle": "What to wear today",
+    "genericBody": "Open ClothUp for today's outfit."
   }
 }

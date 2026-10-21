@@ -11,6 +11,7 @@ ClothUp asks where you're going, when, and for what occasion, checks the forecas
 - Up to three outfit options; change any single item and the rest stays put; it learns what you like
 - Optional height, weight, age and "I feel the cold / heat" to tailor the character and the suggestions (stored on the device only)
 - My closet: suggest only the clothes you own; save and share outfits
+- Trip planner: an outfit for each day of a trip and one packing list; morning reminder with the day's outfit (Android)
 - Fabric suggestions with a one-line reason, and color palettes from color theory shown as named swatches
 - Tap any item on the character to see its color, fabric and why it was chosen
 - Arabic and English with full RTL, light and dark mode, works offline with cached forecasts

@@ -6,8 +6,8 @@ Same workflow as before: one branch per release, small conventional commits, PR 
 |---|---|---|
 | **v1.1** | Weather data: 74 places incl. Amman neighbourhoods, more weather variables, "feels in the sun", hourly chart, 16-day forecast, monthly climate averages, faster caching | released |
 | **v1.2** | Clothes: 78 new items (208 total), 10 new palettes, patterns, shading and depth on the character, 8 new occasions (beach, condolence visit, Friday prayer, job interview, dinner, Eid, iftar, shopping), office-AC and wind rules, new character parts, tests on real past weather | released |
-| **v1.3** | Personal: height, weight and age in the profile (shape the character and the suggestions), My closet (suggest only what you own), "I run cold / hot", saved and shared outfits | in review |
-| **v1.4** | Planning: multi-day trip planner with packing list, morning reminder notification | planned |
+| **v1.3** | Personal: height, weight and age in the profile (shape the character and the suggestions), My closet (suggest only what you own), "I run cold / hot", saved and shared outfits | released |
+| **v1.4** | Planning: multi-day trip planner with packing list, morning reminder notification | in review |
 | later | Android widget, family profiles, backup weather provider (MET Norway), ensemble forecast confidence | ideas |
 
 ## v1.1 — weather data
@@ -37,6 +37,6 @@ Same workflow as before: one branch per release, small conventional commits, PR 
 
 1. Niqab: left out for now (decided for v1.2).
 2. Beach occasion with swimwear: added in v1.2 (burkini for modest style).
-3. OK to ask for notification permission on Android (morning reminder, v1.4)?
+3. Notification permission on Android: asked only when you switch on the morning reminder (v1.4).
 4. Modest/traditional styling and Arabic names: reviewed by the owner (v1.2).
 5. Will the app stay free? (affects the weather provider)

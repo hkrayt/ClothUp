@@ -53,3 +53,9 @@ export function dateOf(local: string): string {
 export function atHour(date: string, hour: number): string {
   return `${date}T${pad(hour)}:00`
 }
+
+/** The real moment of an Amman wall-clock time (UTC+3 all year). */
+export function ammanMoment(date: string, hour: number, minute = 0): Date {
+  const [y, m, d] = date.split('-').map(Number)
+  return new Date(Date.UTC(y, m - 1, d, hour - 3, minute))
+}
