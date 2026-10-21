@@ -316,7 +316,8 @@
       "hijab": "The {{a}} hijab ties the outfit's colors together.",
       "pair": "{{A}} and {{b}} are an easy pair that always works.",
       "light": "Light colors reflect the sun and keep you cooler.",
-      "neutrals": "{{A}}, {{b}} and {{c}} are calm neutrals that always work together."
+      "neutrals": "{{A}}, {{b}} and {{c}} are calm neutrals that always work together.",
+      "pattern": "The {{a}}-and-{{b}} pattern is the one busy piece; everything else stays plain."
     }
   },
   "swap": {
@@ -343,5 +344,11 @@
     "tafilah": "Tafilah",
     "maan": "Ma'an",
     "aqaba": "Aqaba"
+  },
+  "pattern": {
+    "stripes": "Stripes",
+    "check": "Check",
+    "floral": "Floral",
+    "embroidery": "Embroidered"
   }
 }

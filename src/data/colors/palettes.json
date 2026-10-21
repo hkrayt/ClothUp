@@ -1,7 +1,7 @@
 [
   { "id": "navy-white-camel", "strategy": "neutral-accent", "moods": ["classic", "muted"], "base": "navy", "secondary": "white", "accent": "camel", "ground": "brown", "outer": "camel" },
   { "id": "charcoal-sky-burgundy", "strategy": "neutral-accent", "moods": ["classic", "muted"], "base": "charcoal", "secondary": "sky", "accent": "burgundy", "ground": "black", "outer": "navy" },
-  { "id": "grey-white-navy", "strategy": "neutral-accent", "moods": ["classic", "muted", "fresh"], "base": "grey", "secondary": "white", "accent": "navy", "ground": "black", "outer": "navy" },
+  { "id": "grey-white-navy", "strategy": "neutral-accent", "moods": ["somber", "classic", "muted", "fresh"], "base": "grey", "secondary": "white", "accent": "navy", "ground": "black", "outer": "navy" },
   { "id": "black-cream-camel", "strategy": "neutral-accent", "moods": ["classic", "muted"], "base": "black", "secondary": "cream", "accent": "camel", "ground": "black", "outer": "camel" },
   { "id": "navy-blush-cream", "strategy": "neutral-accent", "moods": ["classic", "fresh"], "base": "navy", "secondary": "blush", "accent": "cream", "ground": "tan", "outer": "beige" },
   { "id": "khaki-white-navy", "strategy": "neutral-accent", "moods": ["fresh", "muted", "classic"], "base": "khaki", "secondary": "white", "accent": "navy", "ground": "brown", "outer": "navy", "bands": ["mild", "warm", "hot", "extreme"] },
@@ -31,12 +31,12 @@
   { "id": "teal-sand-white", "strategy": "complementary", "moods": ["fresh", "bright"], "base": "teal", "secondary": "white", "accent": "sand", "ground": "white", "outer": "navy" },
 
   { "id": "camel-tonal", "strategy": "monochrome", "moods": ["classic", "earthy", "muted"], "base": "camel", "secondary": "cream", "accent": "chocolate", "ground": "chocolate", "outer": "camel", "bands": ["freezing", "cold", "cool", "mild"] },
-  { "id": "charcoal-tonal", "strategy": "monochrome", "moods": ["muted", "classic"], "base": "charcoal", "secondary": "grey-light", "accent": "black", "ground": "black", "outer": "grey", "bands": ["freezing", "cold", "cool", "mild"] },
-  { "id": "navy-tonal", "strategy": "monochrome", "moods": ["classic", "muted"], "base": "navy", "secondary": "sky", "accent": "denim-dark", "ground": "brown", "outer": "navy" },
+  { "id": "charcoal-tonal", "strategy": "monochrome", "moods": ["somber", "muted", "classic"], "base": "charcoal", "secondary": "grey-light", "accent": "black", "ground": "black", "outer": "grey", "bands": ["freezing", "cold", "cool", "mild"] },
+  { "id": "navy-tonal", "strategy": "monochrome", "moods": ["somber", "classic", "muted"], "base": "navy", "secondary": "sky", "accent": "denim-dark", "ground": "brown", "outer": "navy" },
   { "id": "ivory-tonal", "strategy": "monochrome", "moods": ["classic", "fresh"], "base": "off-white", "secondary": "cream", "accent": "champagne", "ground": "tan", "outer": "beige", "bands": ["mild", "warm", "hot", "extreme"] },
   { "id": "champagne-ivory-gold", "strategy": "monochrome", "moods": ["classic"], "base": "champagne", "secondary": "off-white", "accent": "gold", "ground": "nude", "outer": "camel" },
-  { "id": "black-tonal", "strategy": "monochrome", "moods": ["classic", "muted"], "base": "black", "secondary": "charcoal", "accent": "grey-light", "ground": "black", "outer": "black" },
+  { "id": "black-tonal", "strategy": "monochrome", "moods": ["somber", "classic", "muted"], "base": "black", "secondary": "charcoal", "accent": "grey-light", "ground": "black", "outer": "black" },
 
   { "id": "white-sky-tan", "strategy": "neutral-accent", "moods": ["fresh", "muted"], "base": "off-white", "secondary": "sky", "accent": "tan", "ground": "tan", "outer": "beige", "bands": ["warm", "hot", "extreme"] },
-  { "id": "grey-white-charcoal", "strategy": "monochrome", "moods": ["muted", "fresh", "classic"], "base": "grey-light", "secondary": "white", "accent": "charcoal", "ground": "black", "outer": "charcoal" }
+  { "id": "grey-white-charcoal", "strategy": "monochrome", "moods": ["somber", "muted", "fresh", "classic"], "base": "grey-light", "secondary": "white", "accent": "charcoal", "ground": "black", "outer": "charcoal" }
 ]

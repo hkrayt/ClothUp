@@ -13,6 +13,8 @@ export interface GenerateOptions {
   count?: number
   /** Color with this palette (used to keep colors stable when swapping an item). */
   paletteId?: string
+  /** Whether a patterned piece is allowed (default: only for the second option). */
+  allowPattern?: boolean
 }
 
 interface Scored {
@@ -416,7 +418,7 @@ export function applySwap(
   const newItem = data.items.find((i) => i.id === itemId)
   if (slot === 'bottom' && outfit.pieces.find((p) => p.slot === 'top')?.item.fills?.includes('bottom')) delete locks.top
   if (newItem?.fills?.includes('bottom')) delete locks.bottom
-  const [result] = generateOutfits(ctx, profile, occasion, data, { locks, prefs, count: 1, paletteId: outfit.palette?.id })
+  const [result] = generateOutfits(ctx, profile, occasion, data, { locks, prefs, count: 1, paletteId: outfit.palette?.id, allowPattern: outfit.pieces.some((p) => p.pattern && p.pattern !== 'embroidery') })
   return result ? { ...result, id: outfit.id } : null
 }
 
@@ -470,7 +472,8 @@ export function generateOutfits(
   const colors = new ColorEngine(data.colors)
   const used: string[] = []
   return picked.map((o, i) => {
-    const colored = colors.colorize({ ...o, id: `outfit-${i + 1}`, reasons }, ctx, occasion, used, opts.paletteId)
+    // The second option may carry one patterned piece for variety; the first stays plain and classic.
+    const colored = colors.colorize({ ...o, id: `outfit-${i + 1}`, reasons }, ctx, occasion, used, opts.paletteId, opts.allowPattern ?? i === 1)
     if (colored.palette) used.push(colored.palette.id)
     return colored
   })

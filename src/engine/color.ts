@@ -1,4 +1,4 @@
-import type { ClothingItem, Outfit, OutfitPiece, Slot } from './outfit-types'
+import type { ClothingItem, Outfit, OutfitPiece, Pattern, Slot } from './outfit-types'
 import type { Mood, Occasion, WeatherContext } from './types'
 
 export interface ColorDef {
@@ -183,9 +183,10 @@ export class ColorEngine {
   }
 
   /** Colors an outfit with the best palette; `avoid` lists palettes already used by other options. */
-  colorize(outfit: Outfit, ctx: WeatherContext, occasion: Occasion, avoid: string[] = [], only?: string): Outfit {
+  colorize(outfit: Outfit, ctx: WeatherContext, occasion: Occasion, avoid: string[] = [], only?: string, allowPattern = false): Outfit {
     let best: { score: number; pieces: OutfitPiece[]; palette: Palette } | null = null
     const sunnyHeat = ctx.feelsMax >= 28 && ctx.uvMax >= 5
+    const somber = occasion.moods[0] === 'somber'
     const candidates = this.data.palettes.filter((p) => !only || p.id === only)
 
     for (const palette of candidates.length ? candidates : this.data.palettes) {
@@ -201,6 +202,8 @@ export class ColorEngine {
         const weight = MAIN.includes(p.slot) ? 1 : 0.4
         score += a.quality * weight
         if (sunnyHeat && HEAT_EXPOSED.includes(p.slot) && !p.carry && lightness(this.hex(a.color)) < 0.45) score -= 1.5
+        // Condolence visits: quiet, dark, unsaturated colors on everything that shows.
+        if (somber && MAIN.includes(p.slot) && !this.byId.get(a.color)?.fixed && chroma(this.hex(a.color)) > 0.07) score -= 3
         return { ...p, color: a.color }
       })
       score -= this.harmonyPenalty(pieces, palette.strategy, occasion.moods[0])
@@ -208,7 +211,41 @@ export class ColorEngine {
     }
     if (!best) return outfit
 
-    return { ...outfit, pieces: best.pieces, palette: this.describe(best.pieces, best.palette, sunnyHeat) }
+    const pieces = this.applyPatterns(best.pieces, best.palette, occasion, allowPattern && !somber)
+    const palette = this.describe(pieces, best.palette, sunnyHeat)
+    const patterned = pieces.find((p) => p.pattern && p.pattern !== 'embroidery')
+    if (patterned) palette.notes.push({ key: 'pattern', colors: [patterned.color!, patterned.patternColor!] })
+    return { ...outfit, pieces, palette }
+  }
+
+  /**
+   * Embroidered items always show their trim (gold for festive and formal occasions). When allowed,
+   * one other piece gets its pattern in a contrasting palette color; everything else stays plain.
+   */
+  applyPatterns(pieces: OutfitPiece[], palette: Palette, occasion: Occasion, allow: boolean): OutfitPiece[] {
+    const festive = ['eid', 'wedding', 'formal', 'iftar'].includes(occasion.id)
+    const contrast = (color: string, options: string[]) =>
+      options.find((c) => c !== color && this.byId.has(c) && deltaE(this.hex(color), this.hex(c)) > 0.18) ?? 'white'
+
+    let out = pieces.map((p) => {
+      if (!p.color || !p.item.patterns?.includes('embroidery') || !p.item.tags.includes('embroidered')) return p
+      const patternColor = festive || p.item.formality >= 4 ? 'gold' : contrast(p.color, [palette.accent, palette.secondary])
+      return { ...p, pattern: 'embroidery' as Pattern, patternColor }
+    })
+    if (!allow) return out
+
+    const businesslike = ['work', 'interview', 'university'].includes(occasion.id)
+    const order = (p: OutfitPiece) =>
+      p.slot === 'top' ? (p.item.fills ? 1 : 0) : p.slot === 'bottom' ? 2 : p.slot === 'outer' ? 3 : p.slot === 'accessory' ? 4 : 9
+    const candidate = out
+      .filter((p) => p.color && !p.pattern && !p.carry && p.item.patterns?.length && order(p) < 9)
+      .sort((a, b) => order(a) - order(b))[0]
+    if (!candidate) return out
+    const options = candidate.item.patterns!
+    const pattern = (businesslike ? options.find((x) => x === 'stripes' || x === 'check') : undefined) ?? options[0]
+    const patternColor = contrast(candidate.color!, [palette.accent, palette.secondary, palette.base])
+    out = out.map((p) => (p === candidate ? { ...p, pattern, patternColor } : p))
+    return out
   }
 
   /**
