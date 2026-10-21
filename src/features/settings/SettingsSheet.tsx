@@ -1,10 +1,14 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ChevronRight, Shirt } from 'lucide-react'
 import type { Gender, Style } from '@/engine/types'
 import { Button, Segmented, Sheet, cx } from '@/ui'
 import { SKIN_TONES } from '@/features/character/body'
 import { useSettings, type Language, type ThemePref } from '@/app/settings'
 import { useApp } from '@/app/store'
 import { STYLES } from '@/features/onboarding/Onboarding'
+import { ClosetSheet } from '@/features/closet/ClosetSheet'
+import { AboutYou } from './AboutYou'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -18,8 +22,9 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useTranslation()
   const { language, theme, setLanguage, setTheme } = useSettings()
-  const { profile, updateProfile, itemPrefs, resetPrefs } = useApp()
+  const { profile, updateProfile, itemPrefs, resetPrefs, closet } = useApp()
   const learned = Object.keys(itemPrefs).length
+  const [closetOpen, setClosetOpen] = useState(false)
 
   return (
     <Sheet open={open} onClose={onClose} title={t('settings.title')} closeLabel={t('common.close')}>
@@ -60,6 +65,25 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
                   />
                 ))}
               </div>
+            </Section>
+            <Section title={t('about.title')}>
+              <AboutYou value={profile} onChange={updateProfile} />
+            </Section>
+            <Section title={t('closet.title')}>
+              <button
+                type="button"
+                onClick={() => setClosetOpen(true)}
+                className="flex min-h-14 items-center gap-3 rounded-control border border-border bg-surface-2 px-4 text-start hover:border-primary"
+              >
+                <Shirt size={20} className="text-muted" aria-hidden />
+                <span className="flex flex-1 flex-col">
+                  <span className="font-semibold">{t('closet.open')}</span>
+                  <span className="text-sm text-muted">
+                    {closet.enabled ? t('closet.statusOn', { count: closet.owned.length }) : t('closet.statusOff')}
+                  </span>
+                </span>
+                <ChevronRight size={20} className="text-muted rtl:rotate-180" aria-hidden />
+              </button>
             </Section>
           </>
         )}
@@ -103,6 +127,7 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
           </a>
         </p>
       </div>
+      {profile && closetOpen && <ClosetSheet open onClose={() => setClosetOpen(false)} profile={profile} />}
     </Sheet>
   )
 }

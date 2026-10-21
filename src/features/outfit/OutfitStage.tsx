@@ -4,6 +4,7 @@ import type { Lang, Profile } from '@/engine/types'
 import type { Outfit, OutfitPiece } from '@/engine/outfit-types'
 import { COLORS } from '@/engine/catalog'
 import { Character } from '@/features/character/Character'
+import { figureScale } from '@/engine/personal'
 import { IconButton } from '@/ui'
 import { colorName } from './PaletteCard'
 import { fabricName } from './OutfitList'
@@ -28,6 +29,7 @@ export function OutfitStage({ outfit, profile, selected, onSelect, action }: Out
         pieces={outfit.pieces}
         gender={profile.gender}
         skinTone={profile.skinTone}
+        figure={figureScale(profile)}
         lang={lang}
         selectedId={selected?.item.id ?? null}
         onSelect={onSelect}
