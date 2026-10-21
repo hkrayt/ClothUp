@@ -45,3 +45,8 @@ export function compass(deg: number): (typeof COMPASS)[number] {
 export function minutesAgo(ts: number, now = Date.now()): number {
   return Math.max(0, Math.round((now - ts) / 60_000))
 }
+
+/** Short day and month of a moment (epoch ms), in Amman time. */
+export function formatDay(ms: number, lang: Lang): string {
+  return new Intl.DateTimeFormat(LOCALE[lang], { day: 'numeric', month: 'short', timeZone: 'Asia/Amman' }).format(new Date(ms))
+}

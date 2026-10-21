@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import type { Duration, OccasionId, Place, Profile, When } from '@/engine/types'
+import type { OutfitPiece, Slot } from '@/engine/outfit-types'
+import type { Localized } from '@/engine/types'
 import { kvStorage } from '@/lib/storage'
 
 export interface Plan {
@@ -10,6 +12,28 @@ export interface Plan {
   duration: Duration
   occasion: OccasionId
 }
+
+/** "My closet": the items the user owns. */
+export interface Closet {
+  /** Suggest only owned items (where something owned suits the weather). */
+  enabled: boolean
+  owned: string[]
+}
+
+/** A piece of a saved outfit: the item and how it was colored. */
+export type SavedPiece = Pick<OutfitPiece, 'slot' | 'fabric' | 'carry' | 'color' | 'pattern' | 'patternColor'> & { itemId: string; slot: Slot }
+
+export interface SavedOutfit {
+  id: string
+  savedAt: number
+  placeName: Localized
+  occasion: OccasionId
+  /** Feels-like range during the stay, for the card. */
+  feels: [number, number]
+  pieces: SavedPiece[]
+}
+
+export const SAVED_LIMIT = 30
 
 interface AppState {
   profile: Profile | null
@@ -25,6 +49,13 @@ interface AppState {
   itemPrefs: Record<string, number>
   recordSwap: (fromId: string, toId: string) => void
   resetPrefs: () => void
+  closet: Closet
+  setClosetEnabled: (enabled: boolean) => void
+  /** Marks items as owned (or not). */
+  setOwned: (ids: string[], owned: boolean) => void
+  saved: SavedOutfit[]
+  saveOutfit: (outfit: Omit<SavedOutfit, 'id' | 'savedAt'>) => string
+  removeSaved: (id: string) => void
 }
 
 const clampPref = (n: number) => Math.max(-4, Math.min(4, Math.round(n * 10) / 10))
@@ -56,6 +87,23 @@ export const useApp = create<AppState>()(
         set({ itemPrefs: p })
       },
       resetPrefs: () => set({ itemPrefs: {} }),
+      closet: { enabled: false, owned: [] },
+      setClosetEnabled: (enabled) => set({ closet: { ...get().closet, enabled } }),
+      setOwned: (ids, owned) => {
+        const current = new Set(get().closet.owned)
+        for (const id of ids) {
+          if (owned) current.add(id)
+          else current.delete(id)
+        }
+        set({ closet: { ...get().closet, owned: [...current].sort() } })
+      },
+      saved: [],
+      saveOutfit: (outfit) => {
+        const id = `s-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`
+        set({ saved: [{ ...outfit, id, savedAt: Date.now() }, ...get().saved].slice(0, SAVED_LIMIT) })
+        return id
+      },
+      removeSaved: (id) => set({ saved: get().saved.filter((s) => s.id !== id) }),
     }),
     {
       name: 'clothup.app',
@@ -66,6 +114,8 @@ export const useApp = create<AppState>()(
         profile: s.profile,
         placeUsage: s.placeUsage,
         itemPrefs: s.itemPrefs,
+        closet: s.closet,
+        saved: s.saved,
         plan: { ...s.plan, when: { kind: 'now' } as When },
       }),
     },

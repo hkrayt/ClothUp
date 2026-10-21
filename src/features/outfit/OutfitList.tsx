@@ -31,6 +31,7 @@ function PieceRow({ piece, lang, onChange }: { piece: OutfitPiece; lang: Lang; o
             {t('outfit.carry')}
           </span>
         )}
+        {piece.missing && <span className="rounded-full bg-surface-2 px-2 py-0.5 text-xs font-medium text-muted">{t('closet.notOwned')}</span>}
       </div>
       <span className="flex items-center gap-2 font-semibold">
         {piece.color && (
@@ -87,6 +88,7 @@ export function OutfitList({ outfit, onChange }: { outfit: Outfit; onChange?: (p
                     <span className="h-3 w-3 rounded-full border border-black/10" style={{ background: COLORS.hex(p.color) }} aria-hidden />
                   )}
                   {p.item.name[lang]}
+                  {p.missing && <span className="font-normal text-muted">· {t('closet.notOwned')}</span>}
                 </li>
               ))}
             </ul>

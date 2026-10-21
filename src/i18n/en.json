@@ -34,7 +34,9 @@
     "genderHint": "This picks the right clothes and character. You can change it any time in Settings.",
     "styleTitle": "Pick your style",
     "styleHint": "We'll suggest outfits in this style.",
-    "done": "Let's go"
+    "done": "Let's go",
+    "aboutTitle": "A little about you",
+    "aboutHint": "Optional: height, weight and age help us pick fits and warmth that suit you. Skip anything you like."
   },
   "profile": {
     "gender": {
@@ -265,7 +267,11 @@
     "shopping": "Comfortable shoes for walking and a layer for the cold mall air.",
     "beach": "Swimwear, sun protection and water for the beach.",
     "beachCool": "Too cool to swim: a comfortable outfit for a walk by the water.",
-    "officeAC": "Strong air conditioning indoors: bring a light layer."
+    "officeAC": "Strong air conditioning indoors: bring a light layer.",
+    "personalCold": "You feel the cold, so this is a little warmer than the forecast alone suggests.",
+    "personalHot": "You feel the heat, so this is a little lighter than the forecast alone suggests.",
+    "personalAge": "A slightly warmer pick with comfortable shoes, as suits your age group.",
+    "personalFit": "Relaxed, easy fits that are comfortable all day."
   },
   "fabric": {
     "why": {
@@ -350,5 +356,52 @@
     "check": "Check",
     "floral": "Floral",
     "embroidery": "Embroidered"
+  },
+  "about": {
+    "title": "About you",
+    "height": "Height",
+    "weight": "Weight",
+    "age": "Age",
+    "cm": "cm",
+    "kg": "kg",
+    "years": "yrs",
+    "range": "Between {{min}} and {{max}}",
+    "thermal": "Usually I…",
+    "thermals": {
+      "cold": "Feel the cold",
+      "normal": "Am in between",
+      "hot": "Feel the heat"
+    },
+    "privacy": "Optional. These shape the character and tune the suggestions, and never leave this device."
+  },
+  "closet": {
+    "title": "My closet",
+    "open": "Choose what you own",
+    "statusOn": "On · {{count}} items",
+    "statusOff": "Off · suggestions use every item",
+    "only": "Suggest only what I own",
+    "onlyHint": "{{count}} items marked. If nothing you own suits the weather, we'll suggest something and say so.",
+    "search": "Search items",
+    "selectAll": "Select all",
+    "clearAll": "Clear",
+    "noMatch": "No items match.",
+    "notOwned": "Not in your closet"
+  },
+  "saved": {
+    "title": "Saved outfits",
+    "save": "Save",
+    "savedButton": "Saved",
+    "added": "Saved. Find it on the home screen.",
+    "removed": "Removed from saved outfits.",
+    "delete": "Delete",
+    "feels": "Feels like {{min}}° to {{max}}°"
+  },
+  "share": {
+    "button": "Share",
+    "title": "My ClothUp outfit",
+    "heading": "{{place}} · {{occasion}} · feels like {{min}}°–{{max}}°",
+    "footer": "Suggested by ClothUp",
+    "copied": "Copied to the clipboard.",
+    "failed": "Couldn't share this outfit."
   }
 }
