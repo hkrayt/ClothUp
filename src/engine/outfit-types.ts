@@ -3,6 +3,8 @@ import type { Gender, Localized, OccasionId, Style } from './types'
 /** Body slots, drawn back-to-front in roughly this order. */
 export type Slot = 'head' | 'eyewear' | 'outer' | 'mid' | 'top' | 'bottom' | 'socks' | 'shoes' | 'accessory'
 
+export type Pattern = 'stripes' | 'check' | 'floral' | 'embroidery'
+
 export type Coverage = {
   arms?: 'none' | 'short' | 'long'
   legs?: 'short' | 'knee' | 'long'
@@ -28,6 +30,8 @@ export interface ClothingItem {
   colors: string[]
   /** SVG part name and variant for the character renderer. */
   svg: { part: string; variant?: string }
+  /** Patterns this item can come in; 'embroidery' items always show their trim. */
+  patterns?: Pattern[]
 }
 
 /** A fabric. Its one-line "why" lives in i18n under fabric.why.<id>. */
@@ -42,7 +46,7 @@ export interface Fabric {
 
 /** A condition on the outfit context. All keys must match (AND); `any` matches if one sub-condition does. */
 export type Condition = {
-  [field: string]: { gte?: number; lte?: number; gt?: number; lt?: number; eq?: unknown; in?: unknown[]; ne?: unknown } | Condition[] | undefined
+  [field: string]: { gte?: number; lte?: number; gt?: number; lt?: number; eq?: unknown; in?: unknown[]; nin?: unknown[]; ne?: unknown } | Condition[] | undefined
   any?: Condition[]
 }
 
@@ -84,6 +88,9 @@ export interface OutfitPiece {
   carry?: boolean
   /** Assigned color id (set by the color engine). */
   color?: string
+  /** Pattern drawn on the piece, and its second color (set by the color engine). */
+  pattern?: Pattern
+  patternColor?: string
 }
 
 export interface Reason {

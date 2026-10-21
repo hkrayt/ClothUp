@@ -13,6 +13,10 @@ const PROFILES: Profile[] = [
 ]
 
 const CASES: Array<[keyof typeof SCENARIOS, OccasionId]> = [
+  ['aqabaSummer', 'beach'],
+  ['mildCloudy', 'eid'],
+  ['ammanWinterRain', 'condolence'],
+  ['deadSeaSpring', 'shopping'],
   ['ammanWinterRain', 'work'],
   ['ammanSnow', 'casual'],
   ['ammanSpring', 'university'],
@@ -40,7 +44,10 @@ export function Gallery() {
           </h2>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {profiles.map((p) => {
-              const [o] = generateOutfits(SCENARIOS[sc], p, DATA.occasions.find((x) => x.id === occ)!, DATA)
+              const [, second] = generateOutfits(SCENARIOS[sc], p, DATA.occasions.find((x) => x.id === occ)!, DATA)
+              const [first] = generateOutfits(SCENARIOS[sc], p, DATA.occasions.find((x) => x.id === occ)!, DATA)
+              // ?gallery=...&option=2 shows the second option (the one that can carry a pattern)
+              const o = new URLSearchParams(location.search).get('option') === '2' ? (second ?? first) : first
               return (
                 <div key={`${p.gender}-${p.style}`} className="rounded-card bg-stage p-2">
                   {o && (

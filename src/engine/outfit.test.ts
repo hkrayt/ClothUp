@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
 import { DATA } from './catalog'
 import { applySwap, generateOutfits, swapOptions, temperatureFit } from './outfit'
+import { chroma } from './color'
 import { SCENARIOS } from './scenarios'
 import type { Outfit } from './outfit-types'
 import type { OccasionId, Profile } from './types'
@@ -83,7 +84,8 @@ describe('generateOutfits — every scenario × occasion × profile', () => {
 
             for (const i of all(o)) {
               expect(i.gender).toContain(profile.gender)
-              expect(i.occasions).toContain(occasion)
+              const ok = [occasion, ...(occ(occasion).includes ?? [])]
+              expect(i.occasions.some((x) => ok.includes(x)), i.id).toBe(true)
             }
 
             if (profile.style === 'modest') {
@@ -145,7 +147,9 @@ describe('specific suggestions', () => {
   })
 
   it('formal man gets a suit jacket; traditional wedding gets a bisht and shemagh', () => {
-    expect(slotItem(generateOutfits(SCENARIOS.mildCloudy, male, occ('formal'), DATA)[0], 'outer')!.id).toBe('m-suit-jacket')
+    const [f] = generateOutfits(SCENARIOS.mildCloudy, male, occ('formal'), DATA)
+    expect(['m-suit-jacket', 'm-dinner-jacket']).toContain(slotItem(f, 'outer')!.id)
+    expect(f.pieces.some((p) => p.item.id === 'm-tie')).toBe(true)
     const [w] = generateOutfits(SCENARIOS.mildCloudy, trad, occ('wedding'), DATA)
     expect(slotItem(w, 'outer')!.id).toBe('m-bisht')
     expect(slotItem(w, 'head')!.tags).toContain('shemagh')
@@ -225,6 +229,49 @@ describe('specific suggestions', () => {
   it('sharqiya adds water and sunglasses', () => {
     const [o] = generateOutfits(SCENARIOS.sharqiya, male, occ('casual'), DATA)
     expect(all(o).map((i) => i.id)).toEqual(expect.arrayContaining(['water-bottle', 'sunglasses']))
+  })
+
+  it('beach: swimwear for each style when it is hot, regular clothes when it is cool', () => {
+    const hot = SCENARIOS.aqabaSummer
+    expect(slotItem(generateOutfits(hot, modest, occ('beach'), DATA)[0], 'top')!.id).toBe('f-burkini')
+    expect(slotItem(generateOutfits(hot, modest, occ('beach'), DATA)[0], 'head')!.tags).toContain('swim')
+    const female: Profile = { gender: 'female', style: 'standard', skinTone: 2 }
+    const [f] = generateOutfits(hot, female, occ('beach'), DATA)
+    expect(slotItem(f, 'top')!.tags).toContain('swim')
+    expect(slotItem(f, 'outer')!.tags).toContain('cover-up')
+    for (const p of [male, trad]) expect(slotItem(generateOutfits(hot, p, occ('beach'), DATA)[0], 'bottom')!.tags).toContain('swim')
+    for (const o of generateOutfits(SCENARIOS.ammanSpring, female, occ('beach'), DATA)) for (const i of all(o)) expect(i.tags).not.toContain('swim')
+  })
+
+  it('swimwear never appears away from the beach', () => {
+    for (const o of generateOutfits(SCENARIOS.aqabaSummer, male, occ('casual'), DATA)) for (const i of all(o)) expect(i.tags).not.toContain('swim')
+  })
+
+  it('condolence visits use quiet colors; Eid gets embroidery', () => {
+    const [c] = generateOutfits(SCENARIOS.ammanWinterRain, male, occ('condolence'), DATA)
+    for (const p of c.pieces.filter((p) => ['top', 'bottom', 'outer', 'mid'].includes(p.slot)))
+      expect(chroma(DATA.colors.colors.find((x) => x.id === p.color)!.hex), p.color).toBeLessThan(0.075)
+    const eid = generateOutfits(SCENARIOS.mildCloudy, trad, occ('eid'), DATA)
+    expect(eid.some((o) => o.pieces.some((p) => p.pattern === 'embroidery'))).toBe(true)
+  })
+
+  it('only the second option can carry a patterned piece, and at most one', () => {
+    for (const ctx of Object.values(SCENARIOS))
+      for (const p of PROFILES)
+        for (const o of DATA.occasions) {
+          const outfits = generateOutfits(ctx, p, o, DATA)
+          outfits.forEach((x, i) => {
+            const patterned = x.pieces.filter((pc) => pc.pattern && pc.pattern !== 'embroidery')
+            expect(patterned.length).toBeLessThanOrEqual(i === 1 ? 1 : 0)
+            for (const pc of patterned) expect(pc.item.patterns).toContain(pc.pattern)
+          })
+        }
+  })
+
+  it('office air conditioning in summer adds a light layer to take along', () => {
+    const [o] = generateOutfits(SCENARIOS.aqabaSummer, male, occ('work'), DATA)
+    expect(o.pieces.find((p) => p.slot === 'outer')?.carry).toBe(true)
+    expect(o.reasons.map((r) => r.key)).toContain('officeAC')
   })
 
   it('locks force an item in a slot', () => {

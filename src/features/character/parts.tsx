@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import type { ClothingItem } from '@/engine/outfit-types'
 import { legLines, mirror, xAt, type Body, type Pt } from './body'
 import { L, M, Q, curveThrough, mirrorPts } from './path'
+import { PARTS_V12 } from './parts2'
 import {
   bootShaft,
   capDome,
@@ -35,6 +36,8 @@ export interface PartCtx {
   skin: string
   item: ClothingItem
   patternId: string
+  /** Embroidery / trim color when the piece is embroidered. */
+  trim?: string
 }
 
 export type Renderer = (c: PartCtx) => ReactNode
@@ -42,8 +45,17 @@ export type Renderer = (c: PartCtx) => ReactNode
 const SW = 1.1
 const GOLD = '#C8A44C'
 
+/** The shared side-to-side shading gradient defined in the character's <defs>. */
+export const shadeUrl = (c: PartCtx) => `url(#${c.patternId}-shade)`
+
+/** A garment shape: its fill, then a soft side-to-side shading overlay for depth. */
 function P({ d, c, fill, sw = SW, opacity }: { d: string; c: PartCtx; fill?: string; sw?: number; opacity?: number }) {
-  return <path d={d} fill={fill ?? c.fill} stroke={c.stroke} strokeWidth={sw} strokeLinejoin="round" opacity={opacity} />
+  return (
+    <>
+      <path d={d} fill={fill ?? c.fill} stroke={c.stroke} strokeWidth={sw} strokeLinejoin="round" opacity={opacity} />
+      <path d={d} fill={shadeUrl(c)} stroke="none" opacity={opacity} pointerEvents="none" />
+    </>
+  )
 }
 
 function Line({ d, c, w = 1, color, dash }: { d: string; c: PartCtx; w?: number; color?: string; dash?: string }) {
@@ -107,7 +119,7 @@ const shirt: Renderer = (c) => {
 
 const polo: Renderer = (c) => (
   <>
-    <Sleeves c={c} endY={146} loose={1} />
+    <Sleeves c={c} endY={c.variant === 'long' ? c.b.armOuter[3][1] : 146} loose={1} />
     <P d={torso(c.b, { hemY: 238, loose: 1.5 })} c={c} />
     <Pair c={c} d={collar(c.b, 1)} />
     <Line c={c} d={M([c.b.cx, 104]) + L([c.b.cx, 130])} />
@@ -175,6 +187,12 @@ const thobe: Renderer = (c) => {
       <Line c={c} d={M([b.cx, 92]) + L([b.cx, 162])} />
       {buttons(c, 102, 154, b.cx + 2.5, 4)}
       <Line c={c} d={M([b.cx - 26, 200]) + L([b.cx - 24, 214])} />
+      {c.trim && (
+        <>
+          <Line c={c} d={M([b.cx - 9, 86]) + L([b.cx + 9, 86])} color={c.trim} w={2.4} />
+          <Line c={c} d={M([b.cx - 3, 94]) + L([b.cx - 3, 160]) + M([b.cx + 3, 94]) + L([b.cx + 3, 160])} color={c.trim} w={1.6} dash="3 2" />
+        </>
+      )}
     </>
   )
 }
@@ -185,6 +203,7 @@ const DRESS: Record<string, { hem: number; flare: number; sleeve: 'short' | 'lon
   gown: { hem: 424, flare: 20, sleeve: 'cap', loose: 0 },
   'midi-long': { hem: 330, flare: 5, sleeve: 'long', loose: 1 },
   'maxi-long': { hem: 414, flare: 15, sleeve: 'long', loose: 3 },
+  tee: { hem: 326, flare: 5, sleeve: 'short', loose: 2.5 },
 }
 
 const dress: Renderer = (c) => {
@@ -203,10 +222,11 @@ const abaya: Renderer = (c) => {
   const { b } = c
   if (c.variant === 'open') return openAbaya(c)
   const evening = c.variant === 'evening'
+  const butterfly = c.variant === 'butterfly'
   return (
     <>
-      <Sleeves c={c} endY={b.armOuter[3][1] + 4} loose={7} />
-      <P d={torso(b, { hemY: 420, loose: 7, flare: 18 })} c={c} />
+      <Sleeves c={c} endY={butterfly ? 246 : b.armOuter[3][1] + 4} loose={butterfly ? 20 : 7} />
+      <P d={torso(b, { hemY: 420, loose: butterfly ? 9 : 7, flare: butterfly ? 22 : 18 })} c={c} />
       {evening && (
         <>
           <Line c={c} d={M([b.cx, 100]) + L([b.cx, 420])} color={GOLD} w={2} />
@@ -228,6 +248,10 @@ const sweater: Renderer = (c) => (
     <Sleeves c={c} endY={c.b.armOuter[3][1]} loose={2} over={1.5} />
     <P d={torso(c.b, { hemY: 240, loose: 3, over: 1.5, neck: c.variant === 'vneck' ? 'v' : 'crew' })} c={c} />
     {ribHem(c, 240, c.b.hip + 5)}
+    {c.variant === 'cable' &&
+      [-14, 0, 14].map((dx) => (
+        <Line key={dx} c={c} d={Array.from({ length: 9 }, (_, i) => (i ? L : M)([c.b.cx + dx + (i % 2 ? 2.5 : -2.5), 106 + i * 15])).join('')} color={c.dark} w={1.2} />
+      ))}
   </>
 )
 
@@ -284,7 +308,19 @@ const jacket: Renderer = (c) => {
       </>
     )
   }
-  const hem = v === 'bomber' ? 236 : 254
+  if (v === 'overshirt') {
+    return (
+      <>
+        <Sleeves c={c} endY={b.armOuter[3][1]} loose={3} over={3} />
+        <Pair c={c} d={openFront(b, { hemY: 252, loose: 4, over: 3.5, gapHem: 7, gapChest: 5, vBottomY: 120 })} />
+        <Pair c={c} d={collar(b, 3)} />
+        {buttons(c, 128, 236, b.cx - 6, 5)}
+        <rect x={b.cx - 26} y={128} width={13} height={14} rx={1.5} fill="none" stroke={c.stroke} strokeWidth={SW} />
+        <rect x={b.cx + 13} y={128} width={13} height={14} rx={1.5} fill="none" stroke={c.stroke} strokeWidth={SW} />
+      </>
+    )
+  }
+  const hem = v === 'bomber' ? 236 : v === 'track' ? 244 : 254
   return (
     <>
       {(v === 'rain' || v === 'windbreaker') && (
@@ -295,6 +331,11 @@ const jacket: Renderer = (c) => {
       <Line c={c} d={M([b.cx, v === 'bomber' ? 100 : 72]) + L([b.cx, hem])} color={c.dark} w={1.4} />
       {v === 'bomber' && ribHem(c, hem, b.hip + 7)}
       {v === 'windbreaker' && <Line c={c} d={M([b.cx - b.chest - 4, 140]) + L([b.cx + b.chest + 4, 140])} color={c.dark} w={3} />}
+      {v === 'track' &&
+        [false, true].map((mir) => {
+          const pts = b.armOuter.map(([x, y]): Pt => [x + 4, y])
+          return <Line key={String(mir)} c={c} d={curveThrough(mir ? mirrorPts(pts) : pts)} color="#F4F4F2" w={2.2} />
+        })}
     </>
   )
 }
@@ -302,10 +343,11 @@ const jacket: Renderer = (c) => {
 const blazer: Renderer = (c) => {
   const { b } = c
   const suit = c.variant === 'suit'
+  const long = c.variant === 'long'
   return (
     <>
       <Sleeves c={c} endY={b.armOuter[3][1] - 2} loose={2} over={3} />
-      <Pair c={c} d={openFront(b, { hemY: 254, loose: 3, over: 3.5, gapHem: 3, gapChest: 2, vBottomY: 172 })} />
+      <Pair c={c} d={openFront(b, { hemY: long ? 304 : 254, loose: long ? 5 : 3, flare: long ? 3 : 0, over: 3.5, gapHem: long ? 8 : 3, gapChest: 2, vBottomY: 172 })} />
       <Pair c={c} d={lapels(b, 168)} fill={suit ? c.dark : c.fill} />
       <circle cx={b.cx - 2.5} cy={182} r={1.6} fill={c.dark} />
       <Line c={c} d={M([b.cx - 30, 214]) + L([b.cx - 14, 214])} />
@@ -314,7 +356,7 @@ const blazer: Renderer = (c) => {
   )
 }
 
-const COAT_HEM: Record<string, number> = { long: 334, trench: 342, 'trench-long': 382, 'extra-long': 396 }
+const COAT_HEM: Record<string, number> = { pea: 276, long: 334, trench: 342, 'trench-long': 382, 'extra-long': 396 }
 
 const coat: Renderer = (c) => {
   const { b } = c
@@ -331,6 +373,11 @@ const coat: Renderer = (c) => {
           <rect x={b.cx - 5} y={b.waistY - 5} width={10} height={10} rx={1.5} fill="none" stroke={c.stroke} strokeWidth={1.4} />
           {buttons(c, 178, 222, b.cx - 9, 3)}
           {buttons(c, 178, 222, b.cx + 9, 3)}
+        </>
+      ) : c.variant === 'pea' ? (
+        <>
+          {buttons(c, 176, 236, b.cx - 9, 3)}
+          {buttons(c, 176, 236, b.cx + 9, 3)}
         </>
       ) : (
         buttons(c, 180, 250, b.cx - 4, 3)
@@ -416,8 +463,10 @@ export const carried: Renderer = (c) => {
 
 const trousersPart: Renderer = (c) => {
   const { b } = c
-  const fit = (c.variant ?? 'straight') as LegFit
-  const hemY = fit === 'leggings' ? b.ankleY - 6 : fit === 'joggers' ? b.ankleY - 2 : b.ankleY + 3
+  // Culottes are wide trousers that stop at mid-calf.
+  const culotte = c.variant === 'culotte'
+  const fit = (culotte ? 'wide' : (c.variant ?? 'straight')) as LegFit
+  const hemY = culotte ? 366 : fit === 'leggings' ? b.ankleY - 6 : fit === 'joggers' ? b.ankleY - 2 : b.ankleY + 3
   const legs = legLines(b)
   return (
     <>
@@ -449,11 +498,12 @@ const trousersPart: Renderer = (c) => {
 }
 
 const shorts: Renderer = (c) => {
-  const hemY = c.b.gender === 'male' ? 304 : 290
+  const swim = c.variant === 'swim'
+  const hemY = swim ? 316 : c.b.gender === 'male' ? 304 : 290
   return (
     <>
       <P d={trousers(c.b, { fit: 'straight', hemY })} c={c} />
-      {c.variant === 'sport' && (
+      {(c.variant === 'sport' || swim) && (
         <>
           <Line c={c} d={M([c.b.cx - c.b.hip - 1, 236]) + L([c.b.cx - c.b.hip + 2, hemY])} color={c.dark} w={2} />
           <Line c={c} d={M([c.b.cx + c.b.hip + 1, 236]) + L([c.b.cx + c.b.hip - 2, hemY])} color={c.dark} w={2} />
@@ -532,13 +582,22 @@ const loafer: Renderer = (c) =>
     </g>
   ))
 
+const BOOT_TOP: Record<string, (b: Body) => number> = {
+  hiking: (b) => b.ankleY - 26,
+  chelsea: (b) => b.ankleY - 16,
+  knee: (b) => b.kneeY - 6,
+  rain: (b) => b.ankleY - 46,
+}
+
 const boot: Renderer = (c) => {
-  const top = c.variant === 'hiking' ? c.b.ankleY - 26 : c.variant === 'chelsea' ? c.b.ankleY - 16 : c.b.ankleY - 20
+  const top = (BOOT_TOP[c.variant ?? ''] ?? ((b: Body) => b.ankleY - 20))(c.b)
+  const rain = c.variant === 'rain'
   return feet(c, (sx) => (
     <g key={sx}>
-      <P d={bootShaft(c.b, sx, top, c.variant === 'hiking' ? 4 : 2.5)} c={c} />
-      <P d={shoe(c.b, sx, { width: c.variant === 'hiking' ? 11.5 : 10 })} c={c} />
-      {sole(c, sx, c.variant === 'hiking' ? 5 : 3, c.dark)}
+      <P d={bootShaft(c.b, sx, top, c.variant === 'hiking' ? 4 : rain ? 5 : 2.5)} c={c} />
+      <P d={shoe(c.b, sx, { width: c.variant === 'hiking' || rain ? 11.5 : 10 })} c={c} />
+      {sole(c, sx, c.variant === 'hiking' || rain ? 5 : 3, c.dark)}
+      {rain && <Line c={c} d={M([footX(c.b, sx) - 9, top + 4]) + L([footX(c.b, sx) + 9, top + 4])} color={c.dark} w={2} />}
       {c.variant === 'hiking' && <Line c={c} d={M([footX(c.b, sx) - 3, top + 6]) + L([footX(c.b, sx) + 3, top + 10]) + M([footX(c.b, sx) - 3, top + 14]) + L([footX(c.b, sx) + 3, top + 18])} color={c.dark} w={1} />}
       {c.variant === 'chelsea' && <rect x={footX(c.b, sx) - 9 * sx - 2} y={top + 3} width={4} height={12} rx={1} fill={c.dark} opacity={0.5} />}
     </g>
@@ -568,8 +627,8 @@ const sandal: Renderer = (c) =>
     return (
       <g key={sx}>
         <rect x={x - 12} y={s - 3} width={24} height={3} rx={1.5} fill={c.fill} stroke={c.stroke} strokeWidth={0.8} />
-        {c.variant === 'naal' ? (
-          <rect x={x - 10} y={s - 15} width={20} height={7} rx={3} fill={c.fill} stroke={c.stroke} strokeWidth={0.8} />
+        {c.variant === 'naal' || c.variant === 'slide' ? (
+          <rect x={x - 10} y={s - (c.variant === 'slide' ? 13 : 15)} width={20} height={c.variant === 'slide' ? 8 : 7} rx={3} fill={c.fill} stroke={c.stroke} strokeWidth={0.8} />
         ) : (
           <>
             <rect x={x - 10} y={s - 12} width={20} height={3.5} rx={1.5} fill={c.fill} stroke={c.stroke} strokeWidth={0.6} />
@@ -598,6 +657,22 @@ const HIJAB: Record<string, { drape: number; width: number; tight?: number }> = 
 const hijab: Renderer = (c) => {
   const v = HIJAB[c.variant ?? 'default'] ?? HIJAB.default
   const { b } = c
+  if (c.variant === 'turban') {
+    // Wrapped over the hair and ears with a knot at the front; the neck stays uncovered.
+    const { cy, rx, ry } = b.head
+    return (
+      <>
+        <path
+          d={M([b.cx - rx - 3, cy + 6]) + Q([b.cx - rx - 6, cy - ry - 10], [b.cx, cy - ry - 9]) + Q([b.cx + rx + 6, cy - ry - 10], [b.cx + rx + 3, cy + 6]) + Q([b.cx + rx - 2, cy - 8], [b.cx, cy - 13]) + Q([b.cx - rx + 2, cy - 8], [b.cx - rx - 3, cy + 6]) + ' Z'}
+          fill={c.fill}
+          stroke={c.stroke}
+          strokeWidth={SW}
+        />
+        <ellipse cx={b.cx} cy={cy - ry - 3} rx={7} ry={5} fill={c.fill} stroke={c.stroke} strokeWidth={SW} />
+        <Line c={c} d={M([b.cx - rx, cy - 14]) + Q([b.cx, cy - 26], [b.cx + rx, cy - 14])} color={c.dark} w={1} />
+      </>
+    )
+  }
   return (
     <>
       <P d={headCover(b, { drapeY: v.drape, width: v.width, tight: v.tight })} c={c} />
@@ -622,9 +697,12 @@ const shemagh: Renderer = (c) => {
     Q([b.cx, cy - ry - 10], left[0]) +
     curveThrough(left) +
     Q([b.cx - 24, 136], [b.cx - 17, 128]) +
-    Q([b.cx - 15, 100], [b.cx - 11, 90]) +
-    L([b.cx + 11, 90]) +
-    Q([b.cx + 15, 100], [b.cx + 17, 128]) +
+    // Open at the front from the chin down, so the neck and the thobe collar show between the two sides.
+    Q([b.cx - 13, 104], [b.cx - 10, 90]) +
+    Q([b.cx - 8.6, 78], [b.cx - 8.6, 66]) +
+    Q([b.cx, 58], [b.cx + 8.6, 66]) +
+    Q([b.cx + 8.6, 78], [b.cx + 10, 90]) +
+    Q([b.cx + 13, 104], [b.cx + 17, 128]) +
     Q([b.cx + 24, 136], right[0]) +
     curveThrough(right) +
     ' Z'
@@ -794,6 +872,8 @@ const tote: Renderer = (c) =>
     <>
       <path d={M([x + 7, y + 6]) + Q([x + 15, y - 12], [x + 23, y + 6])} fill="none" stroke={c.dark} strokeWidth={2} />
       <path d={M([x + 2, y + 6]) + L([x + 28, y + 6]) + L([x + 31, y + 36]) + L([x - 1, y + 36]) + ' Z'} fill={c.fill} stroke={c.stroke} strokeWidth={SW} />
+      {c.variant === 'straw' &&
+        [14, 22, 30].map((dy) => <Line key={dy} c={c} d={M([x + 1, y + dy]) + L([x + 29, y + dy])} color={c.dark} w={0.8} dash="2 1.5" />)}
     </>
   ))
 
@@ -822,6 +902,7 @@ const crossbody: Renderer = (c) => {
 }
 
 export const RENDERERS: Record<string, Renderer> = {
+  ...PARTS_V12,
   tee,
   shirt,
   polo,

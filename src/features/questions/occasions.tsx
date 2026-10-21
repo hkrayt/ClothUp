@@ -1,4 +1,23 @@
-import { Briefcase, Coffee, Dumbbell, Gem, GraduationCap, Landmark, Mountain, PartyPopper, Plane, type LucideIcon } from 'lucide-react'
+import {
+  Briefcase,
+  Coffee,
+  Dumbbell,
+  Gem,
+  Gift,
+  GraduationCap,
+  HeartHandshake,
+  Landmark,
+  Moon,
+  MoonStar,
+  Mountain,
+  PartyPopper,
+  Plane,
+  ShoppingBag,
+  UserCheck,
+  UtensilsCrossed,
+  Waves,
+  type LucideIcon,
+} from 'lucide-react'
 import occasionsData from '@/data/occasions.json'
 import type { Occasion, OccasionId } from '@/engine/types'
 
@@ -14,6 +33,14 @@ const ICONS: Record<string, LucideIcon> = {
   landmark: Landmark,
   party: PartyPopper,
   plane: Plane,
+  waves: Waves,
+  'heart-handshake': HeartHandshake,
+  moon: Moon,
+  'user-check': UserCheck,
+  utensils: UtensilsCrossed,
+  gift: Gift,
+  'moon-star': MoonStar,
+  'shopping-bag': ShoppingBag,
 }
 
 export function getOccasion(id: OccasionId): Occasion {

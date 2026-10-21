@@ -16,6 +16,10 @@ src/data/
   colors/                  (color engine — see below)
 ```
 
+## Occasions
+
+`occasions.json`: `id`, `icon`, `formality` range, color `moods` (`classic`, `muted`, `fresh`, `bright`, `earthy`, `somber`), `indoor` share (0–1, pulls clothes toward room temperature) and optional `includes` (other occasions whose items also work here, e.g. the beach includes casual clothes for cool days). Add the occasion's name under `occasion.*` and its reason under `reason.*` in both language files.
+
 ## Places
 
 ```json
@@ -71,8 +75,9 @@ The script pauses between requests to stay within the free API limits (~10 s per
 | `fabrics` | candidate fabrics; the engine picks the best one for the weather |
 | `colors` | allowed color ids or `@group`s from the color data |
 | `svg` | which character part draws it |
+| `patterns` | optional: `stripes`, `check`, `floral`, `embroidery`. The second outfit option may show one patterned piece; items tagged `embroidered` always show their trim |
 
-Common tags: `waterproof`, `water-resistant`, `windproof`, `warm`, `breathable`, `loose`, `flowy`, `closed`, `boots`, `sandals`, `open-toe`, `slip-on`, `heels`, `sneakers`, `sporty`, `formal`, `tailored`, `suit`, `collared`, `short-sleeve`, `long-sleeve`, `sleeveless`, `shorts`, `skirt`, `dress`, `hijab`, `head-cover`, `shemagh`, `thobe`, `abaya`, `hood`, `sun-protect`, `dust-protect`, `bag`.
+Common tags: `waterproof`, `water-resistant`, `windproof`, `warm`, `breathable`, `loose`, `flowy`, `closed`, `boots`, `sandals`, `open-toe`, `slip-on`, `heels`, `sneakers`, `sporty`, `formal`, `tailored`, `suit`, `collared`, `short-sleeve`, `long-sleeve`, `sleeveless`, `shorts`, `skirt`, `dress`, `hijab`, `head-cover`, `shemagh`, `thobe`, `abaya`, `hood`, `sun-protect`, `dust-protect`, `bag`, `beret`, `tie`, `over-robe` (a mid or outer piece that can go over a thobe or abaya, e.g. the sedeyree — other mid layers are skipped over a robe).
 
 If the user's style has nothing wearable for a slot in the current weather (e.g. traditional style at the gym), the engine falls back to standard-style items, still respecting coverage rules.
 
@@ -89,7 +94,7 @@ If the user's style has nothing wearable for a slot in the current weather (e.g.
   "reason": "rain" }
 ```
 
-**`when`** — every field must match (AND); `any` matches if one branch does. Tests: `eq`, `ne`, `in`, `gte`, `lte`, `gt`, `lt`. Fields:
+**`when`** — every field must match (AND); `any` matches if one branch does. Tests: `eq`, `ne`, `in`, `nin` (not in), `gte`, `lte`, `gt`, `lt`. Fields:
 
 - weather over the stay: `feelsMin`, `feelsMax`, `feelsAvg`, `swing`, `rainProb`, `precipMm`, `snowCm`, `wind`, `gust`, `humidity`, `uvMax`, `dust` (`none`/`moderate`/`severe`), `condition`, `isNight`, `coolsAfterDark`, `zone`, `hours`
 - added in v1.1: `shadeMin` and `sunGap` (sun vs shade), `fog`, `dryWind` (sharqiya), `dewPointMax`, `snowOnGround`, `freezingNear`, `lessCertain`, `source` (`forecast`/`climate`)
@@ -105,6 +110,7 @@ If the user's style has nothing wearable for a slot in the current weather (e.g.
 | `prefer` | tag → score bonus (negative discourages) |
 | `preferFabrics` | fabric → score bonus |
 | `add` | accessory ids, or `#tag` for "best item with this tag" (e.g. `#bag`) |
+| `carry` | slots to suggest as "take along" (e.g. `["outer"]` for strong office air conditioning) |
 
 **`priority`**: occasion/modesty 100, safety 80–90, comfort 50–60, style 20. **`reason`** is a key under `reason.*` in `src/i18n/en.json` and `ar.json` (add both).
 

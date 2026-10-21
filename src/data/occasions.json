@@ -7,5 +7,13 @@
   { "id": "hiking", "icon": "mountain", "formality": [0, 1], "moods": ["earthy", "muted"], "indoor": 0 },
   { "id": "religious", "icon": "landmark", "formality": [2, 4], "moods": ["muted", "classic"], "indoor": 0.3 },
   { "id": "wedding", "icon": "party", "formality": [4, 5], "moods": ["classic", "bright"], "indoor": 0.4 },
-  { "id": "travel", "icon": "plane", "formality": [1, 2], "moods": ["muted", "earthy", "fresh"], "indoor": 0 }
+  { "id": "travel", "icon": "plane", "formality": [1, 2], "moods": ["muted", "earthy", "fresh"], "indoor": 0 },
+  { "id": "beach", "icon": "waves", "formality": [0, 1], "moods": ["fresh", "bright"], "indoor": 0, "includes": ["casual"] },
+  { "id": "condolence", "icon": "heart-handshake", "formality": [3, 4], "moods": ["somber", "muted"], "indoor": 0.5 },
+  { "id": "friday", "icon": "moon", "formality": [2, 4], "moods": ["muted", "classic"], "indoor": 0.3 },
+  { "id": "interview", "icon": "user-check", "formality": [4, 5], "moods": ["classic", "muted"], "indoor": 0.5 },
+  { "id": "dinner", "icon": "utensils", "formality": [2, 4], "moods": ["classic", "bright", "fresh"], "indoor": 0.5 },
+  { "id": "eid", "icon": "gift", "formality": [3, 5], "moods": ["bright", "classic", "fresh"], "indoor": 0.3 },
+  { "id": "iftar", "icon": "moon-star", "formality": [2, 4], "moods": ["classic", "fresh", "muted"], "indoor": 0.6 },
+  { "id": "shopping", "icon": "shopping-bag", "formality": [1, 2], "moods": ["fresh", "muted", "bright"], "indoor": 0.6 }
 ]

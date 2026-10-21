@@ -66,8 +66,17 @@ export type OccasionId =
   | 'religious'
   | 'wedding'
   | 'travel'
+  | 'beach'
+  | 'condolence'
+  | 'friday'
+  | 'interview'
+  | 'dinner'
+  | 'eid'
+  | 'iftar'
+  | 'shopping'
 
-export type Mood = 'classic' | 'muted' | 'fresh' | 'bright' | 'earthy'
+/** 'somber' = dark, quiet colors (condolence visits). */
+export type Mood = 'classic' | 'muted' | 'fresh' | 'bright' | 'earthy' | 'somber'
 
 export interface Occasion {
   id: OccasionId
@@ -78,6 +87,8 @@ export interface Occasion {
   moods: Mood[]
   /** 0 = outdoors, 1 = fully indoors. Blends clothing targets toward room temperature. */
   indoor?: number
+  /** Items made for these occasions also work here (e.g. casual clothes on a cool beach day). */
+  includes?: OccasionId[]
 }
 
 export type When = { kind: 'now' } | { kind: 'at'; time: string }

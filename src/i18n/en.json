@@ -93,7 +93,15 @@
     "hiking": "Outdoor / Hiking",
     "religious": "Religious visit",
     "wedding": "Wedding / Party",
-    "travel": "Travel"
+    "travel": "Travel",
+    "beach": "Beach / Pool",
+    "condolence": "Condolence visit",
+    "friday": "Friday prayer",
+    "interview": "Job interview",
+    "dinner": "Dinner out",
+    "eid": "Eid",
+    "iftar": "Iftar / Ramadan evening",
+    "shopping": "Shopping / Mall"
   },
   "time": {
     "today": "Today",
@@ -248,7 +256,16 @@
     "snowGround": "Snow on the ground: boots with good grip.",
     "fog": "Fog: a water-resistant layer keeps the damp out.",
     "dryWind": "Dry, hot desert wind: cover up and carry water.",
-    "sunShade": "Warm in the sun but cool in the shade: bring a light layer."
+    "sunShade": "Warm in the sun but cool in the shade: bring a light layer.",
+    "condolence": "Quiet, dark colors and modest cuts for a condolence visit.",
+    "interview": "Sharp and tailored to make a good first impression.",
+    "eid": "Your best for Eid: festive colors and embroidery.",
+    "iftar": "Comfortable and modest for a long evening with family.",
+    "dinner": "Smart but relaxed for dinner out.",
+    "shopping": "Comfortable shoes for walking and a layer for the cold mall air.",
+    "beach": "Swimwear, sun protection and water for the beach.",
+    "beachCool": "Too cool to swim: a comfortable outfit for a walk by the water.",
+    "officeAC": "Strong air conditioning indoors: bring a light layer."
   },
   "fabric": {
     "why": {
@@ -272,7 +289,8 @@
       "suede": "soft and smart (avoid in rain)",
       "mesh": "airflow for active days",
       "canvas": "light and sturdy",
-      "sheepskin": "seriously warm for winter nights"
+      "sheepskin": "seriously warm for winter nights",
+      "corduroy": "soft, warm and hard-wearing"
     }
   },
   "palette": {
@@ -298,7 +316,8 @@
       "hijab": "The {{a}} hijab ties the outfit's colors together.",
       "pair": "{{A}} and {{b}} are an easy pair that always works.",
       "light": "Light colors reflect the sun and keep you cooler.",
-      "neutrals": "{{A}}, {{b}} and {{c}} are calm neutrals that always work together."
+      "neutrals": "{{A}}, {{b}} and {{c}} are calm neutrals that always work together.",
+      "pattern": "The {{a}}-and-{{b}} pattern is the one busy piece; everything else stays plain."
     }
   },
   "swap": {
@@ -325,5 +344,11 @@
     "tafilah": "Tafilah",
     "maan": "Ma'an",
     "aqaba": "Aqaba"
+  },
+  "pattern": {
+    "stripes": "Stripes",
+    "check": "Check",
+    "floral": "Floral",
+    "embroidery": "Embroidered"
   }
 }

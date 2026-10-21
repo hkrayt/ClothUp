@@ -5,7 +5,7 @@ import { collectEffects, type Effects, type Facts } from './rules'
 import { ColorEngine } from './color'
 
 export interface GenerateOptions {
-  /** Item id â†’ score bonus learned from the user's swaps. */
+  /** Item id → score bonus learned from the user's swaps. */
   prefs?: Record<string, number>
   /** Force a specific item in a slot (used by "change this item"). */
   locks?: Partial<Record<Slot, string>>
@@ -13,6 +13,8 @@ export interface GenerateOptions {
   count?: number
   /** Color with this palette (used to keep colors stable when swapping an item). */
   paletteId?: string
+  /** Whether a patterned piece is allowed (default: only for the second option). */
+  allowPattern?: boolean
 }
 
 interface Scored {
@@ -57,7 +59,7 @@ function basePool(run: Run, slot: Slot, style: string): ClothingItem[] {
       i.slot === slot &&
       i.gender.includes(profile.gender) &&
       i.style.includes(style as never) &&
-      i.occasions.includes(occasion.id) &&
+      (i.occasions.includes(occasion.id) || !!occasion.includes?.some((o) => i.occasions.includes(o))) &&
       !i.tags.some((t) => fx.exclude.has(t)) &&
       coverageOk(run, i),
   )
@@ -68,7 +70,7 @@ const wearable = (target: number | undefined) => (i: ClothingItem) =>
 
 /**
  * Applies rule requirements in priority order. A requirement that no wearable item can meet
- * (e.g. "closed shoes" when the only closed formal shoes are winter boots in 30 Â°C) is relaxed.
+ * (e.g. "closed shoes" when the only closed formal shoes are winter boots in 30 °C) is relaxed.
  */
 function applyRequirements(run: Run, slot: Slot, items: ClothingItem[], target?: number): ClothingItem[] {
   let out = items
@@ -88,14 +90,22 @@ function pool(run: Run, slot: Slot, target?: number): ClothingItem[] {
     if (locked) return [locked]
   }
   const own = applyRequirements(run, slot, basePool(run, slot, run.profile.style), target)
-  if (run.profile.style === 'standard' || own.some(wearable(target))) return own
+  if (run.profile.style === 'standard') return own
   const fallback = applyRequirements(run, slot, basePool(run, slot, 'standard'), target)
-  return fallback.some(wearable(target)) ? [...own, ...fallback] : own
+  if (!fallback.some(wearable(target))) return own
+  if (!own.some(wearable(target))) return [...own, ...fallback]
+  // Own style has items but can't meet a requirement (e.g. swimwear for traditional style): use standard items.
+  return unmet(run, slot, fallback) < unmet(run, slot, own) ? fallback : own
+}
+
+/** How many of a slot's rule requirements a set of items can't satisfy. */
+function unmet(run: Run, slot: Slot, items: ClothingItem[]): number {
+  return run.fx.require.filter((r) => r.slot === slot && !items.some((i) => hasAny(i, r.tags))).length
 }
 
 // ---------- scoring ----------
 
-/** Up to +2 inside the comfortable range (best at its centre), âˆ’1.5 per Â°C outside, unusable beyond 8 Â°C. */
+/** Up to +2 inside the comfortable range (best at its centre), −1.5 per °C outside, unusable beyond 8 °C. */
 export function temperatureFit(target: number, [lo, hi]: [number, number]): number {
   if (target >= lo && target <= hi) {
     const mid = (lo + hi) / 2
@@ -157,9 +167,11 @@ function layerPlan(run: Run): Plan {
   const { ctx, fx } = run
   // Shade counts too: a sunny 22 ° that is 14 ° out of the sun still needs a layer.
   const coldest = Math.min(ctx.feelsMin, ctx.shadeMin + 2)
-  const needOuter = fx.need.has('outer') || coldest < 17
+  // A rule can ask for a layer to take along, e.g. for strong office air conditioning (~20 °C indoors).
+  const carryRule = fx.carry.has('outer')
+  const needOuter = fx.need.has('outer') || coldest < 17 || carryRule
   // Only cold for part of the stay (evening, early morning): take the layer along.
-  const carryOuter = needOuter && !fx.need.has('outer') && ctx.feelsAvg >= 19
+  const carryOuter = needOuter && !fx.need.has('outer') && (ctx.feelsAvg >= 19 || carryRule)
   const needMid = ctx.feelsMin < 9 || ctx.feelsAvg < 12
   const layered = (needOuter && !carryOuter) || needMid
   // Mostly-indoor occasions pull the clothes under the coat toward room temperature (~22 °C).
@@ -174,7 +186,7 @@ function layerPlan(run: Run): Plan {
       top: layered ? clamp(avg + 8, 14, 24) : avg,
       bottom: avg,
       mid: room((ctx.feelsMin + ctx.feelsAvg) / 2),
-      outer: coldest,
+      outer: carryRule && coldest > 20 ? 20 : coldest,
       shoes: (ctx.feelsMin + ctx.feelsAvg) / 2,
       socks: (ctx.feelsMin + ctx.feelsAvg) / 2,
       head: avg,
@@ -203,14 +215,15 @@ function chooseSocks(run: Run, shoes: ClothingItem, lower: ClothingItem, target:
   const bareLegs = hasAny(lower, ['skirt', 'dress']) && run.profile.style === 'standard'
   if (bareLegs && target <= 14) return candidates.find((i) => has(i, 'tights')) ?? null
   // Flats, loafers and heels are worn without visible socks when it's warm.
-  if (hasAny(shoes, ['heels', 'slip-on']) && (bareLegs || target >= 20)) return null
+  if (has(shoes, 'heels')) return null
+  if (has(shoes, 'slip-on') && (bareLegs || target >= 20)) return null
   const ranked = rank(
     run,
     candidates.filter((i) => !has(i, 'tights')),
     target,
     0.4,
   )
-  // Formal shoes want dress socks; trainers want sports/ankle socks â€” encoded in occasions + formality.
+  // Formal shoes want dress socks; trainers want sports/ankle socks — encoded in occasions + formality.
   const withShoe = ranked.map((s) => ({ ...s, score: s.score + coherence(s.item, shoes) }))
   withShoe.sort((a, b) => b.score - a.score)
   return withShoe[0]?.item ?? null
@@ -261,10 +274,12 @@ function assemble(run: Run, plan: Plan, top: ClothingItem, bottom: ClothingItem 
     }
   }
 
+  // Over a thobe or abaya only pieces made to go over a robe (sedeyree, long vest) work as a mid layer.
   const traditionalBase = hasAny(top, ['thobe', 'abaya'])
-  if ((plan.needMid && !traditionalBase) || run.opts.locks?.mid) {
+  if (plan.needMid || run.opts.locks?.mid) {
     const outer = pieces.find((p) => p.slot === 'outer')?.item
-    const mids = rank(run, pool(run, 'mid', plan.targets.mid), plan.targets.mid)
+    const midPool = pool(run, 'mid', plan.targets.mid).filter((i) => !traditionalBase || run.opts.locks?.mid === i.id || i.tags.includes('over-robe'))
+    const mids = rank(run, midPool, plan.targets.mid)
       .map((s) => ({ ...s, score: s.score + pairCoherence(s.item) + (outer ? coherence(s.item, outer) : 0) }))
       .sort((a, b) => b.score - a.score)
     if (mids[0]) {
@@ -334,7 +349,8 @@ function buildReasons(run: Run, plan: Plan): Reason[] {
     reasons.push(p ? { key, params: p } : { key })
   }
 
-  if (plan.carryOuter) push('carryLayer', { min: r(ctx.feelsMin) })
+  // Air-conditioning layers explain themselves via their own rule reason.
+  if (plan.carryOuter && !run.fx.carry.has('outer')) push('carryLayer', { min: r(ctx.feelsMin) })
   else if (plan.needOuter && plan.needMid) push('layers', { min: r(ctx.feelsMin), max: r(ctx.feelsMax) })
 
   // Weather first (safety/comfort), then occasion and style.
@@ -404,7 +420,7 @@ export function applySwap(
   const newItem = data.items.find((i) => i.id === itemId)
   if (slot === 'bottom' && outfit.pieces.find((p) => p.slot === 'top')?.item.fills?.includes('bottom')) delete locks.top
   if (newItem?.fills?.includes('bottom')) delete locks.bottom
-  const [result] = generateOutfits(ctx, profile, occasion, data, { locks, prefs, count: 1, paletteId: outfit.palette?.id })
+  const [result] = generateOutfits(ctx, profile, occasion, data, { locks, prefs, count: 1, paletteId: outfit.palette?.id, allowPattern: outfit.pieces.some((p) => p.pattern && p.pattern !== 'embroidery') })
   return result ? { ...result, id: outfit.id } : null
 }
 
@@ -458,7 +474,8 @@ export function generateOutfits(
   const colors = new ColorEngine(data.colors)
   const used: string[] = []
   return picked.map((o, i) => {
-    const colored = colors.colorize({ ...o, id: `outfit-${i + 1}`, reasons }, ctx, occasion, used, opts.paletteId)
+    // The second option may carry one patterned piece for variety; the first stays plain and classic.
+    const colored = colors.colorize({ ...o, id: `outfit-${i + 1}`, reasons }, ctx, occasion, used, opts.paletteId, opts.allowPattern ?? i === 1)
     if (colored.palette) used.push(colored.palette.id)
     return colored
   })
