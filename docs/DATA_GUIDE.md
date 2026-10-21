@@ -77,7 +77,7 @@ The script pauses between requests to stay within the free API limits (~10 s per
 | `svg` | which character part draws it |
 | `patterns` | optional: `stripes`, `check`, `floral`, `embroidery`. The second outfit option may show one patterned piece; items tagged `embroidered` always show their trim |
 
-Common tags: `waterproof`, `water-resistant`, `windproof`, `warm`, `breathable`, `loose`, `flowy`, `closed`, `boots`, `sandals`, `open-toe`, `slip-on`, `heels`, `sneakers`, `sporty`, `formal`, `tailored`, `suit`, `collared`, `short-sleeve`, `long-sleeve`, `sleeveless`, `shorts`, `skirt`, `dress`, `hijab`, `head-cover`, `shemagh`, `thobe`, `abaya`, `hood`, `sun-protect`, `dust-protect`, `bag`.
+Common tags: `waterproof`, `water-resistant`, `windproof`, `warm`, `breathable`, `loose`, `flowy`, `closed`, `boots`, `sandals`, `open-toe`, `slip-on`, `heels`, `sneakers`, `sporty`, `formal`, `tailored`, `suit`, `collared`, `short-sleeve`, `long-sleeve`, `sleeveless`, `shorts`, `skirt`, `dress`, `hijab`, `head-cover`, `shemagh`, `thobe`, `abaya`, `hood`, `sun-protect`, `dust-protect`, `bag`, `beret`, `tie`, `over-robe` (a mid or outer piece that can go over a thobe or abaya, e.g. the sedeyree — other mid layers are skipped over a robe).
 
 If the user's style has nothing wearable for a slot in the current weather (e.g. traditional style at the gym), the engine falls back to standard-style items, still respecting coverage rules.
 
