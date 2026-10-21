@@ -19,6 +19,8 @@ interface CharacterProps {
   onSelect?: (piece: OutfitPiece | null) => void
   label: string
   className?: string
+  /** Body proportions from height (sy) and build (sx); 1 is the default figure. */
+  figure?: { sx: number; sy: number }
 }
 
 function mix(hex: string, other: string, t: number): string {
@@ -110,7 +112,15 @@ function layerOf(p: OutfitPiece): Layer | null {
   return p.slot as Layer
 }
 
-export function Character({ pieces, gender, skinTone, lang, selectedId, onSelect, label, className }: CharacterProps) {
+/** Where the feet stand; the figure is scaled from this point. */
+const GROUND = { x: 100, y: 440 }
+
+export function Character({ pieces, gender, skinTone, lang, selectedId, onSelect, label, className, figure }: CharacterProps) {
+  const { sx = 1, sy = 1 } = figure ?? {}
+  // A taller figure needs room above the head (the top of the head sits at y≈18).
+  const top = Math.min(0, Math.floor(GROUND.y - (GROUND.y - 16) * sy))
+  const scaled = sx !== 1 || sy !== 1
+  const transform = scaled ? `translate(${GROUND.x} ${GROUND.y}) scale(${sx} ${sy}) translate(${-GROUND.x} ${-GROUND.y})` : undefined
   const uid = useId().replace(/:/g, '')
   const b = BODIES[gender]
   const skin = SKIN_TONES[skinTone] ?? SKIN_TONES[2]
@@ -175,7 +185,7 @@ export function Character({ pieces, gender, skinTone, lang, selectedId, onSelect
 
   return (
     <svg
-      viewBox={`0 0 ${VIEWBOX.w} ${VIEWBOX.h}`}
+      viewBox={`0 ${top} ${VIEWBOX.w} ${VIEWBOX.h - top}`}
       role="img"
       aria-label={label}
       className={cx('ch-root select-none', selectedId && 'ch-dim', className)}
@@ -210,20 +220,22 @@ export function Character({ pieces, gender, skinTone, lang, selectedId, onSelect
           return id ? <PieceFill key={id} id={id} pattern={p.pattern!} base={COLORS.hex(p.color!)} accent={COLORS.hex(p.patternColor!)} /> : null
         })}
       </defs>
-      <ellipse cx={100} cy={444} rx={46} ry={6} fill="currentColor" opacity={0.08} />
+      <ellipse cx={100} cy={444} rx={46 * sx} ry={6} fill="currentColor" opacity={0.08} />
 
-      {backpack && wrap(backpack, backpackBack(ctxFor(backpack)), 'backpack-back')}
-      {gender === 'female' && !coversHair && hairBack(b, HAIR)}
-      <BodySkin b={b} skin={skin} uid={uid} />
+      <g transform={transform}>
+        {backpack && wrap(backpack, backpackBack(ctxFor(backpack)), 'backpack-back')}
+        {gender === 'female' && !coversHair && hairBack(b, HAIR)}
+        <BodySkin b={b} skin={skin} uid={uid} />
 
-      {ORDER.map((layer) => (
-        <g key={layer}>
-          {layer === 'head' && !coversHair && hairFront(b, HAIR)}
-          {(byLayer.get(layer) ?? []).map((p) => wrap(p, (RENDERERS[p.item.svg.part] ?? RENDERERS.none)(ctxFor(p)), `${layer}-${p.item.id}`))}
-        </g>
-      ))}
+        {ORDER.map((layer) => (
+          <g key={layer}>
+            {layer === 'head' && !coversHair && hairFront(b, HAIR)}
+            {(byLayer.get(layer) ?? []).map((p) => wrap(p, (RENDERERS[p.item.svg.part] ?? RENDERERS.none)(ctxFor(p)), `${layer}-${p.item.id}`))}
+          </g>
+        ))}
 
-      {carriedOuter && wrap(carriedOuter, carried(ctxFor(carriedOuter)), 'carried')}
+        {carriedOuter && wrap(carriedOuter, carried(ctxFor(carriedOuter)), 'carried')}
+      </g>
     </svg>
   )
 }

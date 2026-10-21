@@ -9,6 +9,8 @@ ClothUp asks where you're going, when, and for what occasion, checks the forecas
 - Occasions: work, casual, formal, university, gym, hiking, religious visit, wedding/party, travel
 - Styles: men (standard, traditional with thobe, shemagh and bisht), women (standard, modest / hijab-friendly)
 - Up to three outfit options; change any single item and the rest stays put; it learns what you like
+- Optional height, weight, age and "I feel the cold / heat" to tailor the character and the suggestions (stored on the device only)
+- My closet: suggest only the clothes you own; save and share outfits
 - Fabric suggestions with a one-line reason, and color palettes from color theory shown as named swatches
 - Tap any item on the character to see its color, fabric and why it was chosen
 - Arabic and English with full RTL, light and dark mode, works offline with cached forecasts

@@ -91,6 +91,8 @@ export interface OutfitPiece {
   /** Pattern drawn on the piece, and its second color (set by the color engine). */
   pattern?: Pattern
   patternColor?: string
+  /** With "My closet" on: suggested although the user hasn't marked it as owned. */
+  missing?: boolean
 }
 
 export interface Reason {

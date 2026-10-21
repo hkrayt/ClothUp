@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ChevronLeft, ChevronRight, Repeat } from 'lucide-react'
-import type { OccasionId, Profile, WeatherContext } from '@/engine/types'
+import { Bookmark, BookmarkCheck, ChevronLeft, ChevronRight, Repeat, Share2 } from 'lucide-react'
+import type { Lang, Localized, OccasionId, Profile, WeatherContext } from '@/engine/types'
 import type { ClothingItem, Outfit, OutfitPiece } from '@/engine/outfit-types'
 import { DATA } from '@/engine/catalog'
 import { applySwap, swapOptions } from '@/engine/outfit'
@@ -12,20 +12,31 @@ import { OutfitList } from './OutfitList'
 import { OutfitStage } from './OutfitStage'
 import { SwapSheet } from './SwapSheet'
 import { useOutfits } from './useOutfits'
+import { outfitText, sameOutfit, shareText, toSaved } from '@/features/saved/saved'
 
 interface OutfitSectionProps {
   ctx: WeatherContext
   profile: Profile
   occasion: OccasionId
+  placeName: Localized
 }
 
-export function OutfitSection({ ctx, profile, occasion }: OutfitSectionProps) {
+export function OutfitSection({ ctx, profile, occasion, placeName }: OutfitSectionProps) {
   const { t, i18n } = useTranslation()
-  const rtl = i18n.language === 'ar'
-  // Learned preferences are read once per visit so the outfits don't reshuffle while you swap.
+  const lang = i18n.language as Lang
+  const rtl = lang === 'ar'
+  // Learned preferences and the closet are read once per visit so the outfits don't reshuffle while you swap.
   const [prefs] = useState(() => useApp.getState().itemPrefs)
+  const [owned] = useState(() => {
+    const { closet } = useApp.getState()
+    return closet.enabled && closet.owned.length > 0 ? closet.owned : undefined
+  })
   const recordSwap = useApp((s) => s.recordSwap)
-  const base = useOutfits(ctx, profile, occasion, { prefs })
+  const saved = useApp((s) => s.saved)
+  const saveOutfit = useApp((s) => s.saveOutfit)
+  const removeSaved = useApp((s) => s.removeSaved)
+  const [status, setStatus] = useState<string | null>(null)
+  const base = useOutfits(ctx, profile, occasion, { prefs, owned })
   const [edited, setEdited] = useState<Record<number, Outfit>>({})
   const [index, setIndex] = useState(0)
   const [selected, setSelected] = useState<OutfitPiece | null>(null)
@@ -66,10 +77,10 @@ export function OutfitSection({ ctx, profile, occasion }: OutfitSectionProps) {
     )
   }
 
-  const options = swapping ? swapOptions(ctx, profile, getOccasion(occasion), DATA, current, swapping.slot) : []
+  const options = swapping ? swapOptions(ctx, profile, getOccasion(occasion), DATA, current, swapping.slot, 8, { owned }) : []
   const pick = (item: ClothingItem) => {
     if (!swapping) return
-    const next = applySwap(ctx, profile, getOccasion(occasion), DATA, current, swapping.slot, item.id, prefs)
+    const next = applySwap(ctx, profile, getOccasion(occasion), DATA, current, swapping.slot, item.id, { prefs, owned })
     if (next) {
       setEdited((e) => ({ ...e, [index]: next }))
       recordSwap(swapping.item.id, item.id)
@@ -84,6 +95,22 @@ export function OutfitSection({ ctx, profile, occasion }: OutfitSectionProps) {
         {t('swap.change')}
       </Button>
     ) : null
+
+  const snapshot = toSaved(current, ctx, placeName, occasion)
+  const savedCopy = saved.find((s) => sameOutfit(s, snapshot))
+  const toggleSave = () => {
+    if (savedCopy) {
+      removeSaved(savedCopy.id)
+      setStatus(t('saved.removed'))
+    } else {
+      saveOutfit(snapshot)
+      setStatus(t('saved.added'))
+    }
+  }
+  const share = async () => {
+    const result = await shareText(t('share.title'), outfitText(t, lang, snapshot))
+    setStatus(result === 'copied' ? t('share.copied') : result === 'failed' ? t('share.failed') : null)
+  }
 
   const Prev = rtl ? ChevronRight : ChevronLeft
   const Next = rtl ? ChevronLeft : ChevronRight
@@ -138,6 +165,18 @@ export function OutfitSection({ ctx, profile, occasion }: OutfitSectionProps) {
             ))}
           </div>
         )}
+
+        <div className="flex items-center justify-center gap-2">
+          <Button variant="secondary" className="h-11 px-4 text-sm" aria-pressed={!!savedCopy} icon={savedCopy ? <BookmarkCheck size={18} /> : <Bookmark size={18} />} onClick={toggleSave}>
+            {savedCopy ? t('saved.savedButton') : t('saved.save')}
+          </Button>
+          <Button variant="secondary" className="h-11 px-4 text-sm" icon={<Share2 size={18} />} onClick={share}>
+            {t('share.button')}
+          </Button>
+        </div>
+        <p className="min-h-5 text-center text-sm text-muted" role="status" aria-live="polite">
+          {status}
+        </p>
       </div>
 
       <OutfitList outfit={current} onChange={(p) => (canSwap(p) ? setSwapping(p) : undefined)} />

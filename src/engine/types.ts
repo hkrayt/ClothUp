@@ -54,7 +54,15 @@ export interface Profile {
   style: Style
   /** Index into the character's skin tone list (0–4). */
   skinTone: number
+  /** Optional body details, kept on the device only. They shape the character and nudge the suggestions. */
+  heightCm?: number
+  weightKg?: number
+  age?: number
+  /** "I usually feel the cold / the heat". */
+  thermal?: Thermal
 }
+
+export type Thermal = 'cold' | 'normal' | 'hot'
 
 export type OccasionId =
   | 'work'

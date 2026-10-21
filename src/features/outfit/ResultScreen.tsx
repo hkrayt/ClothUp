@@ -32,7 +32,7 @@ export function ResultScreen() {
       </div>
 
       <WeatherPanel place={place} start={start} hours={hours}>
-        {(ctx) => <OutfitSection ctx={ctx} profile={profile} occasion={plan.occasion} />}
+        {(ctx) => <OutfitSection ctx={ctx} profile={profile} occasion={plan.occasion} placeName={place.name} />}
       </WeatherPanel>
     </main>
   )

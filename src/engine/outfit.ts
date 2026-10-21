@@ -3,6 +3,7 @@ import type { Occasion, Profile, WeatherContext } from './types'
 import type { EngineData } from './catalog'
 import { collectEffects, type Effects, type Facts } from './rules'
 import { ColorEngine } from './color'
+import { feltContext, personalize, type Personal } from './personal'
 
 export interface GenerateOptions {
   /** Item id → score bonus learned from the user's swaps. */
@@ -15,6 +16,8 @@ export interface GenerateOptions {
   paletteId?: string
   /** Whether a patterned piece is allowed (default: only for the second option). */
   allowPattern?: boolean
+  /** "My closet": item ids the user owns. Suggestions use only these when a slot has something wearable. */
+  owned?: string[]
 }
 
 interface Scored {
@@ -24,7 +27,12 @@ interface Scored {
 
 /** Shared state for one generation run. */
 interface Run {
+  /** The weather as this person feels it (shifted by their personal offset). */
   ctx: WeatherContext
+  /** The forecast itself, for the explanations. */
+  realCtx: WeatherContext
+  personal: Personal
+  owned: Set<string> | null
   profile: Profile
   occasion: Occasion
   data: EngineData
@@ -52,11 +60,13 @@ function coverageOk(run: Run, item: ClothingItem): boolean {
 }
 
 /** Items for a slot in a given style that fit the profile, occasion, exclusions and coverage. */
-function basePool(run: Run, slot: Slot, style: string): ClothingItem[] {
+function basePool(run: Run, slot: Slot, style: string, closet: boolean): ClothingItem[] {
   const { profile, occasion, fx, data } = run
+  const owned = closet && slot !== 'accessory' && slot !== 'eyewear' ? run.owned : null
   return data.items.filter(
     (i) =>
       i.slot === slot &&
+      (!owned || owned.has(i.id)) &&
       i.gender.includes(profile.gender) &&
       i.style.includes(style as never) &&
       (i.occasions.includes(occasion.id) || !!occasion.includes?.some((o) => i.occasions.includes(o))) &&
@@ -82,16 +92,25 @@ function applyRequirements(run: Run, slot: Slot, items: ClothingItem[], target?:
   return out
 }
 
-/** Candidates for a slot. If the user's style has nothing wearable in this weather, standard-style items are used. */
+/**
+ * Candidates for a slot. With "My closet" on, only owned items are used unless none of them suits the weather.
+ */
 function pool(run: Run, slot: Slot, target?: number): ClothingItem[] {
   const lock = run.opts.locks?.[slot]
   if (lock) {
     const locked = run.data.items.find((i) => i.id === lock && i.slot === slot)
     if (locked) return [locked]
   }
-  const own = applyRequirements(run, slot, basePool(run, slot, run.profile.style), target)
+  const fromCloset = stylePool(run, slot, target, true)
+  if (!run.owned || fromCloset.some(wearable(target))) return fromCloset
+  return stylePool(run, slot, target, false)
+}
+
+/** If the user's style has nothing wearable in this weather, standard-style items are used. */
+function stylePool(run: Run, slot: Slot, target: number | undefined, closet: boolean): ClothingItem[] {
+  const own = applyRequirements(run, slot, basePool(run, slot, run.profile.style, closet), target)
   if (run.profile.style === 'standard') return own
-  const fallback = applyRequirements(run, slot, basePool(run, slot, 'standard'), target)
+  const fallback = applyRequirements(run, slot, basePool(run, slot, 'standard', closet), target)
   if (!fallback.some(wearable(target))) return own
   if (!own.some(wearable(target))) return [...own, ...fallback]
   // Own style has items but can't meet a requirement (e.g. swimwear for traditional style): use standard items.
@@ -330,7 +349,8 @@ function differences(a: Outfit, b: Outfit): number {
 // ---------- reasons ----------
 
 function buildReasons(run: Run, plan: Plan): Reason[] {
-  const { ctx } = run
+  // Explanations quote the forecast, not the personally shifted temperatures.
+  const ctx = run.realCtx
   const r = (n: number) => Math.round(n)
   const params: Record<string, Record<string, number>> = {
     rain: { p: ctx.rainProb },
@@ -359,6 +379,7 @@ function buildReasons(run: Run, plan: Plan): Reason[] {
   const occasion = withReason.filter((m) => m.group === 'occasion')
   if (weather.length === 0) push('mild', { min: r(ctx.feelsMin), max: r(ctx.feelsMax) })
   for (const m of [...weather, ...occasion]) push(m.reason!, params[m.reason!])
+  for (const p of run.personal.reasons) push(p.key, p.params as Record<string, number> | undefined)
   return reasons
 }
 
@@ -368,13 +389,21 @@ export function facts(ctx: WeatherContext, profile: Profile, occasion: Occasion)
   return { ...ctx, gender: profile.gender, style: profile.style, occasion: occasion.id }
 }
 
-function makeRun(ctx: WeatherContext, profile: Profile, occasion: Occasion, data: EngineData, opts: GenerateOptions): Run {
+function makeRun(realCtx: WeatherContext, profile: Profile, occasion: Occasion, data: EngineData, opts: GenerateOptions): Run {
+  const personal = personalize(profile)
+  const ctx = feltContext(realCtx, personal.offset)
+  const fx = collectEffects(data.rules, facts(ctx, profile, occasion))
+  for (const [tag, v] of Object.entries(personal.prefer)) fx.prefer.set(tag, (fx.prefer.get(tag) ?? 0) + v)
+  for (const tag of personal.exclude) fx.exclude.add(tag)
   return {
     ctx,
+    realCtx,
+    personal,
+    owned: opts.owned ? new Set(opts.owned) : null,
     profile,
     occasion,
     data,
-    fx: collectEffects(data.rules, facts(ctx, profile, occasion)),
+    fx,
     opts,
     armsLong: profile.style === 'modest' || (occasion.id === 'religious' && profile.gender === 'female'),
     legsLong: profile.style === 'modest' || occasion.id === 'religious',
@@ -390,8 +419,9 @@ export function swapOptions(
   outfit: Outfit,
   slot: Slot,
   limit = 8,
+  opts: Pick<GenerateOptions, 'owned'> = {},
 ): ClothingItem[] {
-  const run = makeRun(ctx, profile, occasion, data, {})
+  const run = makeRun(ctx, profile, occasion, data, opts)
   const plan = layerPlan(run)
   const target = plan.targets[slot]
   const current = outfit.pieces.find((p) => p.slot === slot)?.item.id
@@ -410,7 +440,7 @@ export function applySwap(
   outfit: Outfit,
   slot: Slot,
   itemId: string,
-  prefs?: Record<string, number>,
+  opts: Pick<GenerateOptions, 'prefs' | 'owned'> = {},
 ): Outfit | null {
   const locks: Partial<Record<Slot, string>> = {}
   for (const p of outfit.pieces) if (['top', 'bottom', 'outer', 'mid', 'shoes', 'socks', 'head'].includes(p.slot)) locks[p.slot] = p.item.id
@@ -420,7 +450,7 @@ export function applySwap(
   const newItem = data.items.find((i) => i.id === itemId)
   if (slot === 'bottom' && outfit.pieces.find((p) => p.slot === 'top')?.item.fills?.includes('bottom')) delete locks.top
   if (newItem?.fills?.includes('bottom')) delete locks.bottom
-  const [result] = generateOutfits(ctx, profile, occasion, data, { locks, prefs, count: 1, paletteId: outfit.palette?.id, allowPattern: outfit.pieces.some((p) => p.pattern && p.pattern !== 'embroidery') })
+  const [result] = generateOutfits(ctx, profile, occasion, data, { ...opts, locks, count: 1, paletteId: outfit.palette?.id, allowPattern: outfit.pieces.some((p) => p.pattern && p.pattern !== 'embroidery') })
   return result ? { ...result, id: outfit.id } : null
 }
 
@@ -475,7 +505,8 @@ export function generateOutfits(
   const used: string[] = []
   return picked.map((o, i) => {
     // The second option may carry one patterned piece for variety; the first stays plain and classic.
-    const colored = colors.colorize({ ...o, id: `outfit-${i + 1}`, reasons }, ctx, occasion, used, opts.paletteId, opts.allowPattern ?? i === 1)
+    const marked = run.owned ? o.pieces.map((p) => (run.owned!.has(p.item.id) || p.item.tags.includes('reminder') ? p : { ...p, missing: true })) : o.pieces
+    const colored = colors.colorize({ ...o, pieces: marked, id: `outfit-${i + 1}`, reasons }, ctx, occasion, used, opts.paletteId, opts.allowPattern ?? i === 1)
     if (colored.palette) used.push(colored.palette.id)
     return colored
   })

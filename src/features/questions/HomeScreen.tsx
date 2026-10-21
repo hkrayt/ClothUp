@@ -10,6 +10,7 @@ import { formatHour, formatWeekday, relativeDay } from '@/lib/format'
 import { getPlace } from '@/features/places/places'
 import { OCCASIONS, OccasionIcon } from './occasions'
 import { WhenSheet } from './WhenSheet'
+import { SavedOutfits } from '@/features/saved/SavedOutfits'
 
 const DURATIONS: Duration[] = [2, 3, 6, 10, 'night']
 
@@ -122,6 +123,8 @@ export function HomeScreen() {
           </div>
         </Field>
       </Card>
+
+      <SavedOutfits />
 
       <div className="sticky bottom-0 -mx-4 bg-gradient-to-t from-bg via-bg to-transparent px-4 pb-4 pt-6 safe-bottom">
         <Button size="lg" block icon={<Sparkles size={20} />} onClick={suggest}>
