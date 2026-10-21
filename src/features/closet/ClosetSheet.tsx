@@ -6,32 +6,12 @@ import type { ClothingItem, Slot } from '@/engine/outfit-types'
 import { DATA } from '@/engine/catalog'
 import { useApp } from '@/app/store'
 import { SLOT_ORDER } from '@/features/outfit/OutfitList'
-import { Sheet, cx } from '@/ui'
+import { Sheet, Switch, cx } from '@/ui'
 
 /** Items this profile can be offered: their own style first, then standard pieces the engine may fall back to. */
 export function closetItems(profile: Pick<Profile, 'gender' | 'style'>): ClothingItem[] {
   return DATA.items.filter(
     (i) => i.gender.includes(profile.gender) && (i.style.includes(profile.style) || i.style.includes('standard')) && !i.tags.includes('reminder'),
-  )
-}
-
-function Switch({ checked, onChange, label, hint }: { checked: boolean; onChange: (v: boolean) => void; label: string; hint: string }) {
-  return (
-    <button
-      type="button"
-      role="switch"
-      aria-checked={checked}
-      onClick={() => onChange(!checked)}
-      className="flex w-full items-center gap-3 rounded-control border border-border bg-surface-2 px-4 py-3 text-start"
-    >
-      <span className="flex flex-1 flex-col">
-        <span className="font-semibold">{label}</span>
-        <span className="text-sm text-muted">{hint}</span>
-      </span>
-      <span className={cx('relative h-7 w-12 shrink-0 rounded-full transition-colors', checked ? 'bg-primary' : 'bg-border')} aria-hidden>
-        <span className={cx('absolute top-1 h-5 w-5 rounded-full bg-surface shadow transition-all', checked ? 'start-6' : 'start-1')} />
-      </span>
-    </button>
   )
 }
 
