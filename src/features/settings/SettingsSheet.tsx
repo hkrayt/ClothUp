@@ -9,6 +9,8 @@ import { useApp } from '@/app/store'
 import { STYLES } from '@/features/onboarding/Onboarding'
 import { ClosetSheet } from '@/features/closet/ClosetSheet'
 import { AboutYou } from './AboutYou'
+import { ReminderSettings } from '@/features/reminder/ReminderSettings'
+import { reminderSupported } from '@/features/reminder/reminder'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -85,6 +87,11 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
                 <ChevronRight size={20} className="text-muted rtl:rotate-180" aria-hidden />
               </button>
             </Section>
+            {reminderSupported() && (
+              <Section title={t('reminder.title2')}>
+                <ReminderSettings />
+              </Section>
+            )}
           </>
         )}
         <Section title={t('settings.language')}>

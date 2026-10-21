@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CalendarClock, ChevronDown, Hourglass, MapPin, Sparkles } from 'lucide-react'
+import { CalendarClock, ChevronDown, ChevronRight, Hourglass, Luggage, MapPin, Sparkles } from 'lucide-react'
 import type { Duration, Lang, Place, When } from '@/engine/types'
 import { useApp, frequentPlaces } from '@/app/store'
 import { useNav } from '@/app/nav'
@@ -123,6 +123,19 @@ export function HomeScreen() {
           </div>
         </Field>
       </Card>
+
+      <button
+        type="button"
+        onClick={() => go('trip')}
+        className="flex min-h-16 items-center gap-3 rounded-card border border-border bg-surface px-4 py-3 text-start shadow-card hover:border-primary"
+      >
+        <Luggage size={22} className="shrink-0 text-primary" aria-hidden />
+        <span className="flex flex-1 flex-col">
+          <span className="font-semibold">{t('trip.open')}</span>
+          <span className="text-sm text-muted">{t('trip.openHint')}</span>
+        </span>
+        <ChevronRight size={20} className="text-muted rtl:rotate-180" aria-hidden />
+      </button>
 
       <SavedOutfits />
 

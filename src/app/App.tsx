@@ -6,6 +6,8 @@ import { SettingsSheet } from '@/features/settings/SettingsSheet'
 import { Onboarding } from '@/features/onboarding/Onboarding'
 import { HomeScreen } from '@/features/questions/HomeScreen'
 import { ResultScreen } from '@/features/outfit/ResultScreen'
+import { TripScreen } from '@/features/trip/TripScreen'
+import { useReminderSync } from '@/features/reminder/useReminderSync'
 import { AppHeader } from './AppHeader'
 import { useApplyAppearance } from './theme'
 import { useApp } from './store'
@@ -14,6 +16,7 @@ import { useHistorySync, useHydrated, useNav } from './nav'
 export function App() {
   useApplyAppearance()
   useHistorySync()
+  useReminderSync()
   const hydrated = useHydrated()
   const { t, i18n } = useTranslation()
   const profile = useApp((s) => s.profile)
@@ -37,7 +40,7 @@ export function App() {
           ) : undefined
         }
       />
-      {screen === 'home' ? <HomeScreen /> : <ResultScreen />}
+      {screen === 'home' ? <HomeScreen /> : screen === 'trip' ? <TripScreen /> : <ResultScreen />}
       <SettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>
   )

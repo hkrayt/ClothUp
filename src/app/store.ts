@@ -3,6 +3,7 @@ import { createJSONStorage, persist } from 'zustand/middleware'
 import type { Duration, OccasionId, Place, Profile, When } from '@/engine/types'
 import type { OutfitPiece, Slot } from '@/engine/outfit-types'
 import type { Localized } from '@/engine/types'
+import { addHours, ammanNow, atHour, dateOf } from '@/engine/time'
 import { kvStorage } from '@/lib/storage'
 
 export interface Plan {
@@ -35,6 +36,26 @@ export interface SavedOutfit {
 
 export const SAVED_LIMIT = 30
 
+/** A multi-day trip being planned, with what's already packed. */
+export interface Trip {
+  place: string | Place
+  /** First day, "YYYY-MM-DD". */
+  startDate: string
+  days: number
+  occasion: OccasionId
+  /** First and last days are travel days. */
+  travelDays: boolean
+  /** Packing-list keys (item id + color) already in the bag. */
+  packed: string[]
+}
+
+/** Morning reminder (Android): a notification with the day's outfit at a set time. */
+export interface Reminder {
+  enabled: boolean
+  /** "HH:MM", Amman time. */
+  time: string
+}
+
 interface AppState {
   profile: Profile | null
   plan: Plan
@@ -56,6 +77,15 @@ interface AppState {
   saved: SavedOutfit[]
   saveOutfit: (outfit: Omit<SavedOutfit, 'id' | 'savedAt'>) => string
   removeSaved: (id: string) => void
+  trip: Trip | null
+  setTrip: (patch: Partial<Trip>) => void
+  reminder: Reminder
+  setReminder: (patch: Partial<Reminder>) => void
+}
+
+/** A new trip starts tomorrow, for three days, from the last place used. */
+export function newTrip(plan: Plan, today: string): Trip {
+  return { place: plan.place, startDate: dateOf(addHours(atHour(today, 12), 24)), days: 3, occasion: 'casual', travelDays: true, packed: [] }
 }
 
 const clampPref = (n: number) => Math.max(-4, Math.min(4, Math.round(n * 10) / 10))
@@ -104,6 +134,10 @@ export const useApp = create<AppState>()(
         return id
       },
       removeSaved: (id) => set({ saved: get().saved.filter((s) => s.id !== id) }),
+      trip: null,
+      setTrip: (patch) => set({ trip: { ...(get().trip ?? newTrip(get().plan, dateOf(ammanNow()))), ...patch } }),
+      reminder: { enabled: false, time: '07:30' },
+      setReminder: (patch) => set({ reminder: { ...get().reminder, ...patch } }),
     }),
     {
       name: 'clothup.app',
@@ -116,6 +150,8 @@ export const useApp = create<AppState>()(
         itemPrefs: s.itemPrefs,
         closet: s.closet,
         saved: s.saved,
+        trip: s.trip,
+        reminder: s.reminder,
         plan: { ...s.plan, when: { kind: 'now' } as When },
       }),
     },
