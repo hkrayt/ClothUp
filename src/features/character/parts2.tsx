@@ -5,11 +5,16 @@ import { L, M, Q } from './path'
 import { capDome, openFront, sleeves, torso, trousers } from './shapes'
 import type { PartCtx, Renderer } from './parts'
 
+const shadeUrl = (c: PartCtx) => `url(#${c.patternId}-shade)`
+
 const SW = 1.1
 const GOLD = '#C8A44C'
 
 const P = ({ d, c, fill }: { d: string; c: PartCtx; fill?: string }) => (
-  <path d={d} fill={fill ?? c.fill} stroke={c.stroke} strokeWidth={SW} strokeLinejoin="round" />
+  <>
+    <path d={d} fill={fill ?? c.fill} stroke={c.stroke} strokeWidth={SW} strokeLinejoin="round" />
+    <path d={d} fill={shadeUrl(c)} stroke="none" pointerEvents="none" />
+  </>
 )
 const Line = ({ d, c, color, w = 1, dash }: { d: string; c: PartCtx; color?: string; w?: number; dash?: string }) => (
   <path d={d} fill="none" stroke={color ?? c.stroke} strokeWidth={w} strokeLinecap="round" strokeDasharray={dash} />
@@ -28,13 +33,15 @@ const wrist = (b: Body) => b.armOuter[3][1]
 /** Sleeveless vest worn over the top: padded gilet or knit vest. */
 export const vest: Renderer = (c) => {
   const { b } = c
-  const puffer = c.variant === 'puffer'
-  const hem = puffer ? 244 : 236
+  if (c.variant === 'sedeyree') return sedeyree(c)
+  const long = c.variant === 'long'
+  const puffer = c.variant === 'puffer' || long
+  const hem = long ? 344 : puffer ? 244 : 236
   const lines: ReactNode[] = []
   if (puffer) for (let y = 126; y < hem - 6; y += 22) lines.push(<Line key={y} c={c} d={M([b.cx - b.hip - 6, y]) + Q([b.cx, y + 4], [b.cx + b.hip + 6, y])} color={c.dark} />)
   return (
     <>
-      <P d={torso(b, { hemY: hem, loose: puffer ? 4 : 2, over: puffer ? 4 : 2, neck: puffer ? 'high' : 'v' })} c={c} />
+      <P d={torso(b, { hemY: hem, loose: puffer ? 4 : 2, over: puffer ? 4 : 2, flare: long ? 5 : 0, neck: puffer ? 'high' : 'v' })} c={c} />
       {lines}
       {puffer ? (
         <Line c={c} d={M([b.cx, 72]) + L([b.cx, hem])} color={c.dark} w={1.4} />
@@ -191,4 +198,71 @@ export const armsleeves: Renderer = (c) => {
   )
 }
 
-export const PARTS_V12: Record<string, Renderer> = { vest, jumpsuit, kaftan, burkini, swimsuit, taqiyah, earflap, gaiter, armsleeves }
+/** Sedeyree: the sleeveless traditional vest worn over a thobe, open at the front with a trimmed edge. */
+function sedeyree(c: PartCtx) {
+  const { b } = c
+  const [l, r] = openFront(b, { hemY: 250, loose: 3, over: 2.5, gapHem: 10, gapChest: 6, vBottomY: 200 })
+  const trim = c.trim ?? c.dark
+  return (
+    <>
+      <P d={l} c={c} />
+      <P d={r} c={c} />
+      <Line c={c} d={M([b.cx - 8, 92]) + L([b.cx - 6, 200]) + L([b.cx - 10, 250])} color={trim} w={1.6} />
+      <Line c={c} d={M([b.cx + 8, 92]) + L([b.cx + 6, 200]) + L([b.cx + 10, 250])} color={trim} w={1.6} />
+      {[150, 172, 194].map((y) => (
+        <circle key={y} cx={b.cx - 10} cy={y} r={1.3} fill={trim} />
+      ))}
+    </>
+  )
+}
+
+/** Necktie, drawn over the shirt and under any jacket or sweater. */
+export const tie: Renderer = (c) => {
+  const { b } = c
+  const d = M([b.cx - 3.2, 100]) + L([b.cx + 3.2, 100]) + L([b.cx + 5.5, 196]) + L([b.cx, 204]) + L([b.cx - 5.5, 196]) + ' Z'
+  return (
+    <>
+      <P d={d} c={c} />
+      <path d={M([b.cx - 4.5, 92]) + L([b.cx + 4.5, 92]) + L([b.cx + 3.2, 101]) + L([b.cx - 3.2, 101]) + ' Z'} fill={c.fill} stroke={c.stroke} strokeWidth={SW} />
+    </>
+  )
+}
+
+/** Wool beret, worn tilted. */
+export const beret: Renderer = (c) => {
+  const { b } = c
+  const y = b.head.cy - b.head.ry + 12
+  const d = M([b.cx - b.head.rx - 3, y]) + Q([b.cx - b.head.rx - 6, y - 22], [b.cx + 2, y - 20]) + Q([b.cx + b.head.rx + 12, y - 16], [b.cx + b.head.rx + 3, y + 2]) + Q([b.cx, y + 6], [b.cx - b.head.rx - 3, y]) + ' Z'
+  return (
+    <>
+      <P d={d} c={c} />
+      <circle cx={b.cx + 2} cy={y - 21} r={1.6} fill={c.dark} />
+    </>
+  )
+}
+
+/** Rain poncho: one wide waterproof cape over the arms, with a hood behind the head. */
+export const poncho: Renderer = (c) => {
+  const { b } = c
+  const hem = 262
+  const half = b.shoulder + 16
+  const d =
+    M([b.cx - 12, 84]) +
+    Q([b.cx - b.shoulder, 90], [b.cx - b.shoulder - 6, 112]) +
+    L([b.cx - half, hem]) +
+    Q([b.cx, hem + 8], [b.cx + half, hem]) +
+    L([b.cx + b.shoulder + 6, 112]) +
+    Q([b.cx + b.shoulder, 90], [b.cx + 12, 84]) +
+    Q([b.cx, 92], [b.cx - 12, 84]) +
+    ' Z'
+  return (
+    <>
+      <path d={M([b.cx - 24, 98]) + Q([b.cx - 26, 70], [b.cx, 72]) + Q([b.cx + 26, 70], [b.cx + 24, 98]) + ' Z'} fill={c.fill} stroke={c.stroke} strokeWidth={SW} />
+      <P d={d} c={c} />
+      <Line c={c} d={M([b.cx, 92]) + L([b.cx, 150])} color={c.dark} w={1.2} />
+      <Line c={c} d={M([b.cx - half + 4, hem - 30]) + Q([b.cx, hem - 22], [b.cx + half - 4, hem - 30])} color={c.dark} w={0.8} dash="2 2" />
+    </>
+  )
+}
+
+export const PARTS_V12: Record<string, Renderer> = { vest, jumpsuit, kaftan, burkini, swimsuit, taqiyah, earflap, gaiter, armsleeves, tie, beret, poncho }
