@@ -1,6 +1,6 @@
 import { useId, type KeyboardEvent, type ReactNode } from 'react'
 import type { Gender, Lang } from '@/engine/types'
-import type { OutfitPiece } from '@/engine/outfit-types'
+import type { OutfitPiece, Pattern } from '@/engine/outfit-types'
 import { COLORS } from '@/engine/catalog'
 import { lightness, shade } from '@/engine/color'
 import { cx } from '@/ui'
@@ -57,6 +57,32 @@ function BodySkin({ b, skin }: { b: Body; skin: string }) {
   )
 }
 
+function PieceFill({ id, pattern, base, accent }: { id: string; pattern: Pattern; base: string; accent: string }) {
+  if (pattern === 'stripes')
+    return (
+      <pattern id={id} width="6" height="6" patternUnits="userSpaceOnUse">
+        <rect width="6" height="6" fill={base} />
+        <rect x="0" width="1.6" height="6" fill={accent} />
+      </pattern>
+    )
+  if (pattern === 'check')
+    return (
+      <pattern id={id} width="10" height="10" patternUnits="userSpaceOnUse">
+        <rect width="10" height="10" fill={base} />
+        <rect width="10" height="3" fill={accent} opacity={0.45} />
+        <rect width="3" height="10" fill={accent} opacity={0.45} />
+      </pattern>
+    )
+  return (
+    <pattern id={id} width="14" height="14" patternUnits="userSpaceOnUse">
+      <rect width="14" height="14" fill={base} />
+      <circle cx="4" cy="4" r="2.2" fill={accent} />
+      <circle cx="11" cy="10" r="1.6" fill={accent} opacity={0.8} />
+      <circle cx="4" cy="4" r="0.8" fill={base} />
+    </pattern>
+  )
+}
+
 /** Draw order, back to front. Accessories are split by where they sit on the body. */
 const ORDER = ['tights', 'socks', 'shoes', 'bottom', 'top', 'mid', 'outer', 'neck', 'head', 'eyewear', 'front', 'hands'] as const
 type Layer = (typeof ORDER)[number]
@@ -66,7 +92,8 @@ function layerOf(p: OutfitPiece): Layer | null {
   if (part === 'none') return null
   if (p.slot === 'socks') return part === 'tights' ? 'tights' : 'socks'
   if (p.slot === 'accessory') {
-    if (part === 'scarf') return 'neck'
+    if (part === 'scarf' || part === 'gaiter') return 'neck'
+    if (part === 'armsleeves') return 'front'
     if (part === 'backpack' || part === 'crossbody') return 'front'
     return 'hands'
   }
@@ -81,11 +108,17 @@ export function Character({ pieces, gender, skinTone, lang, selectedId, onSelect
   const coversHair = !!head && head.item.tags.some((t) => ['hijab', 'head-cover', 'shemagh'].includes(t))
   const backpack = pieces.find((p) => p.item.svg.part === 'backpack')
 
+  // Patterned pieces (stripes, check, floral) get their own fill pattern in the piece's two colors.
+  const patternFill = (p: OutfitPiece) =>
+    p.pattern && p.pattern !== 'embroidery' && p.color && p.patternColor ? `${uid}-${p.slot}-${p.item.id}` : null
+
   const ctxFor = (p: OutfitPiece): PartCtx => {
     const hex = p.color ? COLORS.hex(p.color) : '#9AA0A6'
     const def = p.color ? COLORS.color(p.color) : undefined
-    const fill = def?.pattern ? `url(#${uid}-${def.pattern})` : hex
-    return { b, fill, ...tones(hex), variant: p.item.svg.variant, skin, item: p.item, patternId: uid }
+    const own = patternFill(p)
+    const fill = def?.pattern ? `url(#${uid}-${def.pattern})` : own ? `url(#${own})` : hex
+    const trim = p.pattern === 'embroidery' && p.patternColor ? COLORS.hex(p.patternColor) : undefined
+    return { b, fill, ...tones(hex), variant: p.item.svg.variant, skin, item: p.item, patternId: uid, trim }
   }
 
   const interactive = !!onSelect
@@ -143,6 +176,15 @@ export function Character({ pieces, gender, skinTone, lang, selectedId, onSelect
           <path d="M0 3.5h7M3.5 0v7" stroke="#B3262E" strokeWidth="1.6" />
           <rect x="2.6" y="2.6" width="1.8" height="1.8" fill="#7E1A20" />
         </pattern>
+        <pattern id={`${uid}-check-black`} width="7" height="7" patternUnits="userSpaceOnUse">
+          <rect width="7" height="7" fill="#F4F2EE" />
+          <path d="M0 3.5h7M3.5 0v7" stroke="#2A2A2C" strokeWidth="1.6" />
+          <rect x="2.6" y="2.6" width="1.8" height="1.8" fill="#111112" />
+        </pattern>
+        {pieces.map((p) => {
+          const id = patternFill(p)
+          return id ? <PieceFill key={id} id={id} pattern={p.pattern!} base={COLORS.hex(p.color!)} accent={COLORS.hex(p.patternColor!)} /> : null
+        })}
       </defs>
       <ellipse cx={100} cy={444} rx={46} ry={6} fill="currentColor" opacity={0.08} />
 
