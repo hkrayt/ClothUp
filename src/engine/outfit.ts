@@ -274,10 +274,12 @@ function assemble(run: Run, plan: Plan, top: ClothingItem, bottom: ClothingItem 
     }
   }
 
+  // Over a thobe or abaya only pieces made to go over a robe (sedeyree, long vest) work as a mid layer.
   const traditionalBase = hasAny(top, ['thobe', 'abaya'])
-  if ((plan.needMid && !traditionalBase) || run.opts.locks?.mid) {
+  if (plan.needMid || run.opts.locks?.mid) {
     const outer = pieces.find((p) => p.slot === 'outer')?.item
-    const mids = rank(run, pool(run, 'mid', plan.targets.mid), plan.targets.mid)
+    const midPool = pool(run, 'mid', plan.targets.mid).filter((i) => !traditionalBase || run.opts.locks?.mid === i.id || i.tags.includes('over-robe'))
+    const mids = rank(run, midPool, plan.targets.mid)
       .map((s) => ({ ...s, score: s.score + pairCoherence(s.item) + (outer ? coherence(s.item, outer) : 0) }))
       .sort((a, b) => b.score - a.score)
     if (mids[0]) {

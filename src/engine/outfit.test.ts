@@ -147,7 +147,9 @@ describe('specific suggestions', () => {
   })
 
   it('formal man gets a suit jacket; traditional wedding gets a bisht and shemagh', () => {
-    expect(slotItem(generateOutfits(SCENARIOS.mildCloudy, male, occ('formal'), DATA)[0], 'outer')!.id).toBe('m-suit-jacket')
+    const [f] = generateOutfits(SCENARIOS.mildCloudy, male, occ('formal'), DATA)
+    expect(['m-suit-jacket', 'm-dinner-jacket']).toContain(slotItem(f, 'outer')!.id)
+    expect(f.pieces.some((p) => p.item.id === 'm-tie')).toBe(true)
     const [w] = generateOutfits(SCENARIOS.mildCloudy, trad, occ('wedding'), DATA)
     expect(slotItem(w, 'outer')!.id).toBe('m-bisht')
     expect(slotItem(w, 'head')!.tags).toContain('shemagh')

@@ -6,7 +6,7 @@
   { "id": "snow", "priority": 85, "when": { "any": [{ "snowCm": { "gt": 0 } }, { "feelsMin": { "lte": 0 } }] }, "then": { "need": ["outer"], "require": { "shoes": ["boots", "closed"] }, "prefer": { "boots": 3, "warm": 3, "water-resistant": 1 }, "preferFabrics": { "wool": 2, "down": 2 }, "add": ["gloves", "scarf"] }, "reason": "snow" },
   { "id": "cold-hands", "priority": 60, "when": { "feelsMin": { "lte": 5 } }, "then": { "add": ["gloves"] } },
   { "id": "cold-neck", "priority": 60, "when": { "feelsMin": { "lte": 8 } }, "then": { "add": ["scarf"], "prefer": { "warm": 2 }, "preferFabrics": { "wool": 2, "fleece": 1, "linen": -3, "chiffon": -2 } }, "reason": "cold" },
-  { "id": "cold-head", "priority": 50, "when": { "feelsMin": { "lte": 6 }, "style": { "eq": "standard" }, "occasion": { "in": ["casual", "university", "travel", "hiking"] } }, "then": { "need": ["head"], "require": { "head": ["beanie", "head-cover"] } } },
+  { "id": "cold-head", "priority": 50, "when": { "feelsMin": { "lte": 6 }, "style": { "eq": "standard" }, "occasion": { "in": ["casual", "university", "travel", "hiking"] } }, "then": { "need": ["head"], "require": { "head": ["beanie", "head-cover", "beret"] } } },
   { "id": "cool-closed-shoes", "priority": 50, "when": { "feelsMin": { "lte": 14 } }, "then": { "exclude": ["sandals", "open-toe"] } },
 
   { "id": "hot", "priority": 50, "when": { "feelsMax": { "gte": 28 } }, "then": { "prefer": { "breathable": 2, "loose": 1, "warm": -6 }, "preferFabrics": { "linen": 3, "cotton": 2, "chiffon": 2, "modal": 1, "mesh": 1, "wool": -4, "down": -8, "denim": -2, "satin": -1, "fleece": -6 } }, "reason": "hot" },

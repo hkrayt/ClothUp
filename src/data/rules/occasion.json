@@ -14,7 +14,8 @@
 
   { "id": "formal-dress-code", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding"] } }, "then": { "exclude": ["shorts", "sporty", "denim", "sneakers", "beanie", "cap", "hood"], "prefer": { "formal": 3, "tailored": 2 }, "add": ["#bag"] }, "reason": "formal" },
   { "id": "formal-jacket", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding", "interview"] }, "gender": { "eq": "male" }, "style": { "eq": "standard" } }, "then": { "need": ["outer"], "require": { "outer": ["suit", "tailored"] } }, "reason": "formalJacket" },
-  { "id": "formal-bisht", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding"] }, "style": { "eq": "traditional" } }, "then": { "need": ["outer"], "require": { "outer": ["formal"] } }, "reason": "bisht" },
+  { "id": "formal-tie", "priority": 85, "when": { "occasion": { "in": ["formal", "wedding", "interview"] }, "gender": { "eq": "male" }, "style": { "eq": "standard" } }, "then": { "add": ["m-tie"] } },
+  { "id": "formal-bisht", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding"] }, "style": { "eq": "traditional" } }, "then": { "need": ["outer"], "require": { "outer": ["formal"] }, "prefer": { "long": 3 } }, "reason": "bisht" },
   { "id": "formal-no-sandals", "priority": 90, "when": { "occasion": { "in": ["formal", "wedding"] }, "style": { "ne": "traditional" } }, "then": { "exclude": ["sandals"] } },
 
   { "id": "eid-best", "priority": 85, "when": { "occasion": { "eq": "eid" } }, "then": { "exclude": ["sporty", "shorts", "hood"], "prefer": { "embroidered": 3, "kaftan": 2, "formal": 1, "thobe": 2 }, "add": ["#bag"] }, "reason": "eid" },
