@@ -26,7 +26,8 @@
     "learned": "Learned from your changes",
     "learnedHint": "ClothUp remembers {{count}} item choices to tailor suggestions.",
     "resetLearned": "Reset",
-    "about": "ClothUp v{{version}} · weather by"
+    "about": "ClothUp v{{version}} · weather by",
+    "privacy": "Privacy policy"
   },
   "onboarding": {
     "welcome": "Welcome to ClothUp",
