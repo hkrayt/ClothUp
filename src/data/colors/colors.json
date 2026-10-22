@@ -42,6 +42,10 @@
     { "id": "peach", "hex": "#F1C6A2", "name": { "en": "Peach", "ar": "خوخي" }, "chroma": "muted" },
     { "id": "champagne", "hex": "#E6D4B1", "name": { "en": "Champagne", "ar": "شامبين" }, "chroma": "muted" },
     { "id": "nude", "hex": "#D6B29A", "name": { "en": "Nude", "ar": "نود" }, "chroma": "muted" },
+    { "id": "cherry", "hex": "#8E1B2E", "name": { "en": "Cherry red", "ar": "أحمر كرزي" }, "chroma": "bright" },
+    { "id": "butter", "hex": "#F2E3A0", "name": { "en": "Butter yellow", "ar": "أصفر زبدي" }, "chroma": "muted" },
+    { "id": "mocha", "hex": "#A47864", "name": { "en": "Mocha", "ar": "موكا" }, "chroma": "muted" },
+    { "id": "oat", "hex": "#DCCFB9", "name": { "en": "Oat", "ar": "شوفاني" }, "chroma": "muted" },
     { "id": "gold", "hex": "#C8A44C", "name": { "en": "Gold", "ar": "ذهبي" }, "chroma": "bright" },
 
     { "id": "tortoise", "hex": "#6C4524", "name": { "en": "Tortoiseshell", "ar": "صدفي" }, "chroma": "muted", "fixed": true },
@@ -49,11 +53,11 @@
     { "id": "shemagh-black", "hex": "#2A2A2C", "name": { "en": "Black & white check", "ar": "أسود وأبيض مقصّب" }, "chroma": "muted", "fixed": true, "pattern": "check-black" }
   ],
   "groups": {
-    "neutral": ["white", "off-white", "cream", "beige", "grey-light", "grey", "charcoal", "black", "navy"],
-    "earth": ["camel", "tan", "khaki", "olive", "brown", "chocolate", "rust", "terracotta", "sand"],
+    "neutral": ["white", "off-white", "cream", "beige", "grey-light", "grey", "charcoal", "black", "navy", "oat"],
+    "earth": ["camel", "tan", "khaki", "olive", "brown", "chocolate", "rust", "terracotta", "sand", "mocha"],
     "denim": ["denim-light", "denim-mid", "denim-dark"],
-    "pastel": ["sky", "mint", "blush", "lavender", "peach", "sage"],
-    "jewel": ["emerald", "burgundy", "plum", "cobalt", "teal"],
+    "pastel": ["sky", "mint", "blush", "lavender", "peach", "sage", "butter"],
+    "jewel": ["emerald", "burgundy", "plum", "cobalt", "teal", "cherry"],
     "bright": ["red", "coral", "cobalt", "mustard"],
     "leather": ["brown", "tan", "chocolate", "black", "burgundy"]
   }
