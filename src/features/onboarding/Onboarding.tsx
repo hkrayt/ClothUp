@@ -1,10 +1,10 @@
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ArrowLeft, ArrowRight, Check } from 'lucide-react'
-import type { Gender, Profile, Style } from '@/engine/types'
+import type { Gender, Look, Profile, Style } from '@/engine/types'
 import { useApp } from '@/app/store'
 import { useSettings, type Language } from '@/app/settings'
-import { Button, IconButton, cx } from '@/ui'
+import { Button, IconButton, Segmented, cx } from '@/ui'
 import { Logo } from '@/ui/Logo'
 import { StylePreview } from './StylePreview'
 import { AboutYou } from '@/features/settings/AboutYou'
@@ -59,6 +59,7 @@ export function Onboarding() {
   const [step, setStep] = useState<Step>('language')
   const [gender, setGender] = useState<Gender | null>(null)
   const [style, setStyle] = useState<Style>('standard')
+  const [look, setLook] = useState<Look>('classic')
   const [details, setDetails] = useState<Pick<Profile, 'heightCm' | 'weightKg' | 'age' | 'thermal'>>({})
 
   const steps: Step[] = ['language', 'gender', 'style', 'about']
@@ -68,7 +69,7 @@ export function Onboarding() {
     if (step === 'language') setStep('gender')
     else if (step === 'gender' && gender) setStep('style')
     else if (step === 'style' && gender) setStep('about')
-    else if (step === 'about' && gender) setProfile({ gender, style, skinTone: 2, ...details })
+    else if (step === 'about' && gender) setProfile({ gender, style, skinTone: 2, look, ...details })
   }
 
   const pickGender = (g: Gender) => {
@@ -141,6 +142,15 @@ export function Onboarding() {
                   hint={t(`profile.styleHint.${gender}.${s}`)}
                 />
               ))}
+            </div>
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-semibold text-muted">{t('look.title')}</span>
+              <Segmented<Look>
+                label={t('look.title')}
+                value={look}
+                onChange={setLook}
+                options={(['classic', 'modern', 'minimal'] as Look[]).map((l) => ({ value: l, label: t(`look.${l}`) }))}
+              />
             </div>
           </>
         )}

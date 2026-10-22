@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ChevronRight, Shirt } from 'lucide-react'
-import type { Gender, Style } from '@/engine/types'
+import type { Gender, Look, Style } from '@/engine/types'
 import { Button, Segmented, Sheet, cx } from '@/ui'
 import { SKIN_TONES } from '@/features/character/body'
 import { useSettings, type Language, type ThemePref } from '@/app/settings'
@@ -13,6 +13,8 @@ import { ReminderSettings } from '@/features/reminder/ReminderSettings'
 import { reminderSupported } from '@/features/reminder/reminder'
 
 /** The privacy policy, also linked from the Google Play listing. */
+const LOOKS: Look[] = ['classic', 'modern', 'minimal']
+
 export const PRIVACY_URL = 'https://github.com/hkrayt/ClothUp/blob/main/PRIVACY.md'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -51,6 +53,15 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
                 onChange={(style) => updateProfile({ style })}
                 options={STYLES[profile.gender].map((s) => ({ value: s, label: t(`profile.style.${profile.gender}.${s}`) }))}
               />
+            </Section>
+            <Section title={t('look.title')}>
+              <Segmented<Look>
+                label={t('look.title')}
+                value={profile.look ?? 'classic'}
+                onChange={(look) => updateProfile({ look })}
+                options={LOOKS.map((l) => ({ value: l, label: t(`look.${l}`) }))}
+              />
+              <p className="text-xs text-muted">{t('look.hint')}</p>
             </Section>
             <Section title={t('settings.skinTone')}>
               <div role="radiogroup" aria-label={t('settings.skinTone')} className="flex gap-3">
