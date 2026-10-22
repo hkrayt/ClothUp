@@ -136,6 +136,10 @@ The keystore is never committed (`*.jks` is git-ignored).
 
 Weather data by [Open-Meteo.com](https://open-meteo.com/) (CC BY 4.0). Free for non-commercial use.
 
+## Privacy
+
+No accounts, ads or analytics; everything you enter stays on your device. See [PRIVACY.md](PRIVACY.md).
+
 ## License
 
 [MIT](LICENSE)
