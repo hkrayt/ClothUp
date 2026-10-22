@@ -103,5 +103,4 @@ export function legLines(b: Body): { outer: Pt[]; inner: Pt[] } {
   }
 }
 
-export const SKIN_TONES = ['#F5D9C6', '#E9C09F', '#D29C76', '#A76F4C', '#6D452E']
-export const HAIR = '#2E211B'
+export { HAIR, SKIN_TONES } from '@/engine/styling'

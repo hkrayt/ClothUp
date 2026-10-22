@@ -324,7 +324,16 @@
       "pair": "{{A}} and {{b}} are an easy pair that always works.",
       "light": "Light colors reflect the sun and keep you cooler.",
       "neutrals": "{{A}}, {{b}} and {{c}} are calm neutrals that always work together.",
-      "pattern": "The {{a}}-and-{{b}} pattern is the one busy piece; everything else stays plain."
+      "pattern": "The {{a}}-and-{{b}} pattern is the one busy piece; everything else stays plain.",
+      "skin": "{{A}} near your face flatters your skin tone.",
+      "tonal": "One color family from top to toe makes one long line and looks taller.",
+      "column": "A tonal top and bottom under an open contrasting layer draws a long, slimming line.",
+      "split": "A clear break between top and bottom suits your height.",
+      "crisp": "Crisp light-and-dark contrast echoes your fair skin and dark hair.",
+      "look": {
+        "modern": "A modern, current color combination.",
+        "minimal": "Calm, minimal colors with nothing loud."
+      }
     }
   },
   "swap": {
@@ -441,5 +450,12 @@
     "take": "Take: {{items}}.",
     "genericTitle": "What to wear today",
     "genericBody": "Open ClothUp for today's outfit."
+  },
+  "look": {
+    "title": "Your look",
+    "hint": "Shapes the colors and pieces we pick.",
+    "classic": "Classic",
+    "modern": "Modern",
+    "minimal": "Minimal"
   }
 }

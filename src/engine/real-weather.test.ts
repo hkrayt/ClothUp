@@ -37,7 +37,8 @@ describe('real past weather', () => {
           expect(outfits.length, `${c.id} ${p.style} ${o.id}`).toBeGreaterThan(0)
         }
     }
-  })
+    // Hundreds of full generations: slow when the whole suite runs in parallel.
+  }, 30_000)
 
   it('Amman snowstorm (Jan 2022): coat, boots, gloves for a workday', () => {
     const ctx = contextFor(byId['amman-snow-2022'])
