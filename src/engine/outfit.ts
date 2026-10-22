@@ -2,7 +2,8 @@ import type { ClothingItem, Outfit, OutfitPiece, Reason, Slot } from './outfit-t
 import type { Occasion, Profile, WeatherContext } from './types'
 import type { EngineData } from './catalog'
 import { collectEffects, type Effects, type Facts } from './rules'
-import { ColorEngine } from './color'
+import { ColorEngine, type StyleInput } from './color'
+import { styleProfile, styleScore } from './styling'
 import { feltContext, personalize, type Personal } from './personal'
 
 export interface GenerateOptions {
@@ -502,11 +503,14 @@ export function generateOutfits(
   const reasons = buildReasons(run, plan)
   // Give each option its own harmonious palette.
   const colors = new ColorEngine(data.colors)
+  // Skin tone, proportions and look steer the palette; minimal looks stay plain.
+  const sp = styleProfile(profile)
+  const style: StyleInput = { look: sp.look, score: (pieces) => styleScore(pieces, sp, (id) => colors.hex(id), (id) => !!colors.color(id)?.fixed) }
   const used: string[] = []
   return picked.map((o, i) => {
     // The second option may carry one patterned piece for variety; the first stays plain and classic.
     const marked = run.owned ? o.pieces.map((p) => (run.owned!.has(p.item.id) || p.item.tags.includes('reminder') ? p : { ...p, missing: true })) : o.pieces
-    const colored = colors.colorize({ ...o, pieces: marked, id: `outfit-${i + 1}`, reasons }, ctx, occasion, used, opts.paletteId, opts.allowPattern ?? i === 1)
+    const colored = colors.colorize({ ...o, pieces: marked, id: `outfit-${i + 1}`, reasons }, ctx, occasion, used, opts.paletteId, sp.look !== 'minimal' && (opts.allowPattern ?? i === 1), style)
     if (colored.palette) used.push(colored.palette.id)
     return colored
   })

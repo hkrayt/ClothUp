@@ -3,7 +3,7 @@
  * They only nudge the suggestions: weather, occasion and modesty rules still come first.
  */
 import type { Reason } from './outfit-types'
-import type { Gender, Profile, WeatherContext } from './types'
+import type { Gender, Look, Profile, WeatherContext } from './types'
 
 export type AgeGroup = 'teen' | 'young' | 'adult' | 'mature' | 'senior'
 export type Build = 'slim' | 'average' | 'full'
@@ -73,6 +73,13 @@ const BUILD_PREFER: Record<Build, Record<string, number>> = {
   full: { loose: 1.5, flowy: 0.5, breathable: 0.5, 'long-top': 0.5, fitted: -1.5 },
 }
 
+/** Modern looks lean relaxed and layered; classic looks lean tailored and collared. */
+const LOOK_PREFER: Record<Look, Record<string, number>> = {
+  classic: { collared: 0.3, tailored: 0.3, leather: 0.3 },
+  modern: { loose: 0.5, sneakers: 0.5, layer: 0.5 },
+  minimal: { tailored: 0.3, embroidered: -1 },
+}
+
 const STATURE_PREFER: Record<Stature, Record<string, number>> = {
   petite: { long: -0.5 },
   average: {},
@@ -99,6 +106,7 @@ export function personalize(p: Profile): Personal {
   if (age === 'senior') exclude.push('heels')
   if (body) addAll(prefer, BUILD_PREFER[body])
   if (height) addAll(prefer, STATURE_PREFER[height])
+  if (p.look) addAll(prefer, LOOK_PREFER[p.look])
 
   if (p.thermal === 'cold') reasons.push({ key: 'personalCold' })
   else if (p.thermal === 'hot') reasons.push({ key: 'personalHot' })

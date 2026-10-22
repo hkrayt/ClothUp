@@ -60,7 +60,11 @@ export interface Profile {
   age?: number
   /** "I usually feel the cold / the heat". */
   thermal?: Thermal
+  /** Overall look: classic (default), modern or minimal. */
+  look?: Look
 }
+
+export type Look = 'classic' | 'modern' | 'minimal'
 
 export type Thermal = 'cold' | 'normal' | 'hot'
 

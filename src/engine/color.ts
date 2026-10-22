@@ -1,5 +1,6 @@
 import type { ClothingItem, Outfit, OutfitPiece, Pattern, Slot } from './outfit-types'
-import type { Mood, Occasion, WeatherContext } from './types'
+import type { Look, Mood, Occasion, WeatherContext } from './types'
+import type { StyleNote } from './styling'
 
 export interface ColorDef {
   id: string
@@ -24,6 +25,14 @@ export interface Palette {
   ground: string
   outer: string
   bands?: string[]
+  /** Looks this palette is made for; untagged palettes are classic. */
+  looks?: Look[]
+}
+
+/** Personal styling passed in by the outfit engine (kept as a callback to avoid an import cycle). */
+export interface StyleInput {
+  look: Look
+  score: (pieces: OutfitPiece[]) => { score: number; notes: StyleNote[] }
 }
 
 export interface ColorData {
@@ -183,8 +192,16 @@ export class ColorEngine {
   }
 
   /** Colors an outfit with the best palette; `avoid` lists palettes already used by other options. */
-  colorize(outfit: Outfit, ctx: WeatherContext, occasion: Occasion, avoid: string[] = [], only?: string, allowPattern = false): Outfit {
-    let best: { score: number; pieces: OutfitPiece[]; palette: Palette } | null = null
+  colorize(
+    outfit: Outfit,
+    ctx: WeatherContext,
+    occasion: Occasion,
+    avoid: string[] = [],
+    only?: string,
+    allowPattern = false,
+    style?: StyleInput,
+  ): Outfit {
+    let best: { score: number; pieces: OutfitPiece[]; palette: Palette; styleNotes: StyleNote[] } | null = null
     const sunnyHeat = ctx.feelsMax >= 28 && ctx.uvMax >= 5
     const somber = occasion.moods[0] === 'somber'
     const candidates = this.data.palettes.filter((p) => !only || p.id === only)
@@ -207,7 +224,14 @@ export class ColorEngine {
         return { ...p, color: a.color }
       })
       score -= this.harmonyPenalty(pieces, palette.strategy, occasion.moods[0])
-      if (!best || score > best.score) best = { score, pieces, palette }
+      let styleNotes: StyleNote[] = []
+      if (style) {
+        const personal = style.score(pieces)
+        score += personal.score
+        styleNotes = personal.notes
+        score += lookFit(palette, style.look)
+      }
+      if (!best || score > best.score) best = { score, pieces, palette, styleNotes }
     }
     if (!best) return outfit
 
@@ -215,6 +239,9 @@ export class ColorEngine {
     const palette = this.describe(pieces, best.palette, sunnyHeat)
     const patterned = pieces.find((p) => p.pattern && p.pattern !== 'embroidery')
     if (patterned) palette.notes.push({ key: 'pattern', colors: [patterned.color!, patterned.patternColor!] })
+    // Personal notes (skin tone, proportions) come first among the extras; two at most keeps the card short.
+    palette.notes.push(...best.styleNotes.slice(0, 2))
+    if (style && style.look !== 'classic' && (best.palette.looks ?? []).includes(style.look)) palette.notes.push({ key: `look.${style.look}` })
     return { ...outfit, pieces, palette }
   }
 
@@ -287,6 +314,16 @@ export class ColorEngine {
     if (sunnyHeat && mainLight.length >= 2) notes.push({ key: 'light' })
     return { id: palette.id, strategy, swatches, notes }
   }
+}
+
+/** How well a palette fits the chosen look. Untagged palettes are classic; trend palettes are less likely for classic looks. */
+export function lookFit(palette: Palette, look: Look): number {
+  const looks = palette.looks ?? ['classic']
+  if (looks.includes(look)) return look === 'classic' ? 0 : 1.5
+  if (look === 'classic') return -0.5
+  // Modern looks also like tonal (monochrome) palettes; minimal looks avoid everything else.
+  if (look === 'modern') return palette.strategy === 'monochrome' ? 0.5 : 0
+  return -1
 }
 
 const MAIN: Slot[] = ['top', 'bottom', 'outer', 'mid', 'head', 'shoes']
