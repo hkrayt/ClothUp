@@ -13,6 +13,7 @@ ClothUp asks where you're going, when, and for what occasion, checks the forecas
 - My closet: suggest only the clothes you own; save and share outfits
 - Trip planner: an outfit for each day of a trip and one packing list; morning reminder with the day's outfit (Android)
 - Fabric suggestions with a one-line reason, and color palettes from color theory shown as named swatches
+- Smart styling: colors that flatter your skin tone, proportions that suit your height and build, and a Classic, Modern or Minimal look
 - Tap any item on the character to see its color, fabric and why it was chosen
 - Arabic and English with full RTL, light and dark mode, works offline with cached forecasts
 - Android and desktop (Windows, macOS, Linux) from one codebase

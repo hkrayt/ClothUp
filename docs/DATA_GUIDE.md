@@ -136,8 +136,22 @@ If the user's style has nothing wearable for a slot in the current weather (e.g.
 - **moods**: matched against the occasion's `moods` (`classic`, `muted`, `fresh`, `bright`, `earthy`)
 - **roles**: bottoms and dresses take `base`; tops `secondary`; coats `outer`; warm layers, hijabs and scarves `accent`; shoes, bags and gloves `ground` (an evening clutch takes `accent`)
 - **bands** (optional): temperature bands the palette suits
+- **looks** (optional): `classic`, `modern` and/or `minimal`; untagged palettes are classic
 
 For each outfit the engine tries every palette, gives each piece its role color (or the nearest color the item comes in), and scores the result on mood, how many pieces got exact colors, dark colors in strong sun, near-miss shades (e.g. navy next to black), too many bright colors and top/bottom contrast. Each alternative outfit gets a different palette.
+
+### Personal styling (`src/engine/styling.ts`)
+
+The palette score also includes the person:
+
+| Input | Effect |
+|---|---|
+| Skin tone (depth from its OKLab lightness: fair, light, medium, tan, deep) | Colors around the face (hijab or head cover, scarf, top, or the coat worn over it) that sit within ΔE 0.07 of the skin cost 2–3 points; deep and tan skin gain from rich colors (chroma ≥ 0.09) and crisp whites; fair and light skin from medium-deep colors; medium skin from a clear light/dark difference |
+| Personal contrast (skin vs. dark hair) | Fair skin gets a bonus for crisp light-and-dark outfits |
+| Height and weight | Petite or fuller figures: top and bottom in one color family (ΔE ≤ 0.12, or a one-piece) +1.2, a hard light/dark break −0.8. Tall or slim figures: a clear top/bottom break +0.6 |
+| Look | Palettes tagged with the chosen look +1.5; trend palettes −0.5 for classic looks; minimal looks lose a point per bright piece and get no patterns. Looks also nudge pieces: modern → loose, sneakers, layers; classic → collared, tailored, leather |
+
+The palette card names the reason when one applied (`palette.note.skin`, `tonal`, `column`, `split`, `crisp`, `look.*`). Weather and occasion rules are never overridden.
 
 ## How an outfit is built
 
