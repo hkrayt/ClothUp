@@ -1,6 +1,6 @@
 [package]
 name = "clothup"
-version = "1.4.0"
+version = "1.4.1"
 description = "ClothUp — weather-based outfit suggestions for Jordan"
 authors = ["hkrayt"]
 license = "MIT"
