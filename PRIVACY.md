@@ -1,6 +1,6 @@
 # ClothUp (لبسني) — Privacy Policy
 
-_Last updated: 22 October 2026_
+_Last updated: 22 October 2026 (v1.4.1)_
 
 ClothUp suggests what to wear from the weather. It is free, has no accounts, no ads and no analytics, and the developer runs no server that receives your data.
 
@@ -17,7 +17,7 @@ Uninstalling the app (or clearing its data) deletes all of it.
 
 ## Location
 
-If you choose **"Use my location"**, the app asks for your **approximate** location (Android's coarse location, accurate to about 2 km). It is used once to find the weather for where you are and is not stored by the app beyond the cached forecast for that spot. The app never tracks your location in the background.
+If you choose **"Use my location"**, the app asks for your **approximate** location (Android's coarse location, accurate to about 2 km). It is rounded to about 1 km, used once to find the weather for where you are, and not stored by the app beyond the cached forecast for that spot. The app never tracks your location in the background.
 
 ## Weather service
 

@@ -26,7 +26,8 @@
     "learned": "تعلّمناه من تغييراتك",
     "learnedHint": "لبسني بتذكر {{count}} من اختياراتك لتناسبك الاقتراحات أكثر.",
     "resetLearned": "إعادة ضبط",
-    "about": "لبسني v{{version}} · الطقس من"
+    "about": "لبسني v{{version}} · الطقس من",
+    "privacy": "سياسة الخصوصية"
   },
   "onboarding": {
     "welcome": "أهلاً بك في لبسني",

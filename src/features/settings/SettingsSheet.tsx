@@ -12,6 +12,9 @@ import { AboutYou } from './AboutYou'
 import { ReminderSettings } from '@/features/reminder/ReminderSettings'
 import { reminderSupported } from '@/features/reminder/reminder'
 
+/** The privacy policy, also linked from the Google Play listing. */
+export const PRIVACY_URL = 'https://github.com/hkrayt/ClothUp/blob/main/PRIVACY.md'
+
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-2">
@@ -131,6 +134,11 @@ export function SettingsSheet({ open, onClose }: { open: boolean; onClose: () =>
           {t('settings.about', { version: __APP_VERSION__ })} ·{' '}
           <a className="underline" href="https://open-meteo.com/" target="_blank" rel="noreferrer">
             Open-Meteo
+          </a>
+        </p>
+        <p className="-mt-4 text-center text-xs text-muted">
+          <a className="underline" href={PRIVACY_URL} target="_blank" rel="noreferrer">
+            {t('settings.privacy')}
           </a>
         </p>
       </div>

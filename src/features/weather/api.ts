@@ -64,7 +64,9 @@ const num = (v: number | null | undefined, fallback = 0) => (typeof v === 'numbe
 
 /** Fetches hourly weather plus dust for a place. Dust is optional: if that API fails we carry on without it. */
 export async function fetchForecast(place: Place, signal?: AbortSignal): Promise<Forecast> {
-  const common = { latitude: place.lat, longitude: place.lon, timezone: AMMAN_TZ }
+  // The user's own location is sent rounded to about 1 km; that's plenty for a forecast.
+  const coord = (n: number) => (place.id === 'current' ? Math.round(n * 100) / 100 : n)
+  const common = { latitude: coord(place.lat), longitude: coord(place.lon), timezone: AMMAN_TZ }
 
   const [weather, air] = await Promise.all([
     getJSON<ForecastResponse>(
